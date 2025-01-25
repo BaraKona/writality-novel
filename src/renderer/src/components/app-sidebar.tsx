@@ -4,15 +4,15 @@ import * as React from "react"
 import {
   AudioWaveform,
   BookOpen,
-  Bot,
   Command,
   Frame,
   GalleryVerticalEnd,
   Map,
   PieChart,
   Settings2,
-  TerminalSquare
-  
+  Image,
+  Globe2Icon,
+  SquareUser
 } from "lucide-react"
 
 
@@ -23,9 +23,9 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "./ui/sidebar"
-import { TeamSwitcher } from "./team-switcher"
+import { ProjectSwitcher } from "./ProjectSwitcher"
 import { NavMain } from "./nav-main"
-import { NavProjects } from "./nav-projects"
+import { NavFiles } from "./NavFiles"
 import { NavUser } from "./nav-user"
 
 // This is sample data.
@@ -35,48 +35,39 @@ const data = {
     email: "m@example.com",
     avatar: "/avatars/shadcn.jpg",
   },
-  teams: [
+  projects: [
     {
-      name: "Acme Inc",
+      name: "All Projects",
       logo: GalleryVerticalEnd,
       plan: "Enterprise",
-    },
-    {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
     },
   ],
   navMain: [
     {
-      title: "Playground",
+      title: "World",
       url: "#",
-      icon: TerminalSquare,
+      icon: <Globe2Icon className="text-red-900"/>,
       isActive: true,
       items: [
+        {
+          title: "Details",
+          url: "#",
+          icon: BookOpen,
+        },
         {
           title: "History",
           url: "#",
         },
         {
-          title: "Starred",
-          url: "#",
-        },
-        {
-          title: "Settings",
+          title: "Timeline",
           url: "#",
         },
       ],
     },
     {
-      title: "Models",
+      title: "Gallery",
       url: "#",
-      icon: Bot,
+      icon: Image,
       items: [
         {
           title: "Genesis",
@@ -93,9 +84,9 @@ const data = {
       ],
     },
     {
-      title: "Documentation",
+      title: "Characters",
       url: "#",
-      icon: BookOpen,
+      icon: SquareUser,
       items: [
         {
           title: "Introduction",
@@ -121,11 +112,11 @@ const data = {
       icon: Settings2,
       items: [
         {
-          title: "General",
+          title: "User",
           url: "#",
         },
         {
-          title: "Team",
+          title: "Appearance",
           url: "#",
         },
         {
@@ -139,7 +130,7 @@ const data = {
       ],
     },
   ],
-  projects: [
+  files: [
     {
       name: "Design Engineering",
       url: "#",
@@ -162,11 +153,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
+        <ProjectSwitcher teams={data.projects} />
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
+        <NavFiles projects={data.files} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />

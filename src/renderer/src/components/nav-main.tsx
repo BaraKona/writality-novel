@@ -17,6 +17,7 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@renderer/components/ui/sidebar"
+import React from "react"
 
 export function NavMain({
   items,
@@ -24,7 +25,7 @@ export function NavMain({
   items: {
     title: string
     url: string
-    icon?: LucideIcon
+    icon?: React.ReactNode | LucideIcon
     isActive?: boolean
     items?: {
       title: string
@@ -44,13 +45,17 @@ export function NavMain({
             className="group/collapsible"
           >
             <SidebarMenuItem>
-              <CollapsibleTrigger asChild>
                 <SidebarMenuButton tooltip={item.title}>
-                  {item.icon && <item.icon />}
+                  {item.icon && React.isValidElement(item.icon) ? (
+                    item.icon
+                  ) : item.icon ? (
+                    React.createElement(item.icon as React.ElementType)
+                  ) : null}
                   <span>{item.title}</span>
+                    <CollapsibleTrigger asChild>
                   <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-                </SidebarMenuButton>
               </CollapsibleTrigger>
+                </SidebarMenuButton>
               <CollapsibleContent>
                 <SidebarMenuSub>
                   {item.items?.map((subItem) => (
