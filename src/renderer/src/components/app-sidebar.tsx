@@ -12,7 +12,8 @@ import {
   Settings2,
   Image,
   Globe2Icon,
-  SquareUser
+  SquareUser,
+  LucideIcon
 } from "lucide-react"
 
 
@@ -45,41 +46,44 @@ const data = {
   navMain: [
     {
       title: "World",
-      url: "#",
+      url: "/world",
       icon: <Globe2Icon className="text-red-900"/>,
       isActive: true,
       items: [
         {
           title: "Details",
-          url: "#",
-          icon: BookOpen,
+          url: "/world/details",
+        },
+        {
+          title: "Map",
+          url: "/world/map",
         },
         {
           title: "History",
-          url: "#",
-        },
-        {
-          title: "Timeline",
-          url: "#",
+          url: "/world/history",
         },
       ],
     },
     {
       title: "Gallery",
-      url: "#",
+      url: "/gallery",
       icon: Image,
       items: [
         {
-          title: "Genesis",
-          url: "#",
+          title: "Inspiration",
+          url: "/gallery/inspiration",
         },
         {
-          title: "Explorer",
-          url: "#",
+          title: "People",
+          url: "/gallery/people",
         },
         {
-          title: "Quantum",
-          url: "#",
+          title: "World",
+          url: "/gallery/world",
+        },
+        {
+          title: "Miscellaneous",
+          url: "/gallery/miscellaneous",
         },
       ],
     },

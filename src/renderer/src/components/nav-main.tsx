@@ -1,7 +1,5 @@
-"use client"
-
 import { ChevronRight, type LucideIcon } from "lucide-react"
-
+import { Link, useNavigate } from '@tanstack/react-router'
 import {
   Collapsible,
   CollapsibleContent,
@@ -33,6 +31,8 @@ export function NavMain({
     }[]
   }[]
 }) {
+
+  const navigate = useNavigate()
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Platform</SidebarGroupLabel>
@@ -45,25 +45,35 @@ export function NavMain({
             className="group/collapsible"
           >
             <SidebarMenuItem>
-                <SidebarMenuButton tooltip={item.title}>
+                <SidebarMenuButton tooltip={item.title}
+                  onClick={() => {
+                    navigate({
+                      to: item.url,
+                    })
+                  }}
+                >
                   {item.icon && React.isValidElement(item.icon) ? (
                     item.icon
                   ) : item.icon ? (
                     React.createElement(item.icon as React.ElementType)
                   ) : null}
                   <span>{item.title}</span>
-                    <CollapsibleTrigger asChild>
-                  <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-              </CollapsibleTrigger>
+                  <CollapsibleTrigger asChild 
+                    onClick={(e) => {
+                      e.stopPropagation()
+                    }}
+                  >
+                    <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                  </CollapsibleTrigger>
                 </SidebarMenuButton>
               <CollapsibleContent>
                 <SidebarMenuSub>
                   {item.items?.map((subItem) => (
                     <SidebarMenuSubItem key={subItem.title}>
                       <SidebarMenuSubButton asChild>
-                        <a href={subItem.url}>
+                        <Link to={subItem.url} activeProps={{ className: "bg-sidebar-accent text-sidebar-accent-foreground" }}>
                           <span>{subItem.title}</span>
-                        </a>
+                        </Link>
                       </SidebarMenuSubButton>
                     </SidebarMenuSubItem>
                   ))}

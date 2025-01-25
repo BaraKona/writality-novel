@@ -13,7 +13,8 @@ import { Skeleton } from "@renderer/components/ui/skeleton"
 
 import { cn } from "@renderer/lib/utils"
 import { useIsMobile } from "@renderer/hooks/use-mobile"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@radix-ui/react-tooltip"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, TooltipPortal } from "@radix-ui/react-tooltip"
+import { useNavigate } from "@tanstack/react-router"
 
 const SIDEBAR_COOKIE_NAME = "sidebar:state"
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
@@ -551,7 +552,7 @@ const SidebarMenuButton = React.forwardRef<
   ) => {
     const Comp = asChild ? Slot : "button"
     const { isMobile, state } = useSidebar()
-
+    
     const button = (
       <Comp
         ref={ref}
@@ -576,6 +577,7 @@ const SidebarMenuButton = React.forwardRef<
     return (
       <Tooltip>
         <TooltipTrigger asChild>{button}</TooltipTrigger>
+
         <TooltipContent
           side="right"
           align="center"
