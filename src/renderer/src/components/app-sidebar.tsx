@@ -28,6 +28,7 @@ import { ProjectSwitcher } from "./ProjectSwitcher"
 import { NavMain } from "./nav-main"
 import { NavFiles } from "./NavFiles"
 import { NavUser } from "./nav-user"
+import { ProjectImage } from "./ProjectImage"
 
 // This is sample data.
 const data = {
@@ -47,7 +48,7 @@ const data = {
     {
       title: "World",
       url: "/world",
-      icon: <Globe2Icon className="text-red-900"/>,
+      icon: Globe2Icon,
       isActive: true,
       items: [
         {
@@ -157,6 +158,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
+        <ProjectImage />
         <ProjectSwitcher teams={data.projects} />
       </SidebarHeader>
       <SidebarContent>

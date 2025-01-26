@@ -16,6 +16,7 @@ import { Route as rootRoute } from './routes/__root'
 
 // Create Virtual Routes
 
+const NewPageLazyImport = createFileRoute('/new-page')()
 const AboutLazyImport = createFileRoute('/about')()
 const IndexLazyImport = createFileRoute('/')()
 const WorldIndexLazyImport = createFileRoute('/world/')()
@@ -32,6 +33,12 @@ const GalleryMiscellaneousLazyImport = createFileRoute(
 const GalleryInspirationLazyImport = createFileRoute('/gallery/inspiration')()
 
 // Create/Update Routes
+
+const NewPageLazyRoute = NewPageLazyImport.update({
+  id: '/new-page',
+  path: '/new-page',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() => import('./routes/new-page.lazy').then((d) => d.Route))
 
 const AboutLazyRoute = AboutLazyImport.update({
   id: '/about',
@@ -131,6 +138,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutLazyImport
       parentRoute: typeof rootRoute
     }
+    '/new-page': {
+      id: '/new-page'
+      path: '/new-page'
+      fullPath: '/new-page'
+      preLoaderRoute: typeof NewPageLazyImport
+      parentRoute: typeof rootRoute
+    }
     '/gallery/inspiration': {
       id: '/gallery/inspiration'
       path: '/gallery/inspiration'
@@ -209,6 +223,7 @@ declare module '@tanstack/react-router' {
 export interface FileRoutesByFullPath {
   '/': typeof IndexLazyRoute
   '/about': typeof AboutLazyRoute
+  '/new-page': typeof NewPageLazyRoute
   '/gallery/inspiration': typeof GalleryInspirationLazyRoute
   '/gallery/miscellaneous': typeof GalleryMiscellaneousLazyRoute
   '/gallery/people': typeof GalleryPeopleLazyRoute
@@ -224,6 +239,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexLazyRoute
   '/about': typeof AboutLazyRoute
+  '/new-page': typeof NewPageLazyRoute
   '/gallery/inspiration': typeof GalleryInspirationLazyRoute
   '/gallery/miscellaneous': typeof GalleryMiscellaneousLazyRoute
   '/gallery/people': typeof GalleryPeopleLazyRoute
@@ -240,6 +256,7 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexLazyRoute
   '/about': typeof AboutLazyRoute
+  '/new-page': typeof NewPageLazyRoute
   '/gallery/inspiration': typeof GalleryInspirationLazyRoute
   '/gallery/miscellaneous': typeof GalleryMiscellaneousLazyRoute
   '/gallery/people': typeof GalleryPeopleLazyRoute
@@ -257,6 +274,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/new-page'
     | '/gallery/inspiration'
     | '/gallery/miscellaneous'
     | '/gallery/people'
@@ -271,6 +289,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/new-page'
     | '/gallery/inspiration'
     | '/gallery/miscellaneous'
     | '/gallery/people'
@@ -285,6 +304,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/about'
+    | '/new-page'
     | '/gallery/inspiration'
     | '/gallery/miscellaneous'
     | '/gallery/people'
@@ -301,6 +321,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexLazyRoute: typeof IndexLazyRoute
   AboutLazyRoute: typeof AboutLazyRoute
+  NewPageLazyRoute: typeof NewPageLazyRoute
   GalleryInspirationLazyRoute: typeof GalleryInspirationLazyRoute
   GalleryMiscellaneousLazyRoute: typeof GalleryMiscellaneousLazyRoute
   GalleryPeopleLazyRoute: typeof GalleryPeopleLazyRoute
@@ -316,6 +337,7 @@ export interface RootRouteChildren {
 const rootRouteChildren: RootRouteChildren = {
   IndexLazyRoute: IndexLazyRoute,
   AboutLazyRoute: AboutLazyRoute,
+  NewPageLazyRoute: NewPageLazyRoute,
   GalleryInspirationLazyRoute: GalleryInspirationLazyRoute,
   GalleryMiscellaneousLazyRoute: GalleryMiscellaneousLazyRoute,
   GalleryPeopleLazyRoute: GalleryPeopleLazyRoute,
@@ -340,6 +362,7 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/about",
+        "/new-page",
         "/gallery/inspiration",
         "/gallery/miscellaneous",
         "/gallery/people",
@@ -357,6 +380,9 @@ export const routeTree = rootRoute
     },
     "/about": {
       "filePath": "about.lazy.tsx"
+    },
+    "/new-page": {
+      "filePath": "new-page.lazy.tsx"
     },
     "/gallery/inspiration": {
       "filePath": "gallery/inspiration.lazy.tsx"

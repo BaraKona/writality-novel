@@ -5,5 +5,9 @@ export const Route = createLazyFileRoute('/world/')({
 })
 
 function RouteComponent() {
-  return <div>Hello "/world"!</div>
+  return (
+    <div className=''>
+      <div className="relative h-[35vh] overflow-hidden bg-default w-full"></div>
+    </div>
+  )
 }

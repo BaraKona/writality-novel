@@ -268,7 +268,7 @@ const SidebarTrigger = React.forwardRef<
       data-sidebar="trigger"
       variant="ghost"
       size="icon"
-      className={cn("h-7 w-7", className)}
+      className={cn("", className)}
       onClick={(event) => {
         onClick?.(event)
         toggleSidebar()
@@ -581,6 +581,7 @@ const SidebarMenuButton = React.forwardRef<
         <TooltipContent
           side="right"
           align="center"
+          className="bg-sidebar-primary rounded-md text-sidebar-primary-foreground text-sm px-2 py-0.5 "
           hidden={state !== "collapsed" || isMobile}
           {...tooltip}
         />

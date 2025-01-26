@@ -1,0 +1,89 @@
+import { FC } from 'react'
+import { Tab } from '@shared/models'
+import { Button } from '@renderer/components/ui/button'
+import {
+  BookTextIcon,
+  BarChart,
+  FileText,
+  Globe2Icon,
+  ImageIcon,
+  BlocksIcon,
+  LibraryBigIcon,
+  PaintBucketIcon,
+  SearchIcon,
+  SettingsIcon,
+  SquareUserIcon,
+  TrashIcon,
+  HelpCircle,
+  X,
+  Flower2
+} from 'lucide-react'
+
+export const TabListItem: FC<{
+  tab: Tab
+  removeTab: (tab: Tab) => void
+  changeTab: () => void
+}> = ({ tab, removeTab, changeTab }) => {
+  return (
+    <Button
+      onClick={changeTab}
+      variant="outline"
+      size='sm'
+
+      className={`${tab.active && 'bg-accent'} hover:bg-accent rounded-md flex gap-1 h-auto py-1.5 cursor-default items-center text-left justify-start text-xs group w-48 capitalize`}
+    >
+      <span className="shrink-0">{iconList(tab.url)}</span>
+      <span className="grow w-full truncate">{tab.name}</span>
+      <Button
+          onClick={(e) => {
+          e.stopPropagation()
+          removeTab(tab)
+        }}
+        variant="ghost"
+        size='sm'
+        className={`group-hover:block ml-auto flex px-0 items-center ${tab.active ? '' : 'hidden '}`}
+      >
+      <X size={12} strokeWidth={1.5} />
+      </Button>
+    </Button>
+  )
+}
+
+function iconList(tabUrl: string | undefined): JSX.Element {
+
+  if (!tabUrl) {
+    return <Flower2 size={16} strokeWidth={1.5} />
+  }
+  
+  const size = 16
+  const stroke = 1.5
+  if (tabUrl.includes('home') || tabUrl === '/') {
+    return <LibraryBigIcon size={size} strokeWidth={stroke} />
+  } else if (tabUrl.includes('search')) {
+    return <SearchIcon size={size} strokeWidth={stroke} />
+  } else if (tabUrl.includes('settings')) {
+    return <SettingsIcon size={size} strokeWidth={stroke} />
+  } else if (tabUrl.includes('.file')) {
+    return <FileText size={size} strokeWidth={stroke} />
+  } else if (tabUrl.includes('.canvas')) {
+    return <BlocksIcon size={size} strokeWidth={stroke} />
+  } else if (tabUrl.includes('bin')) {
+    return <TrashIcon size={size} strokeWidth={stroke} />
+  } else if (tabUrl.includes('analytics') || tabUrl.includes('stats')) {
+    return <BarChart size={size} strokeWidth={stroke} />
+  } else if (tabUrl.includes('new')) {
+    return <PaintBucketIcon size={size} strokeWidth={stroke} />
+  } else if (tabUrl.includes('world')) {
+    return <Globe2Icon size={size} strokeWidth={stroke} />
+  } else if (tabUrl.includes('gallery')) {
+    return <ImageIcon size={size} strokeWidth={stroke} />
+  } else if (tabUrl.includes('characters')) {
+    return <SquareUserIcon size={size} strokeWidth={stroke} />
+  } else if (tabUrl.includes('storyboard')) {
+    return <BookTextIcon size={size} strokeWidth={stroke} />
+  } else if (tabUrl.includes('help')) {
+    return <HelpCircle size={size} strokeWidth={stroke} />
+  } else {
+    return <Flower2 size={size} strokeWidth={stroke} />
+  }
+}
