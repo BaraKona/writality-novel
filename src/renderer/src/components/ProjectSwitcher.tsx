@@ -18,6 +18,8 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@renderer/components/ui/sidebar"
+import { useCreateProject } from "@renderer/hooks/project/useCreateProject"
+import { useNavigate } from "@tanstack/react-router"
 
 export function ProjectSwitcher({
   teams,
@@ -26,11 +28,13 @@ export function ProjectSwitcher({
     name: string
     logo: React.ElementType
     plan: string
+    url: string
   }[]
 }) {
   const { isMobile } = useSidebar()
   const [activeProject, setActiveProject] = React.useState(teams[0])
-
+  const { mutate: createProject } = useCreateProject()
+  const navigate = useNavigate()
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -64,7 +68,9 @@ export function ProjectSwitcher({
             {teams.map((team, index) => (
               <DropdownMenuItem
                 key={team.name}
-                onClick={() => setActiveProject(team)}
+                onClick={() => navigate({
+                  to: team.url,
+                })}
                 className="gap-2 p-2"
               >
                 <div className="flex size-6 items-center justify-center rounded-sm border">
@@ -75,7 +81,7 @@ export function ProjectSwitcher({
               </DropdownMenuItem>
             ))}
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="gap-2 p-2">
+            <DropdownMenuItem className="gap-2 p-2" onClick={() => createProject()}>
               <div className="flex size-6 items-center justify-center rounded-md border bg-background">
                 <Plus className="size-4" />
               </div>

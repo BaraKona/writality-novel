@@ -23,12 +23,12 @@ import {
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
-} from "./ui/sidebar"
-import { ProjectSwitcher } from "./ProjectSwitcher"
-import { NavMain } from "./nav-main"
-import { NavFiles } from "./NavFiles"
-import { NavUser } from "./nav-user"
-import { ProjectImage } from "./ProjectImage"
+} from "../ui/sidebar"
+import { ProjectSwitcher } from "../ProjectSwitcher"
+import { NavMain } from "../nav-main"
+import { NavFiles } from "../NavFiles"
+import { NavUser } from "../nav-user"
+import { ProjectImage } from "../ProjectImage"
 
 // This is sample data.
 const data = {
@@ -42,7 +42,13 @@ const data = {
       name: "All Projects",
       logo: GalleryVerticalEnd,
       plan: "Enterprise",
+      url: "/overview",
     },
+    {
+      name: "Global Analytics",
+      logo: PieChart,
+      plan: "Enterprise",
+    }
   ],
   navMain: [
     {
@@ -63,6 +69,10 @@ const data = {
           title: "History",
           url: "/world/history",
         },
+        {
+          title: "Analytics",
+          url: "/world/analytics",
+        }
       ],
     },
     {
@@ -154,7 +164,7 @@ const data = {
   ],
 }
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function PrimarySidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>

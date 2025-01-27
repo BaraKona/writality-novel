@@ -8,3 +8,9 @@ export type Tab = {
   search?: NavigateOptions['search']
   active: boolean | false
 }
+
+export type Project = {
+  id: number
+  name: string
+  description: string
+}

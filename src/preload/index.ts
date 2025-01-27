@@ -1,8 +1,11 @@
-import { contextBridge } from 'electron'
+import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
-
+import { Operations } from './index.d'
 // Custom APIs for renderer
-const api = {}
+const api: Operations = {
+  createProject: async () => await ipcRenderer.invoke('createProject'),
+  getAllProjects: async () => await ipcRenderer.invoke('getAllProjects')
+}
 
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise
