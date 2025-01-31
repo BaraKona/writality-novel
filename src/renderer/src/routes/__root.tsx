@@ -1,4 +1,4 @@
-import { createRootRoute, Link, Outlet, ReactNode, ScrollRestoration } from '@tanstack/react-router'
+import { createRootRoute, Outlet, ReactNode } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/router-devtools'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { PrimarySidebar } from "@renderer/components/sidebar/PrimarySidebar"
@@ -7,11 +7,9 @@ import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
-  useSidebar,
 } from "@renderer/components/ui/sidebar"
 import { PrimaryNavbar } from '@renderer/components/PrimaryNavbar'
 import { useCurrentDir } from '@renderer/hooks/useProjectDir'
-import { Store } from '@tanstack/store'
 
 export const Route = createRootRoute({
   head: () => ({
