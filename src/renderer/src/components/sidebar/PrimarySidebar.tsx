@@ -67,10 +67,6 @@ export function PrimarySidebar({ projectDir, ...props }: React.ComponentProps<ty
         isActive: true,
         items: [
           {
-            title: "Details",
-            url: "/world/details",
-          },
-          {
             title: "Map",
             url: "/world/map",
           },

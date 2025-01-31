@@ -1,6 +1,6 @@
 import { useQueryClient } from '@tanstack/react-query'
 import { FC } from 'react'
-import { BookOpenTextIcon, BookTextIcon, LucideCircleEllipsis, Trash2Icon, Plus } from 'lucide-react'
+import { BookOpenTextIcon, BookTextIcon, Ellipsis, Trash2Icon, Plus } from 'lucide-react'
 import { defaultDateTimeFormat } from '@shared/functions'
 import {
   DropdownMenu,
@@ -10,13 +10,13 @@ import {
 } from '@renderer/components/ui/dropdown-menu'
 import { useDeleteProject } from '@renderer/hooks/project/useDeleteProject'
 import { useCurrentDir } from '@renderer/hooks/useProjectDir'
+import { Project } from '@shared/models'
 
-export const ProjectCard: FC<{ project?: File; isCreate?: boolean; onClick: () => void }> = ({
+export const ProjectCard: FC<{ project?: Project; isCreate?: boolean; onClick: () => void }> = ({
   project,
   isCreate,
   onClick
 }) => {
-  const queryClient = useQueryClient()
   const { data: currentProjectDir } = useCurrentDir()
   const { mutate } = useDeleteProject()
 
@@ -51,7 +51,7 @@ export const ProjectCard: FC<{ project?: File; isCreate?: boolean; onClick: () =
           <div className="flex items-center gap-2">
             <div className="text-xs">{defaultDateTimeFormat(project.updated_at ?? new Date())}</div>
             <DropdownMenuTrigger className="p-1 rounded-md hover:bg-secondaryBackground hover:text-secondaryText">
-              <LucideCircleEllipsis size={16} strokeWidth={2} />
+              <Ellipsis size={16} strokeWidth={2} />
             </DropdownMenuTrigger>
           </div>
         </div>
@@ -60,7 +60,7 @@ export const ProjectCard: FC<{ project?: File; isCreate?: boolean; onClick: () =
             className="flex gap-1 text-xs"
             onClick={(e) => {
               e.stopPropagation()
-              mutate(project.name)
+              mutate(project.id)
             }}
           >
             <Trash2Icon size={16} strokeWidth={2} />

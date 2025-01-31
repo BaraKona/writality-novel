@@ -9,10 +9,12 @@ import { useCurrentDir } from '@renderer/hooks/useProjectDir'
 import { useProject } from '@renderer/hooks/project/useProject'
 import { useUpdateProject } from '@renderer/hooks/project/useUpdateProject'
 import { defaultDateTimeFormat } from '@shared/functions'
-
+import { custom_emojis } from '@renderer/lib/custom_emoji'
 export const Route = createLazyFileRoute('/world/')({
   component: RouteComponent,
 })
+
+
 
 function RouteComponent() {
   const { data: currentDir, isLoading } = useCurrentDir()
@@ -27,13 +29,18 @@ function RouteComponent() {
         <div className='max-w-5xl mx-auto px-8 relative'>
           <Popover>
             <PopoverTrigger className="absolute -top-18 text-[6em] z-20">
-              {project?.emoji || <span>📖</span>}
+              {project?.emoji?.src ? (
+                <img src={project?.emoji?.src} alt="emoji" className="w-28 h-28" />
+              ) : (
+                project?.emoji?.native || <span>📖</span>
+              )}
             </PopoverTrigger>
 
             <PopoverContent className="border-0 p-0">
               <Picker
                 data={data}
-                onEmojiSelect={(e) => project && updateProject({ ...project, emoji: e.native })}
+                custom={custom_emojis}
+                onEmojiSelect={(e) => project && updateProject({ ...project, emoji: e })}
                 theme="light"
                 skinTonePosition="search"
               />

@@ -22,5 +22,13 @@ export type Project = {
   description: string
   created_at: string
   updated_at: string
-  emoji: string
+  emoji: {
+    native: string
+    type: string
+    name: string
+    unified: string
+    shortcodes: string[]
+    emoticons: string[]
+  }
+  background_image: string
 }
