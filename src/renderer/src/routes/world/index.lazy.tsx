@@ -1,4 +1,3 @@
-import { useAllProjects } from '@renderer/hooks/project/useAllProjects'
 import { createLazyFileRoute } from '@tanstack/react-router'
 import  data from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
@@ -17,18 +16,17 @@ export const Route = createLazyFileRoute('/world/')({
 
 
 function RouteComponent() {
-  const { data: currentDir, isLoading } = useCurrentDir()
+  const { data: currentDir } = useCurrentDir()
   
   const { data: project } = useProject(currentDir?.currentProjectId)
   const { mutate: updateProject } = useUpdateProject()
 
-  console.log({ project, isLoading })
   return (
     <div className='w-full'>
       <div className="relative h-[35vh] bg-contain bg-default w-full bg-fixed"></div>
-        <div className='max-w-5xl mx-auto px-8 relative'>
+        <div className='max-w-5xl mx-auto px-8 relative h-full'>
           <Popover>
-            <PopoverTrigger className="absolute -top-18 text-[6em] z-20">
+            <PopoverTrigger className="absolute -top-18 text-[6em] z-50">
               {project?.emoji?.src ? (
                 <img src={project?.emoji?.src} alt="emoji" className="w-28 h-28" />
               ) : (
@@ -47,7 +45,7 @@ function RouteComponent() {
               
             </PopoverContent>
           </Popover>
-          <section className='w-full pt-14 px-2'>
+          <section className='w-full pt-14 px-2 h-[10000px]'>
             <h1
               className="text-4xl min-h-fit mt-4 font-semibold text-editorText ring-0 outline-none"
               contentEditable={true}

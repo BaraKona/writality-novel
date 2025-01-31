@@ -2,9 +2,6 @@
 
 import * as React from "react"
 import {
-  AudioWaveform,
-  BookOpen,
-  Command,
   Frame,
   GalleryVerticalEnd,
   Map,
@@ -13,7 +10,6 @@ import {
   Image,
   Globe2Icon,
   SquareUser,
-  LucideIcon
 } from "lucide-react"
 
 
@@ -45,8 +41,7 @@ export function PrimarySidebar({ projectDir, ...props }: React.ComponentProps<ty
       avatar: "/avatars/shadcn.jpg",
     },
     openProject: {
-      name: currentProject?.name,
-      logo: currentProject?.logo,
+      name: currentProject?.name || "Untitled"
     },
     projects: [
       {
@@ -57,6 +52,7 @@ export function PrimarySidebar({ projectDir, ...props }: React.ComponentProps<ty
       {
         name: "Global Analytics",
         logo: PieChart,
+        url: "/analytics",
       }
     ],
     navMain: [

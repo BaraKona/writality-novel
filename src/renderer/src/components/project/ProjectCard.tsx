@@ -1,4 +1,3 @@
-import { useQueryClient } from '@tanstack/react-query'
 import { FC } from 'react'
 import { BookOpenTextIcon, BookTextIcon, Ellipsis, Trash2Icon, Plus } from 'lucide-react'
 import { defaultDateTimeFormat } from '@shared/functions'
@@ -9,17 +8,16 @@ import {
   DropdownMenuTrigger
 } from '@renderer/components/ui/dropdown-menu'
 import { useDeleteProject } from '@renderer/hooks/project/useDeleteProject'
-import { useCurrentDir } from '@renderer/hooks/useProjectDir'
 import { Project } from '@shared/models'
+import { useCurrentDir } from '@renderer/hooks/useProjectDir'
 
 export const ProjectCard: FC<{ project?: Project; isCreate?: boolean; onClick: () => void }> = ({
   project,
   isCreate,
   onClick
 }) => {
-  const { data: currentProjectDir } = useCurrentDir()
   const { mutate } = useDeleteProject()
-
+  const { data: currentProjectDir } = useCurrentDir()
 
   if (isCreate || !project ) {
     return (

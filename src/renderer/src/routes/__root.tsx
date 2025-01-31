@@ -10,7 +10,9 @@ import {
 } from "@renderer/components/ui/sidebar"
 import { PrimaryNavbar } from '@renderer/components/PrimaryNavbar'
 import { useCurrentDir } from '@renderer/hooks/useProjectDir'
-
+import { Store } from "@tanstack/store";
+import { useEffect } from 'react'
+import { ProjectDirectory } from '@shared/models'
 export const Route = createRootRoute({
   head: () => ({
     meta: [
@@ -22,7 +24,7 @@ export const Route = createRootRoute({
         content: 'width=device-width, initial-scale=1',
       },
       {
-        title: 'TanStack Start Starter',
+        title: 'Writality',
       },
     ],
   }),
@@ -38,28 +40,22 @@ function RootComponent() {
 }
 
 
-
-
 function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
-  const { data, isLoading } = useCurrentDir()
+  const { data } = useCurrentDir()
 
-  if (isLoading) {
-    return <div>Loading...</div>
-  }
-  
   return (
-    <div className='border-t overflow-y-auto'>
-      <SidebarProvider>
+    <div className='border-t'>
+      <SidebarProvider className=''>
         <PrimarySidebar projectDir={data}/>
-        <SidebarInset className='overflow-y-auto'>
-          <header className="flex  shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 w-full">
+        <SidebarInset>
+          <header className="flex shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 w-full">
             <div className="flex items-center gap-2 px-2">
               <SidebarTrigger className="" />
               <Separator orientation="vertical" className="h-4" />
               <PrimaryNavbar />
             </div>
           </header>
-          <section className="flex flex-col grow w-full h-full overflow-y-auto">
+          <section className="flex flex-col grow w-full h-full">
             {children}
           </section>
         </SidebarInset>

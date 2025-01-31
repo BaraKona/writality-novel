@@ -29,6 +29,7 @@ export type Project = {
     unified: string
     shortcodes: string[]
     emoticons: string[]
+    src: string
   }
   background_image: string
 }

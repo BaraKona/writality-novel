@@ -28,16 +28,13 @@ export function ProjectSwitcher({
   teams: {
     name: string
     logo: React.ElementType
-    plan: string
     url: string
   }[],
   openProject: {
     name: string
-    logo: React.ElementType
   }
 }) {
   const { isMobile } = useSidebar()
-  const [activeProject, setActiveProject] = React.useState(teams[0])
   const { mutate: createProject } = useCreateProject()
   const navigate = useNavigate()
   return (

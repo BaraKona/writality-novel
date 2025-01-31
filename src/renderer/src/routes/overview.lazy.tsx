@@ -5,6 +5,7 @@ import { useCreateProject } from '@renderer/hooks/project/useCreateProject'
 import { useSetProjectDir } from '@renderer/hooks/useSetProjectDir'
 import { greetingTime } from '@renderer/lib/utils'
 import { appDirectoryName } from '@shared/constants'
+import { Project } from '@shared/models'
 import { createLazyFileRoute } from '@tanstack/react-router'
 import { PlusIcon } from 'lucide-react'
 
@@ -19,14 +20,14 @@ const oneMonthAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000)
 const oneYearAgo = new Date(today.getTime() - 365 * 24 * 60 * 60 * 1000)
 
 function RouteComponent() {
-  const { data: projects, isLoading } = useAllProjects()
+  const { data: projects } = useAllProjects()
   const { mutate: createProject} = useCreateProject()
   const { mutate: switchProject } = useSetProjectDir()
   
-  const updatedToday: File[] = []
-  const updatedThisWeek: File[] = []
-  const updatedThisMonth: File[] = []
-  const updatedAllTime: File[] = []
+  const updatedToday: Project[] = []
+  const updatedThisWeek: Project[] = []
+  const updatedThisMonth: Project[] = []
+  const updatedAllTime: Project[] = []
 
   projects?.forEach((project) => {
     const updatedAt = new Date(project?.updated_at || 0)
@@ -49,7 +50,7 @@ function RouteComponent() {
   ]
   
   return (
-      <section className="flex flex-col h-full overflow-y-auto">
+      <section className="flex flex-col h-full">
       <div className="w-full border-y p-2 py-1 flex gap-2">
         <div className="rounded-md bg-accent p-1 px-2 text-xs font-medium">Stories</div>
         <Button

@@ -29,7 +29,6 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@renderer/components/ui/sidebar"
-import { useCurrentDir } from "@renderer/hooks/useProjectDir"
 
 export function NavUser({
   user,
