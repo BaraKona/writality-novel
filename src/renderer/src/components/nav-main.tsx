@@ -1,5 +1,5 @@
 import { ChevronRight, type LucideIcon } from "lucide-react"
-import { Link, useNavigate } from '@tanstack/react-router'
+import { Link, useLocation, useNavigate } from '@tanstack/react-router'
 import {
   Collapsible,
   CollapsibleContent,
@@ -33,6 +33,7 @@ export function NavMain({
 }) {
 
   const navigate = useNavigate()
+  const location = useLocation()
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Platform</SidebarGroupLabel>
@@ -46,6 +47,7 @@ export function NavMain({
           >
             <SidebarMenuItem>
                 <SidebarMenuButton tooltip={item.title}
+                  className={`${location.pathname === item.url ? "bg-sidebar-accent text-sidebar-accent-foreground" : ""}`}
                   onClick={() => {
                     navigate({
                       to: item.url,

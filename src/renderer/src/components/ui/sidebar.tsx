@@ -3,7 +3,7 @@
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { VariantProps, cva } from "class-variance-authority"
-import { PanelLeft } from "lucide-react"
+import { AlignJustify, ChevronsLeft, ChevronsRight, PanelLeft } from "lucide-react"
 
 import { Button } from "@renderer/components/ui/button"
 import { Input } from "@renderer/components/ui/input"
@@ -18,7 +18,7 @@ import { useNavigate } from "@tanstack/react-router"
 
 const SIDEBAR_COOKIE_NAME = "sidebar:state"
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
-const SIDEBAR_WIDTH = "16rem"
+const SIDEBAR_WIDTH = "18rem"
 const SIDEBAR_WIDTH_MOBILE = "18rem"
 const SIDEBAR_WIDTH_ICON = "3rem"
 const SIDEBAR_KEYBOARD_SHORTCUT = "b"
@@ -261,30 +261,44 @@ const SidebarTrigger = React.forwardRef<
   React.ComponentProps<typeof Button>
 >(({ className, onClick, ...props }, ref) => {
   const { toggleSidebar } = useSidebar()
-
+  const { open } = useSidebar()
   return (
-    <Button
+    <>
+    {!open && (<Separator orientation="vertical" className={`h-4 ${open ? '' : 'ml-[4.5rem]'} `} />)}
+      
+      <Button
       ref={ref}
       data-sidebar="trigger"
       variant="ghost"
       size="icon"
-      className={cn("", className)}
+      className={cn('group p-1 hover:bg-transparent',className)}
       onClick={(event) => {
         onClick?.(event)
         toggleSidebar()
       }}
       {...props}
-    >
-      <PanelLeft />
-      <span className="sr-only">Toggle Sidebar</span>
-    </Button>
+      >
+        {open ? (
+          <>
+            <AlignJustify className="group-hover:hidden block" strokeWidth={1.5}/>
+            <ChevronsLeft className="group-hover:block hidden" strokeWidth={1.5}/>
+          </>
+        ): (
+          <> 
+            <ChevronsRight className="group-hover:block hidden" strokeWidth={1.5}/>
+            <AlignJustify className="group-hover:hidden block" strokeWidth={1.5}/>
+          </>
+        )}
+        <span className="sr-only">Toggle Sidebar</span>
+      </Button>
+    </>
   )
 })
 SidebarTrigger.displayName = "SidebarTrigger"
 
 const SidebarRail = React.forwardRef<
-  HTMLButtonElement,
-  React.ComponentProps<"button">
+HTMLButtonElement,
+React.ComponentProps<"button">
 >(({ className, ...props }, ref) => {
   const { toggleSidebar } = useSidebar()
 

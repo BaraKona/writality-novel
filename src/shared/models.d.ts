@@ -1,5 +1,12 @@
 import { NavigateOptions } from '@tanstack/react-router'
 
+export type ProjectDirectory = {
+  name: string
+  theme: string
+  projectPath: string
+  currentProjectId: number
+  setupCompleted: boolean
+}
 export type Tab = {
   id: number
   position: number

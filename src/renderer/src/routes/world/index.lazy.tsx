@@ -10,8 +10,8 @@ function RouteComponent() {
 
   console.log({ data, isLoading })
   return (
-    <div className=''>
-      <div className="relative h-[35vh] overflow-hidden bg-default w-full"></div>
+    <div className='w-full'>
+      <div className="relative h-[35vh] bg-contain bg-no-repeat bg-default w-full bg-fixed "></div>
     </div>
   )
 }

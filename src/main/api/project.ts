@@ -1,13 +1,12 @@
-import { createProject, getProject, getAllProjects } from "../db/project";
+import { createProject, getProject, getAllProjects, deleteProject } from "../db/project";
 
 export const useProject = () => {
   const create = async () => {
     try {
       const allProjects = await getAllProjects();
       const defaultName = `untitled-${allProjects.length + 1}`;
-      const defaultDescription = "New beginnings...";
 
-      await createProject(defaultName, defaultDescription);
+      await createProject(defaultName);
     } catch (error) {
       console.error("Error creating project:", error);
     }
@@ -15,28 +14,34 @@ export const useProject = () => {
 
   const get = async (id: number) => {
     try {
-      const project = await getProject(id);
-      console.log({ project });
-      return project;
+      return await getProject(id);
     } catch (error) {
       console.error("Error fetching project:", error);
+      return error;
     }
   };
 
   const getAll = async () => {
     try {
-      const projects = await getAllProjects();
-      console.log({ projects });
-      return projects;
+      return await getAllProjects();
     } catch (error) {
       console.error("Error fetching all projects:", error);
       return error;
     }
   };
 
+  const singleDelete = async(id: number) => {
+    try {
+      return await deleteProject(id);
+    } catch (error) {
+      console.error("Error deleting project:", error);
+      throw error;
+    }
+  };
   return {
     create,
     get,
     getAll,
+    singleDelete
   };
 };

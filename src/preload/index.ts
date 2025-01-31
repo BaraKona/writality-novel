@@ -3,8 +3,18 @@ import { electronAPI } from '@electron-toolkit/preload'
 import { Operations } from './index.d'
 // Custom APIs for renderer
 const api: Operations = {
+  getCurrentProjectId: async () => await ipcRenderer.invoke('getCurrentProjectId'),
+  setCurrentProjectId: async (id: number) => await ipcRenderer.invoke('setCurrentProjectId', id),
+
+  completeSetup: async (projectPath: string, name: string, username: string) =>
+    await ipcRenderer.invoke('completeSetup', projectPath, name, username),
+
   createProject: async () => await ipcRenderer.invoke('createProject'),
-  getAllProjects: async () => await ipcRenderer.invoke('getAllProjects')
+  getProject: async (id: number) => await ipcRenderer.invoke('getProject', id),
+  getAllProjects: async () => await ipcRenderer.invoke('getAllProjects'),
+  deleteProject: async () => await ipcRenderer.invoke('deleteProject'),
+
+  openSetupDialog: () => ipcRenderer.invoke('open_setup_dialog'),
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

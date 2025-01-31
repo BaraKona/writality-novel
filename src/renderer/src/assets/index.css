@@ -4,13 +4,14 @@
 
 html, body, :root {
   height: 100%;
+  -webkit-app-region: drag;
 }
 
 @layer base {
   :root {
     --background: 0 0% 100%;
     --foreground: 0 0% 3.9%;
-    --text: 41, 8%, 48%;
+    --text: 240, 7%, 19%;
 
     --card: 0 0% 100%;
     --card-foreground: 0 0% 3.9%;
@@ -95,6 +96,17 @@ html, body, :root {
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
+}
+
+nav {
+  -webkit-app-region: drag;
+}
+
+button,
+a,
+section
+{
+  -webkit-app-region: no-drag;
 }
 
 @layer base {

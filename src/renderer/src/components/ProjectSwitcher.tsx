@@ -23,13 +23,18 @@ import { useNavigate } from "@tanstack/react-router"
 
 export function ProjectSwitcher({
   teams,
+  openProject,
 }: {
   teams: {
     name: string
     logo: React.ElementType
     plan: string
     url: string
-  }[]
+  }[],
+  openProject: {
+    name: string
+    logo: React.ElementType
+  }
 }) {
   const { isMobile } = useSidebar()
   const [activeProject, setActiveProject] = React.useState(teams[0])
@@ -49,7 +54,7 @@ export function ProjectSwitcher({
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">
-                  Project Name that is very long
+                  {openProject.name}
                 </span>
                 <span className="truncate text-xs">Fantasy</span>
               </div>

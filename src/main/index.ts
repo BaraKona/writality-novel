@@ -1,17 +1,22 @@
 import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
-import icon from '../../resources/icon.png?asset'
+import icon from '../../resources/download.png?asset'
 import { appDirectoryName } from '@shared/constants'
 import { registerIpcHandlers } from './ipcHandlers';
+import { checkSetup } from './api'
 
-function createWindow(): void {
+let mainWindow: BrowserWindow | null
+let setupWindow: BrowserWindow | null
+
+function createMainWindow(): void {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
     minWidth: 800,
     minHeight: 800,
+    center: true,
     show: false,
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
@@ -21,6 +26,11 @@ function createWindow(): void {
       contextIsolation: true
     },
     title: appDirectoryName,
+    visualEffectState: 'active',
+    titleBarStyle: 'hidden',
+    frame: false,
+    titleBarOverlay: true,
+    trafficLightPosition: { x: 10, y: 10 },
   })
 
   mainWindow.on('ready-to-show', () => {
@@ -40,6 +50,63 @@ function createWindow(): void {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
 }
+
+function createSetupWindow(): void {
+  setupWindow = new BrowserWindow({
+    width: 1200,
+    height: 800,
+    minWidth: 1200,
+    minHeight: 800,
+    maxHeight: 800,
+    maxWidth: 1200,
+    center: true,
+    show: false,
+    autoHideMenuBar: true,
+    ...(process.platform === 'linux' ? { icon } : {}),
+    webPreferences: {
+      preload: join(__dirname, '../preload/index.js'),
+      sandbox: false,
+      contextIsolation: true
+    },
+    title: 'Setup',
+    vibrancy: 'under-window',
+    frame: false,
+    visualEffectState: 'active',
+    titleBarStyle: 'hidden',
+    titleBarOverlay: true,
+    trafficLightPosition: { x: 10, y: 10 },
+    icon: join(__dirname, '../../public/writality-icon.ico')
+  })
+
+  setupWindow.on('ready-to-show', () => {
+    setupWindow?.show()
+  })
+
+  setupWindow.webContents.setWindowOpenHandler((details) => {
+    shell.openExternal(details.url)
+    return { action: 'deny' }
+  })
+
+  // HMR for renderer base on electron-vite cli.
+  // Load the remote URL for development or the local html file for production.
+  if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
+    setupWindow.loadURL(`${process.env['ELECTRON_RENDERER_URL']}/setup.html`)
+  } else {
+    setupWindow.loadFile(join(__dirname, '../renderer/setup.html'))
+  }
+}
+
+// This method chooses the correct window to show based on the setup status
+export function createWindow(): void {
+  if (checkSetup()) {
+    console.info('Setup is complete')
+    createMainWindow()
+  } else {
+    console.info('Setup is not complete')
+    createSetupWindow()
+  }
+}
+
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -65,6 +132,11 @@ app.whenReady().then(() => {
     // dock icon is clicked and there are no other windows open.
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
+})
+
+ipcMain.on('setup-complete', () => {
+  createMainWindow()
+  setupWindow?.close()
 })
 
 // Quit when all windows are closed, except on macOS. There, it's common

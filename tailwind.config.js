@@ -19,7 +19,7 @@ module.exports = {
   	},
   	extend: {
 			backgroundImage: {
-      	default: "url('@renderer/assets/images/default_banner_image.jpeg')"
+      	default: "url('@renderer/assets/images/fantasy-endless-hole-landscape.jpg')"
     	},
   		colors: {
   			border: 'hsl(var(--border))',

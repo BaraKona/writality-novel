@@ -29,18 +29,18 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@renderer/components/ui/sidebar"
+import { useCurrentDir } from "@renderer/hooks/useProjectDir"
 
 export function NavUser({
   user,
 }: {
   user: {
-    name: string
-    email: string
+    position: string
     avatar: string
+    name: string
   }
 }) {
   const { isMobile } = useSidebar()
-
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -52,11 +52,11 @@ export function NavUser({
             >
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                <AvatarFallback className="rounded-lg uppercase">{`${user.name?.charAt(0) + user.name?.charAt(1)}`} </AvatarFallback> 
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">{user.name}</span>
-                <span className="truncate text-xs">{user.email}</span>
+                <span className="truncate text-xs">{user.position}</span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
@@ -75,7 +75,7 @@ export function NavUser({
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">{user.name}</span>
-                  <span className="truncate text-xs">{user.email}</span>
+                  <span className="truncate text-xs">{user.position}</span>
                 </div>
               </div>
             </DropdownMenuLabel>

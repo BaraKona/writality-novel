@@ -11,11 +11,14 @@ database?.exec(`
   )
 `);
 
-export function createProject(name: string, description: string) {
+export function createProject(name: string): { id: number } {
   const stmt = database.prepare(
     'INSERT INTO projects (name, description, created_at, updated_at) VALUES (?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)'
   );
-  return stmt.run(name, description);
+  const result = stmt.run(name, 'New beginnings...');
+  
+  // Return the last inserted row ID
+  return { id: result.lastInsertRowid as number };
 }
 
 export function getProject(id: number) {
