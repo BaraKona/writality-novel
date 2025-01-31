@@ -17,7 +17,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, TooltipPortal
 
 const SIDEBAR_COOKIE_NAME = "sidebar:state"
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
-const SIDEBAR_WIDTH = "18rem"
+export const SIDEBAR_WIDTH = "18rem"
 const SIDEBAR_WIDTH_MOBILE = "18rem"
 const SIDEBAR_WIDTH_ICON = "3rem"
 const SIDEBAR_KEYBOARD_SHORTCUT = "b"
@@ -264,7 +264,6 @@ const SidebarTrigger = React.forwardRef<
   return (
     <>
     {!open && (<Separator orientation="vertical" className={`h-4 ${open ? '' : 'ml-[4.5rem]'} `} />)}
-      
       <Button
       ref={ref}
       data-sidebar="trigger"

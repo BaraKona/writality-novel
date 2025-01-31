@@ -12,8 +12,6 @@ export const PrimaryNavbar: FC = () => {
   const { createTab, closeAndMoveToNextTab, changeTab, tabs } = useTabs()
   const { tabRouteChange } = useTabs()
   
-  const { open } = useSidebar()
-
   useEffect(() => {
     tabRouteChange()
   }, [location.pathname])
@@ -25,7 +23,7 @@ export const PrimaryNavbar: FC = () => {
           <TabListItem
             key={index}
             tab={tab}
-                  removeTab={closeAndMoveToNextTab}
+            removeTab={closeAndMoveToNextTab}
             changeTab={() => changeTab(tab.id)}
           />
         ))}

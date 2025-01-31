@@ -13,6 +13,7 @@ import { useCurrentDir } from '@renderer/hooks/useProjectDir'
 import { Store } from "@tanstack/store";
 import { useEffect } from 'react'
 import { ProjectDirectory } from '@shared/models'
+import { Header } from '@renderer/components/Header'
 export const Route = createRootRoute({
   head: () => ({
     meta: [
@@ -44,25 +45,19 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
   const { data } = useCurrentDir()
 
   return (
-    <div className='border-t'>
+    <>
       <SidebarProvider className=''>
         <PrimarySidebar projectDir={data}/>
         <SidebarInset>
-          <header className="flex shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 w-full">
-            <div className="flex items-center gap-2 px-2">
-              <SidebarTrigger className="" />
-              <Separator orientation="vertical" className="h-4" />
-              <PrimaryNavbar />
-            </div>
-          </header>
-          <section className="flex flex-col grow w-full h-full">
+        <Header />
+          <section className="flex flex-col grow w-full h-full !z-0 relative">
             {children}
           </section>
         </SidebarInset>
       </SidebarProvider>
       <TanStackRouterDevtools position='bottom-right'/>
       <ReactQueryDevtools initialIsOpen={false} />
-    </div>
+    </>
   )
 }
 

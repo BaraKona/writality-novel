@@ -26,7 +26,7 @@ function RouteComponent() {
       <div className="relative h-[35vh] bg-contain bg-default w-full bg-fixed"></div>
         <div className='max-w-5xl mx-auto px-8 relative h-full'>
           <Popover>
-            <PopoverTrigger className="absolute -top-18 text-[6em] z-50">
+            <PopoverTrigger className="absolute -top-18 text-[6em] z-10">
               {project?.emoji?.src ? (
                 <img src={project?.emoji?.src} alt="emoji" className="w-28 h-28" />
               ) : (
