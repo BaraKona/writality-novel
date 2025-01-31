@@ -46,12 +46,13 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
   if (isLoading) {
     return <div>Loading...</div>
   }
+  
   return (
     <div className='border-t overflow-y-auto'>
       <SidebarProvider>
         <PrimarySidebar projectDir={data}/>
         <SidebarInset className='overflow-y-auto'>
-          <header className="flex  shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 w-full">
+          <header className="flex  shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 w-full">
             <div className="flex items-center gap-2 px-2">
               <SidebarTrigger className="" />
               <Separator orientation="vertical" className="h-4" />

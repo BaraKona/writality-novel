@@ -1,5 +1,5 @@
 import { ElectronAPI } from '@electron-toolkit/preload'
-import { ProjectDirectory } from '@shared/models'
+import { Project, ProjectDirectory } from '@shared/models'
 export interface Operations {
   completeSetup(projectPath: string, name: string, username: string): Promise<void>
 
@@ -10,6 +10,7 @@ export interface Operations {
   getAllProjects(): Promise<void>
   getProject(id: number): Promise<void>
   deleteProject(id: number): Promise<void>
+  updateProject(project: Project): Promise<void>
 
 
   openSetupDialog: () => Promise<Electron.OpenDialogReturnValue>

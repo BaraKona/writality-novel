@@ -1,6 +1,8 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 import { Operations } from './index.d'
+import { Project } from '@shared/models'
+
 // Custom APIs for renderer
 const api: Operations = {
   getCurrentProjectId: async () => await ipcRenderer.invoke('getCurrentProjectId'),
@@ -13,6 +15,7 @@ const api: Operations = {
   getProject: async (id: number) => await ipcRenderer.invoke('getProject', id),
   getAllProjects: async () => await ipcRenderer.invoke('getAllProjects'),
   deleteProject: async () => await ipcRenderer.invoke('deleteProject'),
+  updateProject: async (project: Project) => await ipcRenderer.invoke('updateProject', project),
 
   openSetupDialog: () => ipcRenderer.invoke('open_setup_dialog'),
 }

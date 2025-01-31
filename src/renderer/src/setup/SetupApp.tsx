@@ -58,7 +58,7 @@ export default function SetupApp(): JSX.Element {
           </div>
           <div className="grid gap-4">
             <div className="flex gap-8 leading-tight w-full items-center">
-              <div className="flex-grow">
+              <div className="grow">
                 <p className="font-semibold text-sm">Select where you want to store your files</p>
                 <p className="text-sm mb-4">
                   We recommend choosing a folder that is synced with a cloud storage service like
@@ -107,7 +107,7 @@ export default function SetupApp(): JSX.Element {
             </div>
             <Separator />
             <div className="flex gap-8 leading-tight w-full items-center">
-              <div className="flex-grow">
+              <div className="grow">
                 <p className="font-semibold text-sm">Already have an existing project?</p>
                 <p className=" text-sm mb-4">
                   Restore your projects from a backup or existing folder.

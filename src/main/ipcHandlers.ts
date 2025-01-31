@@ -10,12 +10,14 @@ export function registerIpcHandlers(ipcMain: Electron.IpcMain) {
   // root
   ipcMain.handle('getCurrentProjectId', async () => getCurrentProjectId())
   ipcMain.handle('setCurrentProjectId', async (_, id: number) => setCurrentProjectId(id))
+  
 
   // projects
   ipcMain.handle('createProject', async () => useProject().create())
   ipcMain.handle('getAllProjects', async () => useProject().getAll())
   ipcMain.handle('deleteProject', async (_, id: number) => useProject().singleDelete(id))
   ipcMain.handle('getProject', async (_, id: number) => useProject().get(id))
+  ipcMain.handle('updateProject', async (_, project: any) => useProject().update(project))
 
   // dialogs
   ipcMain.handle('open_setup_dialog', () =>

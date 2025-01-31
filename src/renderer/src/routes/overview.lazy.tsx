@@ -63,7 +63,7 @@ function RouteComponent() {
         </Button>
       </div>
       <div className="p-4 overflow-y-auto grow">
-        <div className="max-w-screen-sm lg:max-w-screen-lg mx-auto h-full w-full space-y-8">
+        <div className="max-w-(--breakpoint-sm) lg:max-w-(--breakpoint-lg) mx-auto h-full w-full space-y-8">
           <h1 className="text-2xl font-semibold text-center py-5">
             {greetingTime()}, welcome to {appDirectoryName}
           </h1>

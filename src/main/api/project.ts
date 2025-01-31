@@ -1,4 +1,4 @@
-import { createProject, getProject, getAllProjects, deleteProject } from "../db/project";
+import { createProject, getProject, getAllProjects, deleteProject, updateProject } from "../db/project";
 
 export const useProject = () => {
   const create = async () => {
@@ -38,8 +38,19 @@ export const useProject = () => {
       throw error;
     }
   };
+
+  const update = async (project: any) => {
+    try {
+      return await updateProject(project);
+    } catch (error) {
+      console.error("Error updating project:", error);
+      throw error;
+    }
+  };
+
   return {
     create,
+    update,
     get,
     getAll,
     singleDelete

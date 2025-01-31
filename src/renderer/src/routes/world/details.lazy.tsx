@@ -9,7 +9,7 @@ function RouteComponent() {
 
   return (
     <div className='w-full  grow'>
-      <div className='max-w-screen-md mx-auto'>
+      <div className='max-w-(--breakpoint-md) mx-auto'>
         safsa
       </div>
     </div>

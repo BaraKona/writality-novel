@@ -1,3 +1,4 @@
+import { Project } from '@shared/models';
 import { database } from './index';
 
 // Create table for projects if not exists, with timestamps
@@ -6,6 +7,7 @@ database?.exec(`
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
     description TEXT,
+    emoji TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
   )
@@ -26,11 +28,12 @@ export function getProject(id: number) {
   return stmt.get(id);
 }
 
-export function updateProject(id: number, name: string, description: string) {
+export function updateProject(project: Project) {
+
   const stmt = database.prepare(
-    'UPDATE projects SET name = ?, description = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?'
+    'UPDATE projects SET name = ?, description = ?, emoji = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?'
   );
-  return stmt.run(name, description, id);
+  return stmt.run(project.name, project.description, project.emoji, project.id);
 }
 
 export function deleteProject(id: number) {
