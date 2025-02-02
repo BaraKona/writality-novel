@@ -17,8 +17,8 @@ export const PrimaryNavbar: FC = () => {
   }, [location.pathname])
 
   return (
-    <nav className={`w-full draggable-window flex items-center py-1 gap-1`}>
-      <ul className="flex gap-1 items-center overflow-x-auto">
+    <nav className={`draggable-window flex items-center py-1 gap-1 w-full grow overflow-auto`}>
+      <ul className="flex gap-1 items-center overflow-x-auto grow">
         {tabs.map((tab, index) => (
           <TabListItem
             key={index}
@@ -32,7 +32,7 @@ export const PrimaryNavbar: FC = () => {
         <Separator orientation="vertical" className="h-4 mx-1" />
       }
 
-      <Button variant="ghost" size="icon" onClick={createTab} className="p-1 m-auto">
+      <Button variant="ghost" size="icon" onClick={createTab} className="shrink-0 p-1 m-auto">
         <Plus color="gray" size={16} />
       </Button>
     </nav>

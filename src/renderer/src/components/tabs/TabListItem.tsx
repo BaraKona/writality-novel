@@ -29,7 +29,7 @@ export const TabListItem: FC<{
       onClick={changeTab}
       variant="outline"
       size='sm'
-      className={`${tab.active && 'bg-accent'} hover:bg-accent rounded-md flex gap-1 h-auto py-1 cursor-default items-center text-left justify-start text-xs group w-48 capitalize`}
+      className={`${tab.active && 'bg-accent'} hover:bg-accent rounded-md flex gap-1 h-auto py-1 cursor-default items-center text-left justify-start text-xs group w-48 capitalize shrink-0`}
     >
       <span className="shrink-0">{iconList(tab.url)}</span>
       <span className="grow w-full truncate">{tab.name}</span>
@@ -40,9 +40,9 @@ export const TabListItem: FC<{
         }}
         variant="ghost"
         size='sm'
-        className={`group-hover:block ml-auto flex px-0 items-center ${tab.active ? '' : 'hidden '}`}
+        className={`group-hover:visible ml-auto flex px-0 items-center ${tab.active ? '' : 'invisible '}`}
       >
-      <X size={12} strokeWidth={1.5} />
+        <X size={12} strokeWidth={1.5} />
       </Button>
     </Button>
   )
