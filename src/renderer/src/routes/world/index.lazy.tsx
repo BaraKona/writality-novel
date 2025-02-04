@@ -10,6 +10,23 @@ import { useUpdateProject } from '@renderer/hooks/project/useUpdateProject'
 import { defaultDateTimeFormat } from '@shared/functions'
 import { custom_emojis } from '@renderer/lib/custom_emoji'
 
+import '@blocknote/core/fonts/inter.css'
+import { BlockNoteView } from '@blocknote/mantine'
+import '@blocknote/mantine/style.css'
+import { BlockNoteSchema, combineByGroup, filterSuggestionItems, locales } from '@blocknote/core'
+import {
+  SuggestionMenuController,
+  getDefaultReactSlashMenuItems,
+  useCreateBlockNote
+} from '@blocknote/react'
+import {
+  getMultiColumnSlashMenuItems,
+  multiColumnDropCursor,
+  locales as multiColumnLocales,
+  withMultiColumn
+} from '@blocknote/xl-multi-column'
+import { useMemo } from 'react'
+
 export const Route = createLazyFileRoute('/world/')({
   component: RouteComponent
 })
@@ -19,6 +36,26 @@ function RouteComponent() {
 
   const { data: project } = useProject(currentDir?.currentProjectId)
   const { mutate: updateProject } = useUpdateProject()
+  const editor = useCreateBlockNote({
+    schema: withMultiColumn(BlockNoteSchema.create()),
+    // The default drop cursor only shows up above and below blocks - we replace
+    // it with the multi-column one that also shows up on the sides of blocks.
+    dropCursor: multiColumnDropCursor,
+    // Merges the default dictionary with the multi-column dictionary.
+    dictionary: {
+      ...locales.en,
+      multi_column: multiColumnLocales.en
+    }
+  })
+
+  // Gets the default slash menu items merged with the multi-column ones.
+  const getSlashMenuItems = useMemo(() => {
+    return async (query: string) =>
+      filterSuggestionItems(
+        combineByGroup(getDefaultReactSlashMenuItems(editor), getMultiColumnSlashMenuItems(editor)),
+        query
+      )
+  }, [editor])
 
   return (
     <div className="w-full">
@@ -64,6 +101,9 @@ function RouteComponent() {
               {getTimeFromNow(project?.updated_at || '')}
             </div>
           </div>
+          <BlockNoteView editor={editor} theme="light" className="mt-4 -mx-12">
+            <SuggestionMenuController triggerCharacter={'/'} getItems={getSlashMenuItems} />
+          </BlockNoteView>
         </section>
       </div>
     </div>

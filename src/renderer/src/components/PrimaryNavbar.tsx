@@ -1,10 +1,9 @@
 import { ChevronsLeft, ChevronsRight, Menu, Plus } from 'lucide-react'
-import { FC, useEffect } from 'react'
+import { FC } from 'react'
 import { Button } from '@renderer/components/ui/button'
 import { useTabs } from '@renderer/hooks/useTabs'
 import { TabListItem } from './tabs/TabListItem'
 import { Separator } from '@renderer/components/ui/separator'
-import { useSidebar } from './ui/sidebar'
 import { sidebarStateAtom } from '@renderer/routes/__root'
 import { useAtom } from 'jotai'
 
@@ -19,7 +18,7 @@ export const PrimaryNavbar: FC = () => {
   // }, [location.pathname])
 
   return (
-    <nav className={`draggable-window flex items-center py-1 gap-1 w-full grow overflow-auto`}>
+    <nav className={`flex items-center py-1 gap-1 w-full grow`}>
       <Separator
         orientation="vertical"
         className={`h-4 mx-1 ${sidebarState ? 'hidden' : 'ml-16'}`}

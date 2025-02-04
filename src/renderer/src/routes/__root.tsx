@@ -50,28 +50,24 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
   const [sidebarState, setSidebarState] = useAtom(sidebarStateAtom)
 
   return (
-    <ResizablePanelGroup
-      direction="horizontal"
-      className={`w-full h-full flex min-h-screen max-h-screen grow`}
-    >
-      <ResizablePanel
-        defaultSize={15}
-        className={`min-w-[300px] bg-sidebar relative max-w-[400px] flex flex-col grow group ${sidebarState ? 'show' : 'hide'}`}
-      >
-        <PrimarySidebar projectDir={data} />
-      </ResizablePanel>
-      <ResizableHandle onClick={() => setSidebarState((prev) => !prev)} />
-      <ResizablePanel defaultSize={75}>
-        <Header />
-        <section
-          className="flex flex-col grow w-full h-full !z-0 relative overflow-y-auto"
-          data-registry="plate"
+    <div className="h-screen flex flex-col">
+      <ResizablePanelGroup direction="horizontal" className={`w-full flex grow`}>
+        <ResizablePanel
+          defaultSize={15}
+          className={`min-w-[300px] bg-sidebar relative max-w-[400px] flex flex-col grow group ${sidebarState ? 'show' : 'hide'}`}
         >
-          {children}
-        </section>
-      </ResizablePanel>
+          <PrimarySidebar projectDir={data} />
+        </ResizablePanel>
+        <ResizableHandle onClick={() => setSidebarState((prev) => !prev)} />
+        <ResizablePanel defaultSize={85}>
+          <Header />
+          <section className="flex flex-col grow w-full h-full relative overflow-y-auto">
+            {children}
+          </section>
+        </ResizablePanel>
+      </ResizablePanelGroup>
       <TanStackRouterDevtools position="bottom-right" />
       <ReactQueryDevtools initialIsOpen={false} />
-    </ResizablePanelGroup>
+    </div>
   )
 }
