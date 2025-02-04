@@ -9,6 +9,9 @@ import { useProject } from '@renderer/hooks/project/useProject'
 import { useUpdateProject } from '@renderer/hooks/project/useUpdateProject'
 import { defaultDateTimeFormat } from '@shared/functions'
 import { custom_emojis } from '@renderer/lib/custom_emoji'
+import { PlateEditor } from '@renderer/components/editor/plate-editor';
+import { SettingsProvider } from '@renderer/components/editor/settings';
+
 export const Route = createLazyFileRoute('/world/')({
   component: RouteComponent,
 })
@@ -64,6 +67,9 @@ function RouteComponent() {
                 {getTimeFromNow(project?.updated_at || '')}
               </div>
             </div>
+            <SettingsProvider>
+              <PlateEditor />
+            </SettingsProvider>
           </section>
         </div>
     </div>

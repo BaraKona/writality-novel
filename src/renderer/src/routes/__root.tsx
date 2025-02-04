@@ -50,7 +50,7 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
         <PrimarySidebar projectDir={data}/>
         <SidebarInset>
         <Header />
-          <section className="flex flex-col grow w-full h-full !z-0 relative">
+          <section className="flex flex-col grow w-full h-full !z-0 relative" data-registry="plate">
             {children}
           </section>
         </SidebarInset>
