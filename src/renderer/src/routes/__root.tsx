@@ -50,7 +50,10 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
   const [sidebarState, setSidebarState] = useAtom(sidebarStateAtom)
 
   return (
-    <ResizablePanelGroup direction="horizontal" className={`w-full min-h-screen grow`}>
+    <ResizablePanelGroup
+      direction="horizontal"
+      className={`w-full h-full flex min-h-screen max-h-screen grow`}
+    >
       <ResizablePanel
         defaultSize={15}
         className={`min-w-[300px] bg-sidebar relative max-w-[400px] flex flex-col grow group ${sidebarState ? 'show' : 'hide'}`}

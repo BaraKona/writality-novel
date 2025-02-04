@@ -10,15 +10,13 @@ import { useAtom } from 'jotai'
 
 export const PrimaryNavbar: FC = () => {
   const { createTab, closeAndMoveToNextTab, changeTab, tabs } = useTabs()
-  const { tabRouteChange } = useTabs()
+  // const { tabRouteChange } = useTabs()
 
   const [sidebarState, setSidebarState] = useAtom(sidebarStateAtom)
 
-  useEffect(() => {
-    tabRouteChange()
-  }, [location.pathname])
-
-  console.log(sidebarState)
+  // useEffect(() => {
+  //   tabRouteChange()
+  // }, [location.pathname])
 
   return (
     <nav className={`draggable-window flex items-center py-1 gap-1 w-full grow overflow-auto`}>
@@ -49,6 +47,7 @@ export const PrimaryNavbar: FC = () => {
           />
         )}
       </Button>
+      <Separator orientation="vertical" className={`h-4 mx-1`} />
       <ul className="flex gap-1 items-center">
         {tabs.map((tab, index) => (
           <TabListItem

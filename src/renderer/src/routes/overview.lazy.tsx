@@ -10,7 +10,7 @@ import { createLazyFileRoute } from '@tanstack/react-router'
 import { PlusIcon } from 'lucide-react'
 
 export const Route = createLazyFileRoute('/overview')({
-  component: RouteComponent,
+  component: RouteComponent
 })
 
 const today = new Date()
@@ -21,9 +21,9 @@ const oneYearAgo = new Date(today.getTime() - 365 * 24 * 60 * 60 * 1000)
 
 function RouteComponent() {
   const { data: projects } = useAllProjects()
-  const { mutate: createProject} = useCreateProject()
+  const { mutate: createProject } = useCreateProject()
   const { mutate: switchProject } = useSetProjectDir()
-  
+
   const updatedToday: Project[] = []
   const updatedThisWeek: Project[] = []
   const updatedThisMonth: Project[] = []
@@ -48,14 +48,14 @@ function RouteComponent() {
     { name: 'Updated This Month', projects: updatedThisMonth },
     { name: 'Updated All Time', projects: updatedAllTime }
   ]
-  
+
   return (
-      <section className="flex flex-col h-full">
+    <section className="flex flex-col h-full">
       <div className="w-full border-y p-2 py-1 flex gap-2">
         <div className="rounded-md bg-accent p-1 px-2 text-xs font-medium">Stories</div>
         <Button
-          variant='ghost'
-          size='sm'
+          variant="ghost"
+          size="sm"
           className="rounded-md p-1 px-2 text-xs font-medium ml-auto flex items-center gap-2"
           onClick={() => createProject()}
         >

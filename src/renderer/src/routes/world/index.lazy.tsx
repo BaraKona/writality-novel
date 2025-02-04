@@ -56,7 +56,7 @@ function RouteComponent() {
               __html: project?.name || ''
             }}
           />
-          <div className="flex gap-3 h-[800px] bg-black">
+          <div className="flex gap-3">
             <div className="flex gap-1 mt-1 items-center text-xs text-secondaryText">
               <FileClock size={16} className="text-text" />
               {defaultDateTimeFormat(project?.created_at || '')}
@@ -66,9 +66,9 @@ function RouteComponent() {
               {getTimeFromNow(project?.updated_at || '')}
             </div>
           </div>
-          {/* <SettingsProvider> */}
-          {/* <PlateEditor /> */}
-          {/* </SettingsProvider> */}
+          <SettingsProvider>
+            <PlateEditor />
+          </SettingsProvider>
         </section>
       </div>
     </div>

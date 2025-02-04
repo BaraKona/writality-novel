@@ -105,6 +105,7 @@
   to {
     transform: translateX(-40px);
     opacity: 0;
+    display: none;
   }
 }
 
@@ -131,7 +132,8 @@
 @layer utilities {
   body,
   #root {
-    /* min-height: 100vh; */
+    min-height: 100vh;
+    max-height: 100vh;
   }
 }
 
