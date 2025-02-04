@@ -98,12 +98,40 @@
   }
 }
 
+@keyframes slideaway {
+  from {
+    display: flex;
+  }
+  to {
+    transform: translateX(-40px);
+    opacity: 0;
+  }
+}
+
+@keyframes slidein {
+  from {
+    transform: translateX(-40px);
+    opacity: 0;
+  }
+  to {
+    display: flex;
+  }
+}
+
+.show {
+  animation: slidein 200ms;
+  display: flex;
+}
+
+.hide {
+  animation: slideaway 200ms;
+  display: none;
+}
+
 @layer utilities {
-  html,
   body,
-  :root {
-    height: 100%;
-    -webkit-app-region: drag;
+  #root {
+    /* min-height: 100vh; */
   }
 }
 
@@ -197,7 +225,7 @@
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
-   [data-registry="plate"] {
+  [data-registry='plate'] {
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
@@ -226,8 +254,8 @@
     --brand: 217.2 91.2% 59.8%;
     --highlight: 47.9 95.8% 53.1%;
   }
-  
-  [data-registry="plate"].dark {
+
+  [data-registry='plate'].dark {
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
     --card: 222.2 84% 4.9%;
@@ -258,7 +286,8 @@
 }
 
 @layer utilities {
-  nav, header, body {
+  nav,
+  header {
     -webkit-app-region: drag;
   }
 

@@ -34,7 +34,6 @@ export function ProjectSwitcher({
     name: string
   }
 }) {
-  const { isMobile } = useSidebar()
   const { mutate: createProject } = useCreateProject()
   const navigate = useNavigate()
   return (
@@ -61,7 +60,7 @@ export function ProjectSwitcher({
           <DropdownMenuContent
             className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
             align="start"
-            side={isMobile ? "bottom" : "right"}
+            side='right'
             sideOffset={4}
           >
             <DropdownMenuLabel className="text-xs text-muted-foreground">

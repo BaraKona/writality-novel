@@ -22,7 +22,6 @@ import {
   SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
-  useSidebar,
 } from "@renderer/components/ui/sidebar"
 
 export function NavFiles({
@@ -34,7 +33,6 @@ export function NavFiles({
     icon: LucideIcon
   }[]
 }) {
-  const { isMobile } = useSidebar()
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
@@ -57,8 +55,8 @@ export function NavFiles({
               </DropdownMenuTrigger>
               <DropdownMenuContent
                 className="w-48 rounded-lg"
-                side={isMobile ? "bottom" : "right"}
-                align={isMobile ? "end" : "start"}
+                side={"right"}
+                align="start"
               >
                 <DropdownMenuItem>
                   <Folder className="text-muted-foreground" />
