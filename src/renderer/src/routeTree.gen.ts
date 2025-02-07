@@ -13,6 +13,7 @@ import { createFileRoute } from '@tanstack/react-router'
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as FoldersFolderIdImport } from './routes/folders/$folderId'
 
 // Create Virtual Routes
 
@@ -122,6 +123,12 @@ const GalleryInspirationLazyRoute = GalleryInspirationLazyImport.update({
   import('./routes/gallery/inspiration.lazy').then((d) => d.Route),
 )
 
+const FoldersFolderIdRoute = FoldersFolderIdImport.update({
+  id: '/folders/$folderId',
+  path: '/folders/$folderId',
+  getParentRoute: () => rootRoute,
+} as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -145,6 +152,13 @@ declare module '@tanstack/react-router' {
       path: '/overview'
       fullPath: '/overview'
       preLoaderRoute: typeof OverviewLazyImport
+      parentRoute: typeof rootRoute
+    }
+    '/folders/$folderId': {
+      id: '/folders/$folderId'
+      path: '/folders/$folderId'
+      fullPath: '/folders/$folderId'
+      preLoaderRoute: typeof FoldersFolderIdImport
       parentRoute: typeof rootRoute
     }
     '/gallery/inspiration': {
@@ -226,6 +240,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexLazyRoute
   '/new-page': typeof NewPageLazyRoute
   '/overview': typeof OverviewLazyRoute
+  '/folders/$folderId': typeof FoldersFolderIdRoute
   '/gallery/inspiration': typeof GalleryInspirationLazyRoute
   '/gallery/miscellaneous': typeof GalleryMiscellaneousLazyRoute
   '/gallery/people': typeof GalleryPeopleLazyRoute
@@ -242,6 +257,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexLazyRoute
   '/new-page': typeof NewPageLazyRoute
   '/overview': typeof OverviewLazyRoute
+  '/folders/$folderId': typeof FoldersFolderIdRoute
   '/gallery/inspiration': typeof GalleryInspirationLazyRoute
   '/gallery/miscellaneous': typeof GalleryMiscellaneousLazyRoute
   '/gallery/people': typeof GalleryPeopleLazyRoute
@@ -259,6 +275,7 @@ export interface FileRoutesById {
   '/': typeof IndexLazyRoute
   '/new-page': typeof NewPageLazyRoute
   '/overview': typeof OverviewLazyRoute
+  '/folders/$folderId': typeof FoldersFolderIdRoute
   '/gallery/inspiration': typeof GalleryInspirationLazyRoute
   '/gallery/miscellaneous': typeof GalleryMiscellaneousLazyRoute
   '/gallery/people': typeof GalleryPeopleLazyRoute
@@ -277,6 +294,7 @@ export interface FileRouteTypes {
     | '/'
     | '/new-page'
     | '/overview'
+    | '/folders/$folderId'
     | '/gallery/inspiration'
     | '/gallery/miscellaneous'
     | '/gallery/people'
@@ -292,6 +310,7 @@ export interface FileRouteTypes {
     | '/'
     | '/new-page'
     | '/overview'
+    | '/folders/$folderId'
     | '/gallery/inspiration'
     | '/gallery/miscellaneous'
     | '/gallery/people'
@@ -307,6 +326,7 @@ export interface FileRouteTypes {
     | '/'
     | '/new-page'
     | '/overview'
+    | '/folders/$folderId'
     | '/gallery/inspiration'
     | '/gallery/miscellaneous'
     | '/gallery/people'
@@ -324,6 +344,7 @@ export interface RootRouteChildren {
   IndexLazyRoute: typeof IndexLazyRoute
   NewPageLazyRoute: typeof NewPageLazyRoute
   OverviewLazyRoute: typeof OverviewLazyRoute
+  FoldersFolderIdRoute: typeof FoldersFolderIdRoute
   GalleryInspirationLazyRoute: typeof GalleryInspirationLazyRoute
   GalleryMiscellaneousLazyRoute: typeof GalleryMiscellaneousLazyRoute
   GalleryPeopleLazyRoute: typeof GalleryPeopleLazyRoute
@@ -340,6 +361,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexLazyRoute: IndexLazyRoute,
   NewPageLazyRoute: NewPageLazyRoute,
   OverviewLazyRoute: OverviewLazyRoute,
+  FoldersFolderIdRoute: FoldersFolderIdRoute,
   GalleryInspirationLazyRoute: GalleryInspirationLazyRoute,
   GalleryMiscellaneousLazyRoute: GalleryMiscellaneousLazyRoute,
   GalleryPeopleLazyRoute: GalleryPeopleLazyRoute,
@@ -365,6 +387,7 @@ export const routeTree = rootRoute
         "/",
         "/new-page",
         "/overview",
+        "/folders/$folderId",
         "/gallery/inspiration",
         "/gallery/miscellaneous",
         "/gallery/people",
@@ -385,6 +408,9 @@ export const routeTree = rootRoute
     },
     "/overview": {
       "filePath": "overview.lazy.tsx"
+    },
+    "/folders/$folderId": {
+      "filePath": "folders/$folderId.tsx"
     },
     "/gallery/inspiration": {
       "filePath": "gallery/inspiration.lazy.tsx"

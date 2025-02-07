@@ -12,23 +12,15 @@ import {
   SquareUser
 } from 'lucide-react'
 
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-  SidebarProvider,
-  SidebarRail
-} from '../ui/sidebar'
+import { Sidebar } from '../ui/sidebar'
 import { ProjectSwitcher } from '../ProjectSwitcher'
 import { NavMain } from '../nav-main'
-import { NavFiles } from '../NavFiles'
+import { SidebarFiles } from './SidebarFiles'
 import { NavUser } from '../nav-user'
 import { ProjectImage } from '../ProjectImage'
 import { useProject } from '@renderer/hooks/project/useProject'
 import { ProjectDirectory } from '@shared/models'
-
-// This is sample data.
+import defaultBannerImage from '@renderer/assets/images/fantasy-endless-hole-landscape.jpg'
 
 export function PrimarySidebar({
   projectDir,
@@ -167,18 +159,22 @@ export function PrimarySidebar({
     ]
   }
 
+  if (!currentProject) {
+    return null
+  }
+
   return (
     <aside
-      className="flex grow flex-col top-0 left-0 z-10 h-full bg-sidebar border-r pt-8"
+      className="flex grow flex-col relative top-0 left-0 z-10 h-full bg-sidebar border-r pt-8"
       {...props}
     >
       <section className="w-full p-2 border-b border-gray-200">
-        <ProjectImage />
+        <ProjectImage image={defaultBannerImage} />
         <ProjectSwitcher teams={data.projects} openProject={data.openProject} />
       </section>
-      <section>
+      <section className="flex-grow overflow-y-auto">
         <NavMain items={data.navMain} />
-        <NavFiles projects={data.files} />
+        <SidebarFiles project={currentProject} />
       </section>
       <section className="mt-auto">
         <NavUser user={data.user} />

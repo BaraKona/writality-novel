@@ -17,7 +17,16 @@ const api: Operations = {
   deleteProject: async () => await ipcRenderer.invoke('deleteProject'),
   updateProject: async (project: Project) => await ipcRenderer.invoke('updateProject', project),
 
-  openSetupDialog: () => ipcRenderer.invoke('open_setup_dialog'),
+  // Folders
+  getProjectFolders: async (projectId: number) =>
+    await ipcRenderer.invoke('getProjectFolders', projectId),
+  createFolder: async (project_id: number, parent_folder_id) =>
+    await ipcRenderer.invoke('createFolder', project_id, parent_folder_id),
+  updateFolder: async (folder: any) => await ipcRenderer.invoke('updateFolder', folder),
+  deleteFolder: async (id: number) => await ipcRenderer.invoke('deleteFolder', id),
+  getFolderById: async (id: number) => await ipcRenderer.invoke('getFolderById', id),
+
+  openSetupDialog: () => ipcRenderer.invoke('open_setup_dialog')
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

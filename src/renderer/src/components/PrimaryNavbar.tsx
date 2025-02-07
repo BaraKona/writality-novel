@@ -18,7 +18,7 @@ export const PrimaryNavbar: FC = () => {
   // }, [location.pathname])
 
   return (
-    <nav className={`flex items-center py-1 gap-1 w-full grow`}>
+    <nav className={`flex items-center py-1 gap-1 w-full grow overflow-x-auto`}>
       <Separator
         orientation="vertical"
         className={`h-4 mx-1 ${sidebarState ? 'hidden' : 'ml-16'}`}
@@ -47,7 +47,7 @@ export const PrimaryNavbar: FC = () => {
         )}
       </Button>
       <Separator orientation="vertical" className={`h-4 mx-1`} />
-      <ul className="flex gap-1 items-center">
+      <ul className="flex gap-1 items-center overflow-x-auto">
         {tabs.map((tab, index) => (
           <TabListItem
             key={index}

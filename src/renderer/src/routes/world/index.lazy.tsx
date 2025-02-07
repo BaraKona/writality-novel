@@ -26,6 +26,7 @@ import {
   withMultiColumn
 } from '@blocknote/xl-multi-column'
 import { useMemo } from 'react'
+import { useDebounce } from '@renderer/hooks/useDebounce'
 
 export const Route = createLazyFileRoute('/world/')({
   component: RouteComponent
@@ -34,32 +35,34 @@ export const Route = createLazyFileRoute('/world/')({
 function RouteComponent() {
   const { data: currentDir } = useCurrentDir()
 
-  const { data: project } = useProject(currentDir?.currentProjectId)
+  const { data: project } = useProject(currentDir.currentProjectId)
   const { mutate: updateProject } = useUpdateProject()
-  const editor = useCreateBlockNote({
-    schema: withMultiColumn(BlockNoteSchema.create()),
-    // The default drop cursor only shows up above and below blocks - we replace
-    // it with the multi-column one that also shows up on the sides of blocks.
-    dropCursor: multiColumnDropCursor,
-    // Merges the default dictionary with the multi-column dictionary.
-    dictionary: {
-      ...locales.en,
-      multi_column: multiColumnLocales.en
-    }
-  })
 
-  // Gets the default slash menu items merged with the multi-column ones.
-  const getSlashMenuItems = useMemo(() => {
-    return async (query: string) =>
-      filterSuggestionItems(
-        combineByGroup(getDefaultReactSlashMenuItems(editor), getMultiColumnSlashMenuItems(editor)),
-        query
-      )
-  }, [editor])
+  const editor = useCreateBlockNote(
+    {
+      // Adds column and column list blocks to the schema.
+      schema: withMultiColumn(BlockNoteSchema.create()),
+      // The default drop cursor only shows up above and below blocks - we replace
+      // it with the multi-column one that also shows up on the sides of blocks.
+      dropCursor: multiColumnDropCursor,
+      // Merges the default dictionary with the multi-column dictionary.
+      dictionary: {
+        ...locales.en,
+        multi_column: multiColumnLocales.en
+      },
+      initialContent: project?.description
+    },
+    [project]
+  )
+
+  const debouncedSaveFile = useDebounce(
+    () => updateProject({ ...project, description: editor.document }),
+    1000
+  )
 
   return (
     <div className="w-full">
-      <div className="relative h-[35vh] bg-contain bg-default w-full bg-fixed"></div>
+      <div className="relative h-[35vh] bg-cover bg-center bg-default w-full bg-no-repeat"></div>
       <div className="max-w-5xl mx-auto px-8 relative h-full">
         <Popover>
           <PopoverTrigger className="absolute -top-18 text-[6em] z-10">
@@ -101,9 +104,12 @@ function RouteComponent() {
               {getTimeFromNow(project?.updated_at || '')}
             </div>
           </div>
-          <BlockNoteView editor={editor} theme="light" className="mt-4 -mx-12">
-            <SuggestionMenuController triggerCharacter={'/'} getItems={getSlashMenuItems} />
-          </BlockNoteView>
+          <BlockNoteView
+            editor={editor}
+            className="mt-4 -mx-12 h-full"
+            data-color-scheme="theme-light"
+            onChange={debouncedSaveFile}
+          />
         </section>
       </div>
     </div>

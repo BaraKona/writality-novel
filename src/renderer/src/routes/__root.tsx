@@ -54,15 +54,17 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
       <ResizablePanelGroup direction="horizontal" className={`w-full flex grow`}>
         <ResizablePanel
           defaultSize={15}
-          className={`min-w-[300px] bg-sidebar relative max-w-[400px] flex flex-col grow group ${sidebarState ? 'show' : 'hide'}`}
+          className={`min-w-[280px] bg-sidebar relative max-w-[400px] flex flex-col grow group ${sidebarState ? 'show' : 'hide'}`}
         >
           <PrimarySidebar projectDir={data} />
         </ResizablePanel>
         <ResizableHandle onClick={() => setSidebarState((prev) => !prev)} />
         <ResizablePanel defaultSize={85}>
-          <Header />
           <section className="flex flex-col grow w-full h-full relative overflow-y-auto">
-            {children}
+            <div>
+              <Header />
+            </div>
+            <div className="flex flex-col grow overflow-y-auto">{children}</div>
           </section>
         </ResizablePanel>
       </ResizablePanelGroup>

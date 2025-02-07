@@ -20,7 +20,7 @@ const oneMonthAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000)
 const oneYearAgo = new Date(today.getTime() - 365 * 24 * 60 * 60 * 1000)
 
 function RouteComponent() {
-  const { data: projects } = useAllProjects()
+  const { data: projects, isLoading } = useAllProjects()
   const { mutate: createProject } = useCreateProject()
   const { mutate: switchProject } = useSetProjectDir()
 
@@ -29,7 +29,7 @@ function RouteComponent() {
   const updatedThisMonth: Project[] = []
   const updatedAllTime: Project[] = []
 
-  projects?.forEach((project) => {
+  projects?.map((project) => {
     const updatedAt = new Date(project?.updated_at || 0)
     if (updatedAt >= oneDayAgo) {
       updatedToday.push(project)
@@ -48,6 +48,10 @@ function RouteComponent() {
     { name: 'Updated This Month', projects: updatedThisMonth },
     { name: 'Updated All Time', projects: updatedAllTime }
   ]
+
+  if (isLoading) {
+    return <div>Loading...</div>
+  }
 
   return (
     <section className="flex flex-col h-full">
