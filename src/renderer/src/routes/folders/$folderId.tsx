@@ -9,6 +9,7 @@ import { getTimeFromNow } from '@renderer/lib/utils'
 import { defaultDateTimeFormat } from '@shared/functions'
 import { custom_emojis } from '@renderer/lib/custom_emoji'
 import { useUpdateFolder } from '@renderer/hooks/folder/useUpdateFolder'
+import { ChapterListItem } from '@renderer/components/sidebar/ChapterListItem'
 
 export const Route = createFileRoute('/folders/$folderId')({
   component: RouteComponent
@@ -23,7 +24,7 @@ function RouteComponent() {
   return (
     <div className="w-full">
       <div className="relative h-[35vh] bg-cover bg-center bg-3 w-full bg-no-repeat"></div>
-      <div className="max-w-5xl mx-auto px-8 relative h-full">
+      <div className="max-w-5xl mx-auto px-16 relative h-full">
         <Popover>
           <PopoverTrigger className="absolute -top-18 text-[6em] z-10">
             {folder?.emoji?.src ? (
@@ -70,6 +71,8 @@ function RouteComponent() {
             data-color-scheme="theme-light"
             onChange={debouncedSaveFile}
           /> */}
+
+          <ChapterListItem chapters={folder?.chapters} />
         </section>
       </div>
     </div>

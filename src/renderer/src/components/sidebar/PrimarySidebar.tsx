@@ -29,11 +29,11 @@ export function PrimarySidebar({
   const { data: currentProject } = useProject(projectDir?.currentProjectId)
 
   const data = {
-    user: {
-      name: projectDir?.name,
-      position: 'Writer',
-      avatar: '/avatars/shadcn.jpg'
-    },
+    // user: {
+    //   name: projectDir?.name,
+    //   position: 'Writer',
+    //   avatar: '/avatars/shadcn.jpg'
+    // },
     openProject: {
       name: currentProject?.name || 'Untitled'
     },
@@ -170,14 +170,16 @@ export function PrimarySidebar({
     >
       <section className="w-full p-2 border-b border-gray-200">
         <ProjectImage image={defaultBannerImage} />
-        <ProjectSwitcher teams={data.projects} openProject={data.openProject} />
+        <ProjectSwitcher currentProject={currentProject} />
       </section>
       <section className="flex-grow overflow-y-auto">
         <NavMain items={data.navMain} />
         <SidebarFiles project={currentProject} />
       </section>
       <section className="mt-auto">
-        <NavUser user={data.user} />
+        <NavUser
+          user={{ name: projectDir?.name, position: 'Writer', avatar: '/avatars/shadcn.jpg' }}
+        />
       </section>
     </aside>
   )

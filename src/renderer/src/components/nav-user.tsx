@@ -1,19 +1,8 @@
-"use client"
+'use client'
 
-import {
-  BadgeCheck,
-  Bell,
-  ChevronsUpDown,
-  CreditCard,
-  LogOut,
-  Sparkles,
-} from "lucide-react"
+import { BadgeCheck, Bell, ChevronsUpDown, CreditCard, LogOut, Sparkles } from 'lucide-react'
 
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@renderer/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from '@renderer/components/ui/avatar'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,16 +10,12 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@renderer/components/ui/dropdown-menu"
-import {
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-} from "@renderer/components/ui/sidebar"
+  DropdownMenuTrigger
+} from '@renderer/components/ui/dropdown-menu'
+import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@renderer/components/ui/sidebar'
 
 export function NavUser({
-  user,
+  user
 }: {
   user: {
     position: string
@@ -49,7 +34,9 @@ export function NavUser({
             >
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback className="rounded-lg uppercase">{`${user.name?.charAt(0) + user.name?.charAt(1)}`} </AvatarFallback> 
+                <AvatarFallback className="rounded-lg uppercase">
+                  {`${user.name?.charAt(0) + user.name?.charAt(1)}`}{' '}
+                </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">{user.name}</span>
@@ -60,7 +47,7 @@ export function NavUser({
           </DropdownMenuTrigger>
           <DropdownMenuContent
             className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
-            side='right'
+            side="right"
             align="end"
             sideOffset={4}
           >

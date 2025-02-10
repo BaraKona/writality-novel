@@ -63,7 +63,7 @@ function RouteComponent() {
   return (
     <div className="w-full">
       <div className="relative h-[35vh] bg-cover bg-center bg-default w-full bg-no-repeat"></div>
-      <div className="max-w-5xl mx-auto px-8 relative h-full">
+      <div className="max-w-5xl mx-auto px-16 relative h-full">
         <Popover>
           <PopoverTrigger className="absolute -top-18 text-[6em] z-10">
             {project?.emoji?.src ? (

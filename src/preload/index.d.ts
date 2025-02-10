@@ -1,5 +1,5 @@
 import { ElectronAPI } from '@electron-toolkit/preload'
-import { Folder, Project, ProjectDirectory } from '@shared/models'
+import { Chapter, Folder, Project, ProjectDirectory } from '@shared/models'
 export interface Operations {
   completeSetup(projectPath: string, name: string, username: string): Promise<void>
 
@@ -14,10 +14,17 @@ export interface Operations {
 
   // Folders
   getProjectFolders(projectId: number): Promise<Folder[]>
-  createFolder(project_id: number, parent_folder_id: number): Promise<Folder>
+  createFolder(project_id: number, parent_folder_id: number | null): Promise<Folder>
   updateFolder(folder: any): Promise<Folder>
   deleteFolder(id: number): Promise<Number>
   getFolderById(id: number): Promise<Folder>
+  getFolderTree(folderId: number): Promise<Folder>
+
+  // Chapters
+  getChaptersByFolderId(folderId: number): Promise<Chapter[]>
+  createChapter(parent_type: string, parent_id: number): Promise<Chapter>
+  updateChapter(chapter: Chapter): Promise<Chapter>
+  getChapterById(id: number): Promise<Chapter>
 
   openSetupDialog: () => Promise<Electron.OpenDialogReturnValue>
 }

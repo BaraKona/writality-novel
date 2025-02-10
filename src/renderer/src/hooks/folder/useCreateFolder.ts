@@ -5,7 +5,7 @@ export const useCreateFolder = (projectId: number) => {
 
   return useMutation({
     mutationKey: ['createProject'],
-    mutationFn: () => window.api.createFolder(projectId),
+    mutationFn: (parent_id: number | null) => window.api.createFolder(projectId, parent_id),
     onSuccess: () =>
       queryClient.invalidateQueries({
         queryKey: ['projectFolders', projectId]

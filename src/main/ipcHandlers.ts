@@ -3,6 +3,7 @@ import { useProject } from './api/project'
 
 import { completeSetup, getCurrentProjectId, setCurrentProjectId } from './api'
 import { useFolder } from './db/folder'
+import { useChapter } from './db/chapters'
 
 export function registerIpcHandlers(ipcMain: Electron.IpcMain) {
   // setup
@@ -31,6 +32,19 @@ export function registerIpcHandlers(ipcMain: Electron.IpcMain) {
   ipcMain.handle('updateFolder', async (_, folder: any) => useFolder().updateFolder(folder))
   ipcMain.handle('deleteFolder', async (_, id: number) => useFolder().deleteFolder(id))
   ipcMain.handle('getFolderById', async (_, id: number) => useFolder().getFolderById(id))
+  ipcMain.handle('getFolderTree', async (_, folderId: number) =>
+    useFolder().getFolderTree(folderId)
+  )
+
+  // chapter
+  ipcMain.handle('getChaptersByFolderId', async (_, folderId: number) =>
+    useChapter().getChaptersByFolderId(folderId)
+  )
+  ipcMain.handle('createChapter', async (_, parent_type: string, parent_id: number) =>
+    useChapter().createChapter(parent_type, parent_id)
+  )
+  ipcMain.handle('updateChapter', async (_, chapter: any) => useChapter().updateChapter(chapter))
+  ipcMain.handle('getChapterById', async (_, id: number) => useChapter().getChapterById(id))
 
   // dialogs
   ipcMain.handle('open_setup_dialog', () =>

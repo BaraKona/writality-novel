@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { Tab } from '@shared/models'
 import { useLocation, useNavigate } from '@tanstack/react-router'
-import { useLocalTabStorage } from './useLocalstorage'
+import { useLocalTabStorage } from './useLocalTabstorage'
 
 export const useTabs = (): {
   createTab: () => void

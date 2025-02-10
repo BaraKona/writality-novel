@@ -1,5 +1,6 @@
 import { Chapter, Folder } from '@shared/models'
 import { database, deserialize, serialize } from '.'
+import { useChapter } from './chapters'
 
 // Folders
 const CREATE_FOLDERS_TABLE = `
@@ -46,6 +47,7 @@ const UPDATE_FOLDER = `
 const DELETE_FOLDER = 'DELETE FROM folders WHERE id = ?'
 
 database.exec(CREATE_FOLDERS_TABLE)
+
 export const useFolder = () => {
   function createFolder(projectId: number, parentFolderId: number | null): { id: number } {
     try {
@@ -54,8 +56,8 @@ export const useFolder = () => {
         projectId,
         parentFolderId || null, // Handle NULL for top-level folders
         'New Folder',
-        serialize({ blocks: [] }),
-        serialize({ emoji: '📁' }),
+        serialize([]),
+        null,
         getFoldersByProjectId(projectId).length
       )
       return { id: result.lastInsertRowid as number }
@@ -73,7 +75,8 @@ export const useFolder = () => {
         ...folder,
         description: deserialize(folder.description),
         emoji: deserialize(folder.emoji),
-        children: getFoldersByParentFolderId(folder.id!) // Recursively fetch children
+        children: getFoldersByParentFolderId(folder.id!), // Recursively fetch children
+        chapters: useChapter().getChaptersByFolderId(folder.id!) // Fetch chapters
       }))
     } catch (error) {
       console.error('Error fetching folders:', error)
@@ -85,12 +88,22 @@ export const useFolder = () => {
     try {
       const stmt = database.prepare(SELECT_FOLDERS_BY_PARENT_FOLDER_ID)
       const folders = stmt.all(parentFolderId) as Folder[]
-      return folders.map((folder) => ({
-        ...folder,
-        description: deserialize(folder.description),
-        emoji: deserialize(folder.emoji),
-        children: getFoldersByParentFolderId(folder.id!) // Recursively fetch children
-      }))
+
+      return folders.map((folder) => {
+        // Fetch nested folders recursively
+        const nestedFolders = getFoldersByParentFolderId(folder.id!)
+
+        // Fetch chapters for the current folder
+        const chapters = useChapter().getChaptersByFolderId(folder.id!)
+
+        return {
+          ...folder,
+          description: deserialize(folder.description),
+          emoji: deserialize(folder.emoji),
+          children: nestedFolders, // Nested folders
+          chapters: chapters // Chapters in this folder
+        }
+      })
     } catch (error) {
       console.error('Error fetching nested folders:', error)
       throw error
@@ -131,14 +144,38 @@ export const useFolder = () => {
       const stmt = database.prepare(SELECT_FOLDER_BY_ID)
       const folder = stmt.get(id) as Folder | undefined
       if (!folder) return null
+
+      // Fetch nested folders recursively
+      const nestedFolders = getFoldersByParentFolderId(folder.id!)
+
+      // Fetch chapters for the current folder
+      const chapters = useChapter().getChaptersByFolderId(folder.id!)
+
       return {
         ...folder,
         description: deserialize(folder.description),
         emoji: deserialize(folder.emoji),
-        children: getFoldersByParentFolderId(folder.id!) // Recursively fetch children
+        children: nestedFolders, // Nested folders
+        chapters: chapters // Chapters in this folder
       }
     } catch (error) {
       console.error('Error fetching folder:', error)
+      throw error
+    }
+  }
+
+  function getFolderTree(folderId: number): Folder | null {
+    try {
+      const folder = getFolderById(folderId)
+      if (!folder) return null
+
+      // Recursively fetch nested folders and chapters
+      folder.children = getFoldersByParentFolderId(folder.id!)
+      folder.chapters = useChapter().getChaptersByFolderId(folder.id!)
+
+      return folder
+    } catch (error) {
+      console.error('Error fetching folder tree:', error)
       throw error
     }
   }
@@ -149,6 +186,7 @@ export const useFolder = () => {
     updateFolder,
     deleteFolder,
     getFolderById,
-    getFoldersByParentFolderId
+    getFoldersByParentFolderId,
+    getFolderTree
   }
 }

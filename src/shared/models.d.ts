@@ -16,30 +16,33 @@ export type Tab = {
   active: boolean | false
 }
 
-export type Project = {
+export interface Project {
   id: number
   name: string
-  description: unknown
-  created_at: string
-  updated_at: string
-  emoji: Emoji
-  background_image: string
+  description: string
+  emoji: string
+  background_image?: string
+  created_at?: string
+  updated_at?: string
+  folders?: Folder[] // Optional, for nested folders
+  chapters?: Chapter[] // Optional, for chapters belonging to the project
 }
 
 export interface Chapter {
-  id?: number
-  folder_id: number
+  id: number
+  parent_type: 'project' | 'folder' // Indicates whether the chapter belongs to a project or folder
+  parent_id: number // ID of the project or folder
   name: string
   description: string
   position: number
-  created_at?: string
-  updated_at?: string
+  created_at: string
+  updated_at: string
 }
 
 export interface Folder {
   id: number
   project_id: number
-  parent_folder_id?: number | null // Optional, for nested folders
+  parent_folder_id: number | null // Optional, for nested folders
   name: string
   description: string
   emoji: Emoji
@@ -47,6 +50,7 @@ export interface Folder {
   created_at?: string
   updated_at?: string
   children?: Folder[] // Optional, for nested folders
+  chapters?: Chapter[] // Optional, for chapters
 }
 
 export interface Emoji {

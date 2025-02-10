@@ -1,38 +1,31 @@
-import { Tab } from '@shared/models'
-import { useMemo } from 'react'
-import { Store } from "@tanstack/store";
-import { useStore } from '@tanstack/react-store';
+import { useEffect, useState } from 'react'
 
-export const useLocalTabStorage = () => {
-  const key = `tabs`
-  const storedTabs = localStorage.getItem(key)
-  
-  const initialTabs: Tab[] = useMemo(() => {
-    if (storedTabs) {
-      return JSON.parse(storedTabs)
+export const useLocalStorage = <T>(key: string, initialValue: T): [T, (value: T) => void] => {
+  const [storedValue, setStoredValue] = useState<T>(() => {
+    try {
+      // Get from local storage by key
+      const item = window.localStorage.getItem(key)
+      // Parse stored JSON or return initialValue if null
+      return item ? JSON.parse(item) : initialValue
+    } catch (error) {
+      // If error (e.g., invalid JSON), return initialValue
+      console.error(error)
+      return initialValue
     }
-    return [
-      {
-        id: 1,
-        name: 'Library',
-        url: '/',
-        active: true,
-        position: 0
-      }
-    ]
-  }, [storedTabs, key])
-
-  const tabStore = new Store({
-    tabs: initialTabs
   })
-  
-  const tabs = useStore(tabStore, (state) => state.tabs);
-  const updateTabs = (newTabs: Tab[]) => {
-    tabStore.setState(() => {
-      return { tabs: newTabs }
-    })
-    localStorage.setItem(key, JSON.stringify(newTabs))
+
+  const setValue = (value: T) => {
+    try {
+      // Save state
+      setStoredValue(value)
+      // Save to local storage
+      window.localStorage.setItem(key, JSON.stringify(value))
+    } catch (error) {
+      console.error(error)
+    }
   }
 
-  return [tabs, updateTabs] as const
+  return [storedValue, setValue]
 }
+
+export default useLocalStorage

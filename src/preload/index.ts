@@ -25,6 +25,15 @@ const api: Operations = {
   updateFolder: async (folder: any) => await ipcRenderer.invoke('updateFolder', folder),
   deleteFolder: async (id: number) => await ipcRenderer.invoke('deleteFolder', id),
   getFolderById: async (id: number) => await ipcRenderer.invoke('getFolderById', id),
+  getFolderTree: async (folderId: number) => await ipcRenderer.invoke('getFolderTree', folderId),
+
+  // Chapters
+  getChaptersByFolderId: async (folderId: number) =>
+    await ipcRenderer.invoke('getChaptersByFolderId', folderId),
+  createChapter: async (parent_type: string, parent_id: number) =>
+    await ipcRenderer.invoke('createChapter', parent_type, parent_id),
+  updateChapter: async (chapter: any) => await ipcRenderer.invoke('updateChapter', chapter),
+  getChapterById: async (id: number) => await ipcRenderer.invoke('getChapterById', id),
 
   openSetupDialog: () => ipcRenderer.invoke('open_setup_dialog')
 }

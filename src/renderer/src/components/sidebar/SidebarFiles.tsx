@@ -1,6 +1,15 @@
-'use client'
-
-import { Folder, Forward, MoreHorizontal, Plus, Trash2, type LucideIcon } from 'lucide-react'
+import {
+  ChevronRight,
+  FilePlus,
+  FileText,
+  Folder,
+  FolderPlus,
+  Forward,
+  MoreHorizontal,
+  Plus,
+  Trash2,
+  type LucideIcon
+} from 'lucide-react'
 
 import {
   DropdownMenu,
@@ -22,22 +31,31 @@ import { useCreateFolder } from '@renderer/hooks/folder/useCreateFolder'
 import { useProjectFolders } from '@renderer/hooks/folder/useProjectFolders'
 import { Link } from '@tanstack/react-router'
 import { EmojiDisplay } from '../EmojiDisplay'
+import { Button } from '../ui/button'
+import { useCreateChapter } from '@renderer/hooks/chapter/useCreateChapter'
+import { FolderListItem } from './FolderListItem'
+import useLocalStorage from '@renderer/hooks/useLocalstorage'
 
 export function SidebarFiles({ project }: { project: Project }) {
   const { data: projectFolders } = useProjectFolders(project?.id)
   const { mutate: createProjectFolder } = useCreateFolder(project?.id)
+  const { mutate: createChapter } = useCreateChapter(project?.id)
+
+  const [openFolders, setOpenFolders] = useLocalStorage<{ [key: string]: boolean }>(
+    'openFolders',
+    {}
+  )
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-      <SidebarGroupLabel>
+      <SidebarGroupLabel className="flex justify-between items-center">
         Files
         <DropdownMenu>
           <DropdownMenuTrigger>
-            <Plus />
-            <span className="sr-only">More</span>
+            <Plus size={18} />
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-48 rounded-lg" side={'right'} align="start">
-            <DropdownMenuItem onClick={() => createProjectFolder()}>
+            <DropdownMenuItem onClick={() => createProjectFolder(null)}>
               <Folder className="text-muted-foreground" />
               <span>Create Folder</span>
             </DropdownMenuItem>
@@ -55,37 +73,13 @@ export function SidebarFiles({ project }: { project: Project }) {
       </SidebarGroupLabel>
       <SidebarMenu>
         {projectFolders?.map((item) => (
-          <SidebarMenuItem key={item.name}>
-            <SidebarMenuButton asChild>
-              <Link to={`/folders/${item.id}`} activeProps={{ className: 'bg-sidebar-accent' }}>
-                <EmojiDisplay emoji={item.emoji} />
-                <span>{item.name}</span>
-              </Link>
-            </SidebarMenuButton>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <SidebarMenuAction showOnHover>
-                  <MoreHorizontal />
-                  <span className="sr-only">More</span>
-                </SidebarMenuAction>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-48 rounded-lg" side={'right'} align="start">
-                <DropdownMenuItem>
-                  <Folder className="text-muted-foreground" />
-                  <span>View Project</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Forward className="text-muted-foreground" />
-                  <span>Share Project</span>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <Trash2 className="text-muted-foreground" />
-                  <span>Delete Folder</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </SidebarMenuItem>
+          <FolderListItem
+            key={item.id}
+            folder={item}
+            level={0}
+            openFolders={openFolders}
+            setOpenFolders={setOpenFolders}
+          />
         ))}
         <SidebarMenuItem>
           <SidebarMenuButton className="text-sidebar-foreground/70">
@@ -97,27 +91,3 @@ export function SidebarFiles({ project }: { project: Project }) {
     </SidebarGroup>
   )
 }
-
-// ;<DropdownMenu>
-//   <DropdownMenuTrigger asChild>
-//     <SidebarMenuAction showOnHover>
-//       <Plus />
-//       <span className="sr-only">More</span>
-//     </SidebarMenuAction>
-//   </DropdownMenuTrigger>
-//   <DropdownMenuContent className="w-48 rounded-lg" side={'right'} align="start">
-//     <DropdownMenuItem>
-//       <Folder className="text-muted-foreground" />
-//       <span>View Project</span>
-//     </DropdownMenuItem>
-//     <DropdownMenuItem>
-//       <Forward className="text-muted-foreground" />
-//       <span>Share Project</span>
-//     </DropdownMenuItem>
-//     <DropdownMenuSeparator />
-//     <DropdownMenuItem>
-//       <Trash2 className="text-muted-foreground" />
-//       <span>Delete Project</span>
-//     </DropdownMenuItem>
-//   </DropdownMenuContent>
-// </DropdownMenu>
