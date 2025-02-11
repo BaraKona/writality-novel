@@ -1,9 +1,9 @@
 import { dialog } from 'electron'
-import { useProject } from './api/project'
 
 import { completeSetup, getCurrentProjectId, setCurrentProjectId } from './api'
 import { useFolder } from './db/folder'
 import { useChapter } from './db/chapters'
+import { useProject } from './db/project'
 
 export function registerIpcHandlers(ipcMain: Electron.IpcMain) {
   // setup
@@ -16,11 +16,14 @@ export function registerIpcHandlers(ipcMain: Electron.IpcMain) {
   ipcMain.handle('setCurrentProjectId', async (_, id: number) => setCurrentProjectId(id))
 
   // projects
-  ipcMain.handle('createProject', async () => useProject().create())
-  ipcMain.handle('getAllProjects', async () => useProject().getAll())
-  ipcMain.handle('deleteProject', async (_, id: number) => useProject().singleDelete(id))
-  ipcMain.handle('getProject', async (_, id: number) => useProject().get(id))
-  ipcMain.handle('updateProject', async (_, project: any) => useProject().update(project))
+  ipcMain.handle('createProject', async () => useProject().createProject())
+  ipcMain.handle('getAllProjects', async () => useProject().getAllProjects())
+  ipcMain.handle('deleteProject', async (_, id: number) => useProject().deleteProject(id))
+  ipcMain.handle('getProject', async (_, id: number) => useProject().getProject(id))
+  ipcMain.handle('updateProject', async (_, project: any) => useProject().updateProject(project))
+  ipcMain.handle('getProjectFiles', async (_, project_id: number) =>
+    useProject().getProjectFiles(project_id)
+  )
 
   // folders
   ipcMain.handle('getProjectFolders', async (_, projectId: number) =>

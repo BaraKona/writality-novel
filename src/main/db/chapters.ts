@@ -50,7 +50,7 @@ export const useChapter = () => {
   function createChapter(parent_type: string, parent_id: number): { id: number } {
     try {
       const stmt = database.prepare(INSERT_CHAPTER)
-      const result = stmt.run(parent_type, parent_id, 'New Chapter', serialize([]), 0)
+      const result = stmt.run(parent_type, parent_id, 'New Chapter', null, 0)
       return { id: result.lastInsertRowid as number }
     } catch (error) {
       console.error('Error creating chapter:', error)

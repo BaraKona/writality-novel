@@ -1,8 +1,11 @@
 import Database, { Database as DatabaseType } from 'better-sqlite3'
 import { join } from 'path'
-import { getRootDir } from '../api'
+import { appDirectoryName } from '@shared/constants'
+import { homedir } from 'os'
 
-export const database: DatabaseType = new Database(join(getRootDir(), 'appdata.db'))
+export const database: DatabaseType = new Database(
+  join(`${homedir()}/${appDirectoryName}`, 'appdata.db')
+)
 
 // Utility function to handle JSON serialization/deserialization
 export function serialize(data: any): string {

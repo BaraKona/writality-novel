@@ -4,7 +4,7 @@ import { ensureDir, readJson, writeJson } from 'fs-extra'
 import { ipcMain } from 'electron'
 import { appDirectoryName } from '@shared/constants'
 import { homedir } from 'os'
-import { createProject } from '../db/project'
+import { useProject } from '../db/project'
 import { ProjectDirectory } from '@shared/models'
 
 // get the root directory. This is where the setup.json file will be stored
@@ -35,25 +35,31 @@ export function checkSetup(): boolean {
  * It writes to the setup.json file that the setup is complete.
  * And it writes the path and project name in the setup.json file.
  **/
-export async function completeSetup(projectPath: string, name: string, username: string): Promise<void> {
-  const setupPath = path.join(getRootDir(), 'setup.json');
+export async function completeSetup(
+  projectPath: string,
+  name: string,
+  username: string
+): Promise<void> {
+  const setupPath = path.join(getRootDir(), 'setup.json')
 
-  const first_project = createProject(name); // Get the project ID
+  const first_project = useProject().createProject(name) // Get the project ID
 
-  console.log({ first_project });
+  console.log({ first_project })
 
   writeJson(setupPath, {
     setupComplete: true,
     currentProjectId: first_project.id, // Use the ID here
     projectPath: `${projectPath}/${appDirectoryName}`,
     theme: 'beta-test',
-    name: username,
-  }).then(() => {
-      ipcMain.emit('setup-complete');
-      ensureDir(path.join(projectPath, appDirectoryName, name));
-  }).catch((err) => {
-      console.error(err);
-    });
+    name: username
+  })
+    .then(() => {
+      ipcMain.emit('setup-complete')
+      ensureDir(path.join(projectPath, appDirectoryName, name))
+    })
+    .catch((err) => {
+      console.error(err)
+    })
 }
 
 /**

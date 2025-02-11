@@ -1,16 +1,4 @@
-import {
-  ChevronRight,
-  FilePlus,
-  FileText,
-  Folder,
-  FolderPlus,
-  Forward,
-  MoreHorizontal,
-  Plus,
-  Trash2,
-  type LucideIcon
-} from 'lucide-react'
-
+import { FilePlus2, FolderPlus, Forward, MoreHorizontal, Plus, Trash2 } from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,22 +10,19 @@ import {
   SidebarGroup,
   SidebarGroupLabel,
   SidebarMenu,
-  SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem
 } from '@renderer/components/ui/sidebar'
 import { Project } from '@shared/models'
 import { useCreateFolder } from '@renderer/hooks/folder/useCreateFolder'
-import { useProjectFolders } from '@renderer/hooks/folder/useProjectFolders'
-import { Link } from '@tanstack/react-router'
-import { EmojiDisplay } from '../EmojiDisplay'
-import { Button } from '../ui/button'
 import { useCreateChapter } from '@renderer/hooks/chapter/useCreateChapter'
 import { FolderListItem } from './FolderListItem'
-import useLocalStorage from '@renderer/hooks/useLocalstorage'
+import { useLocalStorage } from '@renderer/hooks/useLocalStorage'
+import { useProjectFiles } from '@renderer/hooks/project/useProjectFiles'
+import { FileListItem } from './FileListItem'
 
 export function SidebarFiles({ project }: { project: Project }) {
-  const { data: projectFolders } = useProjectFolders(project?.id)
+  const { data: projectFiles } = useProjectFiles(project?.id)
   const { mutate: createProjectFolder } = useCreateFolder(project?.id)
   const { mutate: createChapter } = useCreateChapter(project?.id)
 
@@ -55,8 +40,12 @@ export function SidebarFiles({ project }: { project: Project }) {
             <Plus size={18} />
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-48 rounded-lg" side={'right'} align="start">
+            <DropdownMenuItem onClick={() => createChapter('project')}>
+              <FilePlus2 className="text-muted-foreground" />
+              <span>Create Folder</span>
+            </DropdownMenuItem>
             <DropdownMenuItem onClick={() => createProjectFolder(null)}>
-              <Folder className="text-muted-foreground" />
+              <FolderPlus className="text-muted-foreground" />
               <span>Create Folder</span>
             </DropdownMenuItem>
             <DropdownMenuItem>
@@ -72,7 +61,7 @@ export function SidebarFiles({ project }: { project: Project }) {
         </DropdownMenu>
       </SidebarGroupLabel>
       <SidebarMenu>
-        {projectFolders?.map((item) => (
+        {projectFiles?.folders?.map((item) => (
           <FolderListItem
             key={item.id}
             folder={item}
@@ -80,6 +69,9 @@ export function SidebarFiles({ project }: { project: Project }) {
             openFolders={openFolders}
             setOpenFolders={setOpenFolders}
           />
+        ))}
+        {projectFiles?.chapters?.map((chapter) => (
+          <FileListItem key={chapter.id} chapter={chapter} level={0} />
         ))}
         <SidebarMenuItem>
           <SidebarMenuButton className="text-sidebar-foreground/70">

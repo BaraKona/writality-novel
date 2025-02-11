@@ -8,14 +8,18 @@ const api: Operations = {
   getCurrentProjectId: async () => await ipcRenderer.invoke('getCurrentProjectId'),
   setCurrentProjectId: async (id: number) => await ipcRenderer.invoke('setCurrentProjectId', id),
 
+  // Setup
   completeSetup: async (projectPath: string, name: string, username: string) =>
     await ipcRenderer.invoke('completeSetup', projectPath, name, username),
 
+  // Projects
   createProject: async () => await ipcRenderer.invoke('createProject'),
   getProject: async (id: number) => await ipcRenderer.invoke('getProject', id),
   getAllProjects: async () => await ipcRenderer.invoke('getAllProjects'),
   deleteProject: async () => await ipcRenderer.invoke('deleteProject'),
   updateProject: async (project: Project) => await ipcRenderer.invoke('updateProject', project),
+  getProjectFiles: async (project_id: number) =>
+    await ipcRenderer.invoke('getProjectFiles', project_id),
 
   // Folders
   getProjectFolders: async (projectId: number) =>

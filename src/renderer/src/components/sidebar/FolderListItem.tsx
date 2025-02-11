@@ -1,14 +1,12 @@
 import { Folder } from '@shared/models'
 import {
-  ChevronRight,
   FilePlus,
   FolderIcon,
   FolderOpenIcon,
   FolderPlus,
   Forward,
   MoreHorizontal,
-  Trash2,
-  type LucideIcon
+  Trash2
 } from 'lucide-react'
 
 import {
@@ -30,6 +28,7 @@ import { useCreateChapter } from '@renderer/hooks/chapter/useCreateChapter'
 import { useCreateFolder } from '@renderer/hooks/folder/useCreateFolder'
 import { FileListItem } from './FileListItem'
 import { useAutoAnimate } from '@formkit/auto-animate/react'
+import { useFolderTree } from '@renderer/hooks/folder/useFolderTree'
 
 export const FolderListItem = ({
   folder,
@@ -44,6 +43,7 @@ export const FolderListItem = ({
 }) => {
   const { mutate: createChapter } = useCreateChapter(folder.id)
   const { mutate: createProjectFolder } = useCreateFolder(folder.id)
+  const { data: folderFiles } = useFolderTree(folder.id)
   const [animate] = useAutoAnimate()
   const spacing = 15
 
@@ -78,7 +78,7 @@ export const FolderListItem = ({
                 type="folder"
               />
               <Button
-                className="group-hover/menu-item:block hidden p-0.25"
+                className="group-hover/menu-item:block hidden p-0"
                 variant="ghost"
                 size="icon"
                 onClick={(e) => {
@@ -87,11 +87,7 @@ export const FolderListItem = ({
                   setOpenFolders({ ...openFolders, [folder.id]: !openFolders[folder.id] })
                 }}
               >
-                {openFolders[folder.id] ? (
-                  <FolderOpenIcon size={16} strokeWidth={1.5} />
-                ) : (
-                  <FolderIcon size={16} strokeWidth={1.5} />
-                )}
+                {openFolders[folder.id] ? <FolderOpenIcon size={16} /> : <FolderIcon size={16} />}
               </Button>
             </div>
             <span>{folder.name}</span>
@@ -105,7 +101,7 @@ export const FolderListItem = ({
             </SidebarMenuAction>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-48 rounded-lg" side={'right'} align="start">
-            <DropdownMenuItem onClick={() => createChapter('folder', folder.id)}>
+            <DropdownMenuItem onClick={() => createChapter('folder')}>
               <FilePlus className="text-muted-foreground" />
               <span>New File</span>
             </DropdownMenuItem>
@@ -127,7 +123,7 @@ export const FolderListItem = ({
       </SidebarMenuItem>
       {openFolders[folder.id] && (
         <div className="">
-          {folder.children?.map((item) => (
+          {folderFiles?.children?.map((item) => (
             <FolderListItem
               key={item.id}
               folder={item}
@@ -136,7 +132,7 @@ export const FolderListItem = ({
               setOpenFolders={setOpenFolders}
             />
           ))}
-          {folder.chapters?.map((chapter) => (
+          {folderFiles?.chapters?.map((chapter) => (
             <FileListItem key={chapter.id} chapter={chapter} level={level + 1} />
           ))}
         </div>

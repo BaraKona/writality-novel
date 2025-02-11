@@ -1,15 +1,5 @@
-import { Chapter, Folder } from '@shared/models'
-import {
-  ChevronRight,
-  FilePlus,
-  FileText,
-  FolderPlus,
-  Forward,
-  MoreHorizontal,
-  Trash2,
-  type LucideIcon
-} from 'lucide-react'
-
+import { Chapter } from '@shared/models'
+import { FileText, Forward, MoreHorizontal, Trash2 } from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,7 +13,6 @@ import {
   SidebarMenuItem
 } from '@renderer/components/ui/sidebar'
 import { Link } from '@tanstack/react-router'
-import { Button } from '../ui/button'
 
 export const FileListItem = ({
   chapter,
@@ -40,11 +29,11 @@ export const FileListItem = ({
         <Link
           to={`/chapters/${chapter.id}`}
           activeProps={{ className: 'bg-sidebar-accent' }}
-          className="group"
+          className={`group ${level === 0 ? 'pl-3.5' : ''}`}
         >
           <FileText
             className="shrink-0"
-            size={20}
+            size={16}
             style={{
               marginLeft: `${level * spacing + (level === 0 ? 0 : 7)}px`
             }}

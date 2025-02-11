@@ -2,7 +2,7 @@ import { getDateFromTime, getTimeFromNow } from '@renderer/lib/utils'
 import { Chapter } from '@shared/models'
 import { FileClock } from 'lucide-react'
 import { SmallEditor } from '../editor/SmallEditor'
-import { Link } from '@tanstack/react-router'
+import { Link, linkOptions } from '@tanstack/react-router'
 
 export const ChapterListItem = ({ chapters }: { chapters?: Chapter[] }) => {
   if (!chapters || chapters.length === 0) {
@@ -13,7 +13,8 @@ export const ChapterListItem = ({ chapters }: { chapters?: Chapter[] }) => {
     <div className="grid grid-cols-2 lg:grid-cols-3 w-full gap-2 mt-8">
       {chapters.map((chapter) => (
         <Link
-          to={`/chapters/${chapter.id}`}
+          to={`/chapters/$chapterId`}
+          params={{ chapterId: chapter.id.toString() }}
           key={chapter.id}
           className="rounded-md border flex flex-col col-span-1 hover:shadow cursor-default"
         >

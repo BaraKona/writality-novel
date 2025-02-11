@@ -23,21 +23,17 @@ const INSERT_FOLDER = `
   INSERT INTO folders (project_id, parent_folder_id, name, description, emoji, position, created_at, updated_at)
   VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 `
-
 const SELECT_FOLDERS_BY_PROJECT_ID = `
   SELECT * FROM folders
   WHERE project_id = ? AND parent_folder_id IS NULL
   ORDER BY position ASC
 `
-
 const SELECT_FOLDERS_BY_PARENT_FOLDER_ID = `
   SELECT * FROM folders
   WHERE parent_folder_id = ?
   ORDER BY position ASC
 `
-
 const SELECT_FOLDER_BY_ID = 'SELECT * FROM folders WHERE id = ?'
-
 const UPDATE_FOLDER = `
   UPDATE folders
   SET name = ?, description = ?, emoji = ?, position = ?, parent_folder_id = ?, updated_at = CURRENT_TIMESTAMP
@@ -164,13 +160,24 @@ export const useFolder = () => {
     }
   }
 
+  function getFolderShallowChildren(folderId: number): Folder[] {
+    try {
+      const stmt = database.prepare(SELECT_FOLDERS_BY_PARENT_FOLDER_ID)
+      const folders = stmt.all(folderId) as Folder[]
+      return folders
+    } catch (error) {
+      console.error('Error fetching folder children:', error)
+      throw error
+    }
+  }
+
   function getFolderTree(folderId: number): Folder | null {
     try {
       const folder = getFolderById(folderId)
       if (!folder) return null
 
       // Recursively fetch nested folders and chapters
-      folder.children = getFoldersByParentFolderId(folder.id!)
+      folder.children = getFolderShallowChildren(folder.id!)
       folder.chapters = useChapter().getChaptersByFolderId(folder.id!)
 
       return folder

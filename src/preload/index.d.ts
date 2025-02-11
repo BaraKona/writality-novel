@@ -11,6 +11,7 @@ export interface Operations {
   getProject(id: number): Promise<Project>
   deleteProject(id: number): Promise<Number>
   updateProject(project: Project): Promise<Project>
+  getProjectFiles(project_id: number): Promise<string[]>
 
   // Folders
   getProjectFolders(projectId: number): Promise<Folder[]>
