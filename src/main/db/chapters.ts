@@ -3,8 +3,8 @@ import { database, deserialize, serialize } from '.'
 
 // Chapters
 const INSERT_CHAPTER = `
-  INSERT INTO chapters (parent_type, parent_id, name, description, position, created_at, updated_at)
-  VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+  INSERT INTO chapters (parent_type, parent_id, name, position, created_at, updated_at)
+  VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 `
 
 const SELECT_CHAPTERS_BY_PROJECT_ID = `
@@ -38,19 +38,45 @@ const CREATE_CHAPTERS_TABLE = `
     description TEXT,
     position INTEGER NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (parent_id) REFERENCES projects(id) ON DELETE CASCADE,
-    FOREIGN KEY (parent_id) REFERENCES folders(id) ON DELETE CASCADE
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
   )
 `
 
 database.exec(CREATE_CHAPTERS_TABLE)
 
 export const useChapter = () => {
+  // function createChapter(parent_type: string, parent_id: number): { id: number } {
+  //   try {
+  //     const stmt = database.prepare(INSERT_CHAPTER)
+  //     const result = stmt.run(parent_type, parent_id, 'New Chapter', 0)
+  //     return { id: result.lastInsertRowid as number }
+  //   } catch (error) {
+  //     console.error('Error creating chapter:', error)
+  //     throw error
+  //   }
+  // }
+
   function createChapter(parent_type: string, parent_id: number): { id: number } {
     try {
+      // Validate that the parent_id exists in the corresponding table
+      if (parent_type === 'project') {
+        const projectStmt = database.prepare('SELECT id FROM projects WHERE id = ?')
+        const project = projectStmt.get(parent_id)
+        if (!project) {
+          throw new Error(`Project with ID ${parent_id} does not exist`)
+        }
+      } else if (parent_type === 'folder') {
+        const folderStmt = database.prepare('SELECT id FROM folders WHERE id = ?')
+        const folder = folderStmt.get(parent_id)
+        if (!folder) {
+          throw new Error(`Folder with ID ${parent_id} does not exist`)
+        }
+      } else {
+        throw new Error(`Invalid parent_type: ${parent_type}`)
+      }
+
       const stmt = database.prepare(INSERT_CHAPTER)
-      const result = stmt.run(parent_type, parent_id, 'New Chapter', null, 0)
+      const result = stmt.run(parent_type, parent_id, 'New Chapter', 0)
       return { id: result.lastInsertRowid as number }
     } catch (error) {
       console.error('Error creating chapter:', error)
@@ -107,21 +133,6 @@ export const useChapter = () => {
       throw error
     }
   }
-
-  // function getChapterById(id: number): Chapter | null {
-  //   try {
-  //     const stmt = database.prepare(SELECT_CHAPTER_BY_ID)
-  //     const chapter = stmt.get(id) as Chapter | undefined
-  //     if (!chapter) return null
-  //     return {
-  //       ...chapter,
-  //       description: deserialize(chapter.description)
-  //     }
-  //   } catch (error) {
-  //     console.error('Error fetching chapter:', error)
-  //     throw error
-  //   }
-  // }
 
   function getChapterById(
     id: number

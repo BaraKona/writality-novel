@@ -8,14 +8,14 @@ import {
   ChevronsRightIcon,
   FileTextIcon,
   FolderOpenIcon,
-  MenuIcon,
-  PencilLineIcon
+  MenuIcon
 } from 'lucide-react'
 import { FC } from 'react'
 import { Separator } from '../ui/separator'
 import { Statistic } from '../Statistic'
 import { Button } from '../ui/button'
 import { Chapter } from '@shared/models'
+import { Link } from '@tanstack/react-router'
 
 export const Infobar: FC<{
   chapter: Chapter
@@ -26,29 +26,32 @@ export const Infobar: FC<{
   console.log()
   return (
     <div className="h-[2.25rem] flex justify-between gap-2 flex-shrink-0 items-center px-2 overflow-x-auto w-full">
-      <Breadcrumb className="w-fit shrink-0 flex items-start gap-2">
-        {chapter.ancestors?.map((ancestor, index) => (
+      <Breadcrumb className="w-fit shrink-0 flex items-center gap-1">
+        {chapter.ancestors?.map((ancestor) => (
           <BreadcrumbList key={ancestor.id} className="text-xs font-medium shrink-0">
-            <BreadcrumbItem className="shrink-0 flex gap-1 max-w-48">
-              {ancestor.type === 'project' ? (
-                <BookTextIcon size={16} strokeWidth={1.5} />
-              ) : (
-                <FolderOpenIcon size={16} strokeWidth={1.5} />
-              )}
-              <span>{ancestor.name}</span>
-            </BreadcrumbItem>
-            {index < chapter.ancestors?.length - 1 && (
-              <BreadcrumbSeparator>
-                <ChevronRight size={16} strokeWidth={1.5} />
-              </BreadcrumbSeparator>
-            )}
+            <Link
+              to={`/folders/$folderId`}
+              params={{ folderId: ancestor.id.toString() }}
+              disabled={ancestor.type === 'project'}
+              className={`group ${ancestor.type === 'project' ? '' : 'hover:bg-accent'} p-1 rounded-md px-1.5 text-xs font-medium shrink-0`}
+            >
+              <BreadcrumbItem className="shrink-0 flex gap-1 max-w-48">
+                {ancestor.type === 'project' ? (
+                  <BookTextIcon size={16} strokeWidth={1.5} />
+                ) : (
+                  <FolderOpenIcon size={16} strokeWidth={1.5} />
+                )}
+                <span>{ancestor.name}</span>
+              </BreadcrumbItem>
+            </Link>
+
+            <BreadcrumbSeparator>
+              <ChevronRight size={16} strokeWidth={1.5} />
+            </BreadcrumbSeparator>
           </BreadcrumbList>
         ))}
         <BreadcrumbList className="text-xs font-medium shrink-0">
-          <BreadcrumbSeparator>
-            <ChevronRight size={16} strokeWidth={1.5} />
-          </BreadcrumbSeparator>
-          <BreadcrumbItem className="shrink-0 flex gap-1 max-w-48">
+          <BreadcrumbItem className="shrink-0 flex gap-1 max-w-48 pl-1">
             <FileTextIcon size={16} strokeWidth={1.5} />
             <span>{chapter?.name}</span>
           </BreadcrumbItem>

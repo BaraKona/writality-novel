@@ -60,7 +60,8 @@ export const FolderListItem = ({
       <SidebarMenuItem key={folder.name}>
         <SidebarMenuButton asChild>
           <Link
-            to={`/folders/${folder.id}`}
+            to={'/folders/$folderId'}
+            params={{ folderId: folder.id.toString() }}
             activeProps={{ className: 'bg-sidebar-accent' }}
             className={`group flex items-center gap-2 px-2 py-1.5 ring-0 outline-none group/folder cursor-default relative
               ${level === 0 ? 'pl-3.5' : ''}`}
