@@ -108,14 +108,77 @@ export const useChapter = () => {
     }
   }
 
-  function getChapterById(id: number): Chapter | null {
+  // function getChapterById(id: number): Chapter | null {
+  //   try {
+  //     const stmt = database.prepare(SELECT_CHAPTER_BY_ID)
+  //     const chapter = stmt.get(id) as Chapter | undefined
+  //     if (!chapter) return null
+  //     return {
+  //       ...chapter,
+  //       description: deserialize(chapter.description)
+  //     }
+  //   } catch (error) {
+  //     console.error('Error fetching chapter:', error)
+  //     throw error
+  //   }
+  // }
+
+  function getChapterById(
+    id: number
+  ): (Chapter & { ancestors: { id: number; name: string; type: string }[] }) | null {
     try {
-      const stmt = database.prepare(SELECT_CHAPTER_BY_ID)
-      const chapter = stmt.get(id) as Chapter | undefined
+      // Fetch the chapter
+      const chapterStmt = database.prepare(SELECT_CHAPTER_BY_ID)
+      const chapter = chapterStmt.get(id) as Chapter | undefined
       if (!chapter) return null
+
+      // Fetch ancestors using the corrected query
+      const ancestorsStmt = database.prepare(`
+      WITH RECURSIVE ancestor_hierarchy AS (
+        SELECT
+          id,
+          name,
+          project_id,
+          parent_folder_id
+        FROM folders
+        WHERE id = ?
+
+        UNION ALL
+
+        SELECT
+          f.id,
+          f.name,
+          f.project_id,
+          f.parent_folder_id
+        FROM folders f
+        INNER JOIN ancestor_hierarchy ah ON f.id = ah.parent_folder_id
+      )
+      SELECT
+        id,
+        name,
+        'folder' AS type
+      FROM ancestor_hierarchy
+
+      UNION ALL
+
+      SELECT
+        p.id,
+        p.name,
+        'project' AS type
+      FROM projects p
+      WHERE p.id = (SELECT project_id FROM ancestor_hierarchy LIMIT 1)
+    `)
+
+      const ancestors = ancestorsStmt.all(chapter.parent_id) as {
+        id: number
+        name: string
+        type: string
+      }[]
+
       return {
         ...chapter,
-        description: deserialize(chapter.description)
+        description: deserialize(chapter.description),
+        ancestors: ancestors.reverse() // Reverse to get the correct order (project -> folder -> chapter)
       }
     } catch (error) {
       console.error('Error fetching chapter:', error)

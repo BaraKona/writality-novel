@@ -20,6 +20,7 @@ import {
 import { useUpdateChapter } from '@renderer/hooks/chapter/useUpdateChapter'
 import { Clock3, FileClock } from 'lucide-react'
 import { defaultDateTimeFormat, getTimeFromNow } from '@renderer/lib/utils'
+import { Infobar } from '@renderer/components/chapter/InfoBar'
 
 export const Route = createFileRoute('/chapters/$chapterId')({
   component: RouteComponent
@@ -53,20 +54,26 @@ function RouteComponent() {
     200
   )
 
+  if (!chapter) {
+    return null
+  }
+
   return (
-    <div className="max-w-5xl mx-auto px-16 relative h-full w-full" key={chapterId}>
-      <section className="w-full pt-14 px-2">
-        <h1
-          className="text-4xl min-h-fit mt-4 font-semibold text-editorText ring-0 outline-none"
-          contentEditable={true}
-          onBlur={(e) =>
-            chapter && updateChapter({ ...chapter, name: e.currentTarget.innerText.trim() })
-          }
-          dangerouslySetInnerHTML={{
-            __html: chapter?.name || ''
-          }}
-        />
-        {/* <div className="flex gap-3">
+    <section className="">
+      <Infobar chapter={chapter} word={1000} setSidebarState={() => {}} sidebarState="" />
+      <div className="max-w-5xl mx-auto px-16 relative h-full w-full flex flex-col" key={chapterId}>
+        <div className="w-full pt-14 px-2">
+          <h1
+            className="text-4xl min-h-fit mt-4 font-semibold text-editorText ring-0 outline-none"
+            contentEditable={true}
+            onBlur={(e) =>
+              chapter && updateChapter({ ...chapter, name: e.currentTarget.innerText.trim() })
+            }
+            dangerouslySetInnerHTML={{
+              __html: chapter?.name || ''
+            }}
+          />
+          {/* <div className="flex gap-3">
           <div className="flex gap-1 mt-1 items-center text-xs text-secondaryText">
             <FileClock size={16} className="text-text" />
             {defaultDateTimeFormat(chapter?.created_at || '')}
@@ -76,13 +83,14 @@ function RouteComponent() {
             {getTimeFromNow(chapter?.updated_at || '')}
           </div>
         </div> */}
-        <BlockNoteView
-          editor={editor}
-          className="mt-4 -mx-12 h-full"
-          data-color-scheme="theme-light"
-          onChange={debouncedSaveFile}
-        />
-      </section>
-    </div>
+          <BlockNoteView
+            editor={editor}
+            className="mt-4 -mx-12 h-full"
+            data-color-scheme="theme-light"
+            onChange={debouncedSaveFile}
+          />
+        </div>
+      </div>
+    </section>
   )
 }

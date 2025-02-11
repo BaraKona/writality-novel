@@ -37,6 +37,11 @@ export interface Chapter {
   position: number
   created_at: string
   updated_at: string
+  ancestors?: {
+    id: number
+    name: string
+    type: string
+  }[]
 }
 
 export interface Folder {
