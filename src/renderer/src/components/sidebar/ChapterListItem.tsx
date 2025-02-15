@@ -19,7 +19,7 @@ export const ChapterListItem = ({ chapters }: { chapters?: Chapter[] }) => {
           className="rounded-md border flex flex-col col-span-1 hover:shadow cursor-default"
         >
           <div className="text-sm font-medium p-4">{chapter.name}</div>
-          <div className="max-h-48 overflow-hidden my-2">
+          <div className="max-h-32 overflow-hidden my-2">
             {chapter?.description ? (
               <SmallEditor content={chapter?.description || ''} />
             ) : (

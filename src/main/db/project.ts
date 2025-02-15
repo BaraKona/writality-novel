@@ -20,8 +20,8 @@ const CREATE_PROJECTS_TABLE = `
 `
 
 const INSERT_PROJECT = `
-  INSERT INTO projects (name, description, created_at, updated_at)
-  VALUES (?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+  INSERT INTO projects (name, created_at, updated_at)
+  VALUES (?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 `
 
 const SELECT_PROJECT_BY_ID = 'SELECT * FROM projects WHERE id = ?'
@@ -33,14 +33,16 @@ const UPDATE_PROJECT = `
 const DELETE_PROJECT = 'DELETE FROM projects WHERE id = ?'
 const SELECT_ALL_PROJECTS = 'SELECT * FROM projects ORDER BY created_at ASC'
 const SELECT_PROJECT_FILES = `
-  SELECT id, name, parent_id, parent_type, created_at, updated_at 
-  FROM chapters 
-  WHERE parent_id = ? AND parent_type = 'project'
+  SELECT c.*
+  FROM chapters c
+  JOIN chapter_parents cp ON c.id = cp.chapter_id
+  WHERE cp.parent_type = 'project' AND cp.parent_id = ?
 `
 const SELECT_PROJECT_FOLDERS = `
-  SELECT id, name, project_id, parent_folder_id, created_at, updated_at 
-  FROM folders 
-  WHERE project_id = ? AND parent_folder_id IS NULL
+  SELECT f.*
+  FROM folders f
+  LEFT JOIN folder_closure fc ON f.id = fc.descendant_id AND fc.depth > 0
+  WHERE f.project_id = ? AND fc.ancestor_id IS NULL
 `
 
 // Create table for projects if not exists, with timestamps
@@ -50,7 +52,7 @@ export const useProject = () => {
   function createProject(name?: string): { id: number } {
     try {
       const stmt = database.prepare(INSERT_PROJECT)
-      const result = stmt.run(name || 'New Project', serialize({ blocks: [] })) // Convert object to JSON string
+      const result = stmt.run(name || 'New Project') // Convert object to JSON string
       return { id: result.lastInsertRowid as number }
     } catch (error) {
       console.error('Error creating project:', error)
@@ -118,8 +120,6 @@ export const useProject = () => {
     }
   }
 
-  // This function should get all the chapters where the parent_id is the project_id
-  // and all the folders where the project_id is the project_id and the parent_folder_id is null
   function getProjectFiles(project_id: number): any {
     try {
       const stmt = database.prepare(SELECT_PROJECT_FILES)

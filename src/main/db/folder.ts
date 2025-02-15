@@ -7,56 +7,89 @@ const CREATE_FOLDERS_TABLE = `
   CREATE TABLE IF NOT EXISTS folders (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     project_id INTEGER NOT NULL,
-    parent_folder_id INTEGER, -- Reference to the parent folder
     name TEXT NOT NULL,
     description TEXT,
     emoji TEXT,
     position INTEGER NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE,
-    FOREIGN KEY (parent_folder_id) REFERENCES folders(id) ON DELETE CASCADE
+    FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE
+  )
+`
+
+const CREATE_FOLDER_CLOSURE_TABLE = `
+  CREATE TABLE IF NOT EXISTS folder_closure (
+    ancestor_id INTEGER NOT NULL,
+    descendant_id INTEGER NOT NULL,
+    depth INTEGER NOT NULL,
+    PRIMARY KEY (ancestor_id, descendant_id),
+    FOREIGN KEY (ancestor_id) REFERENCES folders(id) ON DELETE CASCADE,
+    FOREIGN KEY (descendant_id) REFERENCES folders(id) ON DELETE CASCADE
   )
 `
 
 const INSERT_FOLDER = `
-  INSERT INTO folders (project_id, parent_folder_id, name, description, emoji, position, created_at, updated_at)
-  VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+  INSERT INTO folders (project_id, name, position, created_at, updated_at)
+  VALUES (?, ?, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 `
+
+const INSERT_FOLDER_CLOSURE = `
+  INSERT INTO folder_closure (ancestor_id, descendant_id, depth)
+  VALUES (?, ?, ?)
+`
+
 const SELECT_FOLDERS_BY_PROJECT_ID = `
   SELECT * FROM folders
-  WHERE project_id = ? AND parent_folder_id IS NULL
+  WHERE project_id = ?
   ORDER BY position ASC
 `
+
 const SELECT_FOLDERS_BY_PARENT_FOLDER_ID = `
   SELECT * FROM folders
-  WHERE parent_folder_id = ?
+  WHERE id IN (
+    SELECT descendant_id FROM folder_closure
+    WHERE ancestor_id = ? AND depth = 1
+  )
   ORDER BY position ASC
 `
+
 const SELECT_FOLDER_BY_ID = 'SELECT * FROM folders WHERE id = ?'
+
 const UPDATE_FOLDER = `
   UPDATE folders
-  SET name = ?, description = ?, emoji = ?, position = ?, parent_folder_id = ?, updated_at = CURRENT_TIMESTAMP
+  SET name = ?, description = ?, emoji = ?, position = ?, updated_at = CURRENT_TIMESTAMP
   WHERE id = ?
 `
 
 const DELETE_FOLDER = 'DELETE FROM folders WHERE id = ?'
 
+database.exec(CREATE_FOLDER_CLOSURE_TABLE)
 database.exec(CREATE_FOLDERS_TABLE)
 
 export const useFolder = () => {
   function createFolder(projectId: number, parentFolderId: number | null): { id: number } {
     try {
+      // Insert the folder
       const stmt = database.prepare(INSERT_FOLDER)
-      const result = stmt.run(
-        projectId,
-        parentFolderId || null, // Handle NULL for top-level folders
-        'New Folder',
-        serialize([]),
-        null,
-        getFoldersByProjectId(projectId).length
-      )
-      return { id: result.lastInsertRowid as number }
+      const result = stmt.run(projectId, 'New Folder')
+      const folderId = result.lastInsertRowid as number
+
+      // Insert into folder_closure for self-reference (depth 0)
+      const closureStmt = database.prepare(INSERT_FOLDER_CLOSURE)
+      closureStmt.run(folderId, folderId, 0)
+
+      // If the folder has a parent, insert additional rows for the hierarchy
+      if (parentFolderId) {
+        const hierarchyStmt = database.prepare(`
+          INSERT INTO folder_closure (ancestor_id, descendant_id, depth)
+          SELECT ancestor_id, ?, depth + 1
+          FROM folder_closure
+          WHERE descendant_id = ?
+        `)
+        hierarchyStmt.run(folderId, parentFolderId)
+      }
+
+      return { id: folderId }
     } catch (error) {
       console.error('Error creating folder:', error)
       throw error
@@ -114,7 +147,6 @@ export const useFolder = () => {
         serialize(folder.description),
         serialize(folder.emoji),
         folder.position,
-        folder.parent_folder_id || null, // Handle NULL for top-level folders
         folder.id
       )
       return getFolderById(folder.id!) // Return the updated folder
