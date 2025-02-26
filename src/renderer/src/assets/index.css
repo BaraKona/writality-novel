@@ -1,5 +1,5 @@
 @import 'tailwindcss';
-@import url('https://fonts.googleapis.com/css2?family=Inter&family=Quicksand:wght@300..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
 @plugin 'tailwindcss-animate';
 
@@ -105,23 +105,29 @@
     border-color: var(--color-gray-200, currentColor);
   }
   :root {
+    --font-garamond: 'EB Garamond', serif;
+    --font-montserrat: 'Montserrat', sans-serif;
     --font-inter: 'Inter', sans-serif;
-    --font-quicksand: 'Quicksand', sans-serif;
+    --font-fira-sans: 'Fira Sans', sans-serif;
   }
 
   body {
     min-height: 100vh;
-    /* font-family: var(--font-quicksand); */
+    font-family: var(--font-inter);
   }
 
-  h1,
   h2,
   h3,
   h4,
   h5,
   p,
   h6 {
-    /* font-family: var(--font-quicksand); */
+    font-family: var(--font-inter);
+    font-weight: 400;
+  }
+
+  h1 {
+    font-family: var(--font-garamond);
   }
 }
 

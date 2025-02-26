@@ -12,7 +12,7 @@ export const EmojiDisplay = ({
   emoji: Emoji
   file?: boolean
   className?: string
-  type?: 'file' | 'folder'
+  type?: 'file' | 'folder' | 'project'
   folderOpen?: boolean
 }) => {
   if (type === 'folder') {
@@ -28,6 +28,19 @@ export const EmojiDisplay = ({
       </div>
     )
   }
+
+  if (type === 'project') {
+    return (
+      <div className={className}>
+        {emoji?.src ? (
+          <img src={emoji?.src} alt="emoji" className={'w-8 h-8'} />
+        ) : (
+          <span className={`${file ? 'text-3xl' : ''}`}>{emoji?.native || '📖'}</span>
+        )}
+      </div>
+    )
+  }
+
   return (
     <div className={className}>
       {emoji?.src ? (

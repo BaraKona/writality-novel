@@ -52,7 +52,7 @@ export function ProjectSwitcher({ currentProject }: { currentProject: Project })
               {/* <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-default bg-cover p-1 bg-center text-sidebar-primary-foreground"> */}
               {/* <LibraryBig className="size-4" /> */}
               <div className="bg-background/20 rounded backdrop-blur-sm">
-                <EmojiDisplay emoji={currentProject.emoji} />
+                <EmojiDisplay emoji={currentProject.emoji} type="project" />
                 {/* </div> */}
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
