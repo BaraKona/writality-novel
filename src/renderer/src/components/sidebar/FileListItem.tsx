@@ -27,9 +27,10 @@ export const FileListItem = ({
     <SidebarMenuItem key={chapter.name} className={`relative ${level > 0 ? 'mt-0.5' : ''}`}>
       <SidebarMenuButton asChild>
         <Link
-          to={`/chapters/${chapter.id}`}
+          to={`/chapters/$chapterId`}
+          params={{ chapterId: chapter.id.toString() }}
           activeProps={{ className: 'bg-sidebar-accent' }}
-          className={`group ${level === 0 ? 'pl-3.5' : ''}`}
+          className={`group font-serif font- ${level === 0 ? 'pl-3.5' : ''}`}
         >
           <FileText
             className="shrink-0"

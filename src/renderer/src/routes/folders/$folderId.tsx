@@ -72,7 +72,12 @@ function RouteComponent() {
             onChange={debouncedSaveFile}
           /> */}
 
-          <ChapterListItem chapters={folder?.chapters} />
+          <ChapterListItem
+            chapters={folder?.chapters}
+            createChapter={() => {
+              createChapter({ folderId: folder?.id })
+            }}
+          />
         </section>
       </div>
     </div>

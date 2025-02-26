@@ -168,7 +168,7 @@ export function PrimarySidebar({
       className="flex grow flex-col relative top-0 left-0 z-10 h-full bg-sidebar border-r pt-8"
       {...props}
     >
-      <section className="w-full p-2 border-b border-gray-200">
+      <section className="w-full p-2">
         <ProjectImage image={defaultBannerImage} />
         <ProjectSwitcher currentProject={currentProject} />
       </section>

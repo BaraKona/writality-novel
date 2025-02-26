@@ -33,9 +33,9 @@ export const EmojiDisplay = ({
     return (
       <div className={className}>
         {emoji?.src ? (
-          <img src={emoji?.src} alt="emoji" className={'w-8 h-8'} />
+          <img src={emoji?.src} alt="emoji" className={'w-5 h-5'} />
         ) : (
-          <span className={`${file ? 'text-3xl' : ''}`}>{emoji?.native || '📖'}</span>
+          <span className={`${file ? 'text-xl' : ''}`}>{emoji?.native || '📖'}</span>
         )}
       </div>
     )

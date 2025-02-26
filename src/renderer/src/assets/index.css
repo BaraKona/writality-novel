@@ -59,6 +59,11 @@
   --animate-accordion-down: accordion-down 0.2s ease-out;
   --animate-accordion-up: accordion-up 0.2s ease-out;
 
+  --font-garamond: 'EB Garamond', serif;
+  --font-montserrat: 'Montserrat', sans-serif;
+  --font-inter: 'Inter', sans-serif;
+  --font-fira-sans: 'Fira Sans', sans-serif;
+
   @keyframes accordion-down {
     from {
       height: 0;
@@ -104,12 +109,6 @@
   ::file-selector-button {
     border-color: var(--color-gray-200, currentColor);
   }
-  :root {
-    --font-garamond: 'EB Garamond', serif;
-    --font-montserrat: 'Montserrat', sans-serif;
-    --font-inter: 'Inter', sans-serif;
-    --font-fira-sans: 'Fira Sans', sans-serif;
-  }
 
   body {
     min-height: 100vh;
@@ -127,7 +126,7 @@
   }
 
   h1 {
-    font-family: var(--font-garamond);
+    font-family: var(--font-inter);
   }
 }
 

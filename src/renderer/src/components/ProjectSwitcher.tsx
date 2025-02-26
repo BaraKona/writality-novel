@@ -1,7 +1,4 @@
-'use client'
-
-import * as React from 'react'
-import { ChevronsUpDown, GalleryVerticalEnd, LibraryBig, PieChart, Plus } from 'lucide-react'
+import { ChevronsUpDown, GalleryVerticalEnd, PieChart, Plus } from 'lucide-react'
 
 import {
   DropdownMenu,
@@ -12,12 +9,7 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger
 } from '@renderer/components/ui/dropdown-menu'
-import {
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  useSidebar
-} from '@renderer/components/ui/sidebar'
+import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@renderer/components/ui/sidebar'
 import { useCreateProject } from '@renderer/hooks/project/useCreateProject'
 import { useNavigate } from '@tanstack/react-router'
 import { EmojiDisplay } from './EmojiDisplay'
@@ -41,25 +33,21 @@ export function ProjectSwitcher({ currentProject }: { currentProject: Project })
   const navigate = useNavigate()
 
   return (
-    <SidebarMenu>
-      <SidebarMenuItem>
+    <SidebarMenu className="px-2">
+      <SidebarMenuItem className="">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
-              size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              size="sm"
+              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground rounded-b-md rounded-t-none border"
             >
-              {/* <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-default bg-cover p-1 bg-center text-sidebar-primary-foreground"> */}
-              {/* <LibraryBig className="size-4" /> */}
               <div className="bg-background/20 rounded backdrop-blur-sm">
                 <EmojiDisplay emoji={currentProject.emoji} type="project" />
-                {/* </div> */}
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">{currentProject.name}</span>
-                <span className="truncate text-xs">Fantasy</span>
+                {/* <span className="truncate text-xs">Fantasy</span> */}
               </div>
-              <ChevronsUpDown className="ml-auto" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
