@@ -9,11 +9,14 @@ import {
   locales as multiColumnLocales,
   withMultiColumn
 } from '@blocknote/xl-multi-column'
+import { cn } from '@renderer/lib/utils'
 
-export const SmallEditor: FC<{ content: string; editable?: boolean }> = ({
-  content,
-  editable = false
-}) => {
+export const SmallEditor: FC<{
+  content: string
+  editable?: boolean
+  className?: string
+  onChange: (content: string) => void
+}> = ({ content, editable = false, className, onChange }) => {
   const editor = useCreateBlockNote(
     {
       // Adds column and column list blocks to the schema.
@@ -34,10 +37,13 @@ export const SmallEditor: FC<{ content: string; editable?: boolean }> = ({
   return (
     <BlockNoteView
       editor={editor}
-      className="-mx-10 h-full !text-xs pointer-events-none"
+      className={cn('-mx-10 h-full font-serif !text-xs', className, {
+        'pointer-events-none': !editable
+      })}
       data-color-scheme="theme-light"
       editable={editable}
       style={{ fontSize: '0.25rem' }}
+      onChange={() => onChange(editor.document)}
     />
   )
 }

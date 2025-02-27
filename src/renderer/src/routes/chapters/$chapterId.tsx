@@ -61,10 +61,10 @@ function RouteComponent() {
   return (
     <section className="">
       <Infobar chapter={chapter} word={1000} setSidebarState={() => {}} sidebarState="" />
-      <div className="max-w-5xl mx-auto px-16 relative h-full w-full flex flex-col" key={chapterId}>
-        <div className="w-full pt-14 px-2">
+      <div className="relative mx-auto flex h-full w-full max-w-5xl flex-col px-16" key={chapterId}>
+        <div className="w-full px-2 pt-14">
           <h1
-            className="text-4xl min-h-fit mt-4 font-semibold text-editorText ring-0 outline-none"
+            className="text-editorText mt-4 min-h-fit font-serif-thick text-4xl font-semibold ring-0 outline-none"
             contentEditable={true}
             onBlur={(e) =>
               chapter && updateChapter({ ...chapter, name: e.currentTarget.innerText.trim() })
@@ -85,7 +85,7 @@ function RouteComponent() {
         </div> */}
           <BlockNoteView
             editor={editor}
-            className="mt-4 -mx-12 h-full"
+            className="-mx-12 mt-4 h-full"
             data-color-scheme="theme-light"
             onChange={debouncedSaveFile}
           />

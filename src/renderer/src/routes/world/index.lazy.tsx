@@ -62,12 +62,12 @@ function RouteComponent() {
 
   return (
     <div className="w-full">
-      <div className="relative h-[35vh] bg-cover bg-center bg-default w-full bg-no-repeat"></div>
-      <div className="max-w-5xl mx-auto px-16 relative h-full">
+      <div className="relative h-[35vh] w-full bg-default bg-cover bg-center bg-no-repeat"></div>
+      <div className="relative mx-auto h-full max-w-5xl px-16">
         <Popover>
-          <PopoverTrigger className="absolute -top-18 text-[6em] z-10">
+          <PopoverTrigger className="absolute -top-18 z-10 text-[6em]">
             {project?.emoji?.src ? (
-              <img src={project?.emoji?.src} alt="emoji" className="w-28 h-28" />
+              <img src={project?.emoji?.src} alt="emoji" className="h-28 w-28" />
             ) : (
               project?.emoji?.native || <span>📖</span>
             )}
@@ -83,9 +83,9 @@ function RouteComponent() {
             />
           </PopoverContent>
         </Popover>
-        <section className="w-full pt-14 px-2">
+        <section className="w-full px-2 pt-14">
           <h1
-            className="text-4xl min-h-fit mt-4 font-semibold text-editorText ring-0 outline-none"
+            className="text-editorText mt-4 min-h-fit font-serif-thick text-5xl ring-0 outline-none"
             contentEditable={true}
             onBlur={(e) =>
               project && updateProject({ ...project, name: e.currentTarget.innerText.trim() })
@@ -95,18 +95,18 @@ function RouteComponent() {
             }}
           />
           <div className="flex gap-3">
-            <div className="flex gap-1 mt-1 items-center text-xs text-secondaryText">
+            <div className="text-secondaryText mt-1 flex items-center gap-1 text-xs">
               <FileClock size={16} className="text-text" />
               {defaultDateTimeFormat(project?.created_at || '')}
             </div>
-            <div className="flex gap-1 mt-1 items-center text-xs text-secondaryText">
+            <div className="text-secondaryText mt-1 flex items-center gap-1 text-xs">
               <Clock3 size={16} className="text-text" />
               {getTimeFromNow(project?.updated_at || '')}
             </div>
           </div>
           <BlockNoteView
             editor={editor}
-            className="mt-4 -mx-12 h-full"
+            className="-mx-12 mt-4 h-full"
             data-color-scheme="theme-light"
             onChange={debouncedSaveFile}
           />

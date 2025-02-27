@@ -2,6 +2,7 @@ import { ProjectCard } from '@renderer/components/project/ProjectCard'
 import { Button } from '@renderer/components/ui/button'
 import { useAllProjects } from '@renderer/hooks/project/useAllProjects'
 import { useCreateProject } from '@renderer/hooks/project/useCreateProject'
+import { useCurrentDir } from '@renderer/hooks/useProjectDir'
 import { useSetProjectDir } from '@renderer/hooks/useSetProjectDir'
 import { greetingTime } from '@renderer/lib/utils'
 import { appDirectoryName } from '@shared/constants'
@@ -21,6 +22,7 @@ const oneYearAgo = new Date(today.getTime() - 365 * 24 * 60 * 60 * 1000)
 
 function RouteComponent() {
   const { data: projects, isLoading } = useAllProjects()
+  const { data } = useCurrentDir()
   const { mutate: createProject } = useCreateProject()
   const { mutate: switchProject } = useSetProjectDir()
 
@@ -54,31 +56,31 @@ function RouteComponent() {
   }
 
   return (
-    <section className="flex flex-col h-full">
-      <div className="w-full border-y p-2 py-1 flex gap-2">
+    <section className="flex h-full flex-col">
+      <div className="flex w-full gap-2 border-y p-2 py-1">
         <div className="rounded-md bg-accent p-1 px-2 text-xs font-medium">Stories</div>
         <Button
           variant="ghost"
           size="sm"
-          className="rounded-md p-1 px-2 text-xs font-medium ml-auto flex items-center gap-2"
+          className="ml-auto flex items-center gap-2 rounded-md p-1 px-2 text-xs font-medium"
           onClick={() => createProject()}
         >
           <PlusIcon size={16} className="" strokeWidth={2.5} />
           New Story
         </Button>
       </div>
-      <div className="p-4 overflow-y-auto grow">
-        <div className="max-w-(--breakpoint-sm) lg:max-w-(--breakpoint-lg) mx-auto h-full w-full space-y-8">
-          <h1 className="text-2xl font-semibold text-center py-5">
-            {greetingTime()}, welcome to {appDirectoryName}
+      <div className="grow overflow-y-auto p-4">
+        <div className="mx-auto h-full w-full max-w-(--breakpoint-sm) space-y-8 lg:max-w-(--breakpoint-lg)">
+          <h1 className="py-5 text-center font-serif-thick text-6xl leading-tight tracking-wide text-muted-foreground">
+            {greetingTime()}, <span className="capitalize">{data?.name || 'Stranger'}!</span>
           </h1>
 
           {updatedProjects.map((category, index) => (
             <div key={index}>
               {category.projects && category.projects.length > 0 && (
-                <div className="flex items-center gap-3 relative mb-3">
-                  <h2 className="text-sm font-medium shrink-0">{category.name}</h2>
-                  <div className=" w-full h-px bg-border" />
+                <div className="relative mb-3 flex items-center gap-3">
+                  <h2 className="shrink-0 text-sm font-medium">{category.name}</h2>
+                  <div className="h-px w-full bg-border" />
                 </div>
               )}
               <div className="flex flex-col gap-0.5">
