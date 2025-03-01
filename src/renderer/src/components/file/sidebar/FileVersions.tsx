@@ -1,6 +1,6 @@
 import { FC } from 'react'
 import { useLocation, useNavigate } from '@tanstack/react-router'
-import { useFileVersions } from '@/hooks/useFileVersions'
+import { useFileVersions } from '@renderer/hooks/useFileVersions'
 import { IconFileDescription } from '@tabler/icons-react'
 import { FileStackIcon } from 'lucide-react'
 
@@ -15,21 +15,21 @@ export const FileVersions: FC<{}> = ({}) => {
         {Array.from({ length: 5 }).map((_, index) => (
           <div
             key={index}
-            className="flex bg-border h-6 rounded-md items-center gap-2 py-1 px-2 text-xs text-secondaryText"
+            className="text-secondaryText flex h-6 items-center gap-2 rounded-md bg-border px-2 py-1 text-xs"
           />
         ))}
       </div>
     )
   }
   return (
-    <div className="h-full flex flex-col gap-0.5 grow px-2">
+    <div className="flex h-full grow flex-col gap-0.5 px-2">
       {versions?.length === 0 || !versions ? (
-        <div className="w-full flex flex-col gap-0.5 items-center text-text">
-          <div className="flex items-center mt-8 gap-2 text-sm">
+        <div className="flex w-full flex-col items-center gap-0.5 text-text">
+          <div className="mt-8 flex items-center gap-2 text-sm">
             <FileStackIcon size={18} />
             No versions yet.
           </div>
-          <p className="text-xs mt-2 max-w-[250px] text-center mx-auto">
+          <p className="mx-auto mt-2 max-w-[250px] text-center text-xs">
             Versions are created automatically when you save your file. By default, we create a new
             version every 200 words you add or delete
           </p>
@@ -38,10 +38,10 @@ export const FileVersions: FC<{}> = ({}) => {
         versions.map((version, index) => (
           <div
             key={index}
-            className="flex items-center gap-2 py-1 px-2 text-[0.8rem] rounded-md cursor-default hover:bg-hover"
+            className="hover:bg-hover flex cursor-default items-center gap-2 rounded-md px-2 py-1 text-[0.8rem]"
             onClick={() => navigate({ search: { ...location.search, version: version.name } })}
           >
-            <div className=" flex gap-1 items-center">
+            <div className="flex items-center gap-1">
               <IconFileDescription size={16} />
               {version.name}
             </div>

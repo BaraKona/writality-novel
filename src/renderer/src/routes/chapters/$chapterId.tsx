@@ -21,6 +21,7 @@ import {
 } from '@renderer/components/ui/resizable'
 import useLocalStorage from '@renderer/hooks/useLocalStorage'
 import { FileSidebar } from '@renderer/components/file/FileSidebar'
+import { PlateEditor } from '@renderer/components/editor/plate-editor'
 
 export const Route = createFileRoute('/chapters/$chapterId')({
   component: RouteComponent
@@ -92,12 +93,13 @@ function RouteComponent() {
                 __html: chapter?.name || ''
               }}
             />
-            <BlockNoteView
+            {/* <BlockNoteView
               editor={editor}
               className="-mx-12 mt-4 h-full"
               data-color-scheme="theme-light"
               onChange={debouncedSaveFile}
-            />
+            /> */}
+            <PlateEditor />
           </div>
         </div>
       </ResizablePanel>

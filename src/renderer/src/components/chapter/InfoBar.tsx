@@ -88,21 +88,15 @@ export const Infobar: FC<{
 
         <button className="group w-5" onClick={() => setSidebarState(sidebarState ? '' : 'notes')}>
           {sidebarState ? (
-            <ChevronsRightIcon size={16} strokeWidth={1.5} className="shrink-0" className="" />
+            <ChevronsRightIcon size={16} strokeWidth={1.5} className="shrink-0" />
           ) : (
             <>
               <ChevronsLeftIcon
                 size={16}
                 strokeWidth={1.5}
-                className="shrink-0"
-                className="hidden group-hover:block"
+                className="hidden shrink-0 group-hover:block"
               />
-              <MenuIcon
-                size={16}
-                strokeWidth={1.5}
-                className="shrink-0"
-                className="block group-hover:hidden"
-              />
+              <MenuIcon size={16} strokeWidth={1.5} className="block shrink-0 group-hover:hidden" />
             </>
           )}
         </button>

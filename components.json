@@ -11,10 +11,19 @@
     "prefix": ""
   },
   "aliases": {
-    "components": "src/renderer/src/components",
-    "utils": "@renderer/lib/utils",
-    "ui": "src/renderer/src/components/ui",
-    "lib": "@renderer/lib",
+    "components": "@renderer/components",
+    "utils": "@/lib/utils",
+    "ui": "@renderer/components/ui",
+    "lib": "@/lib",
     "hooks": "@renderer/hooks"
+  },
+  "iconLibrary": "lucide",
+  "registries": {
+    "plate": {
+      "aliases": {
+        "ui": "@renderer/components/plate-ui"
+      },
+      "url": "https://platejs.org/r"
+    }
   }
 }

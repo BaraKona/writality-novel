@@ -10,6 +10,7 @@ import {
   withMultiColumn
 } from '@blocknote/xl-multi-column'
 import { cn } from '@renderer/lib/utils'
+import { PlateEditor } from './plate-editor'
 
 export const SmallEditor: FC<{
   content: string
@@ -36,16 +37,18 @@ export const SmallEditor: FC<{
   )
 
   return (
-    <BlockNoteView
-      editor={editor}
-      className={cn('-mx-10 h-full font-serif !text-xs', className, {
-        'pointer-events-none': !editable
-      })}
-      theme={theme}
-      data-color-scheme="theme-light"
-      editable={editable}
-      style={{ fontSize: '25rem !important' }}
-      onChange={() => onChange(editor.document)}
-    />
+    // <BlockNoteView
+    //   editor={editor}
+    //   className={cn('-mx-10 h-full font-serif !text-xs', className, {
+    //     'pointer-events-none': !editable
+    //   })}
+    //   theme={theme}
+    //   data-color-scheme="theme-light"
+    //   editable={editable}
+    //   style={{ fontSize: '25rem !important' }}
+    //   onChange={() => onChange(editor.document)}
+    // />
+
+    <PlateEditor />
   )
 }
