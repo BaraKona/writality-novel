@@ -39,14 +39,13 @@ export function ProjectSwitcher({ currentProject }: { currentProject: Project })
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size="sm"
-              className="rounded-t-none rounded-b-md border data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              className="mt-px rounded-t-none ring-1 shadow-xs ring-border data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <div className="rounded bg-background/20 backdrop-blur-sm">
                 <EmojiDisplay emoji={currentProject.emoji} type="project" />
               </div>
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="text-md truncate font-serif">{currentProject.name}</span>
-                {/* <span className="truncate text-xs">Fantasy</span> */}
+              <div className="grid flex-1 text-left leading-tight">
+                <span className="truncate font-serif-thick text-base">{currentProject.name}</span>
               </div>
             </SidebarMenuButton>
           </DropdownMenuTrigger>

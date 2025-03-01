@@ -25,74 +25,84 @@ export const Infobar: FC<{
 }> = ({ chapter, word, setSidebarState, sidebarState }) => {
   console.log()
   return (
-    <div className="h-[2.25rem] flex justify-between gap-2 flex-shrink-0 items-center px-2 overflow-x-auto w-full">
-      <Breadcrumb className="w-fit shrink-0 flex items-center gap-1">
+    <div className="flex h-[2.25rem] w-full flex-shrink-0 items-center justify-between gap-2 overflow-x-auto px-2">
+      <Breadcrumb className="flex w-fit shrink-0 items-center gap-1">
         {chapter.ancestors?.map((ancestor) => (
-          <BreadcrumbList key={ancestor.id} className="text-xs font-medium shrink-0">
+          <BreadcrumbList key={ancestor.id} className="shrink-0 text-xs font-medium">
             <Link
               to={`/folders/$folderId`}
               params={{ folderId: ancestor.id.toString() }}
               disabled={ancestor.type === 'project'}
-              className={`group ${ancestor.type === 'project' ? '' : 'hover:bg-accent'} p-1 rounded-md px-1.5 text-xs font-medium shrink-0`}
+              className={`group ${ancestor.type === 'project' ? '' : 'hover:bg-accent'} shrink-0 rounded-md p-1 px-1.5 text-xs font-medium`}
             >
-              <BreadcrumbItem className="shrink-0 flex gap-1 max-w-48">
+              <BreadcrumbItem className="flex max-w-48 shrink-0 gap-1">
                 {ancestor.type === 'project' ? (
-                  <BookTextIcon size={16} strokeWidth={1.5} />
+                  <BookTextIcon size={16} strokeWidth={1.5} className="shrink-0" />
                 ) : (
-                  <FolderOpenIcon size={16} strokeWidth={1.5} />
+                  <FolderOpenIcon size={16} strokeWidth={1.5} className="shrink-0" />
                 )}
-                <span>{ancestor.name}</span>
+                <span className="truncate">{ancestor.name}</span>
               </BreadcrumbItem>
             </Link>
 
             <BreadcrumbSeparator>
-              <ChevronRight size={16} strokeWidth={1.5} />
+              <ChevronRight size={16} strokeWidth={1.5} className="shrink-0" />
             </BreadcrumbSeparator>
           </BreadcrumbList>
         ))}
-        <BreadcrumbList className="text-xs font-medium shrink-0">
-          <BreadcrumbItem className="shrink-0 flex gap-1 max-w-48 pl-1">
-            <FileTextIcon size={16} strokeWidth={1.5} />
-            <span>{chapter?.name}</span>
+        <BreadcrumbList className="shrink-0 text-xs font-medium">
+          <BreadcrumbItem className="flex max-w-48 shrink-0 gap-1 pl-1">
+            <FileTextIcon size={16} strokeWidth={1.5} className="shrink-0" />
+            <span className="truncate">{chapter?.name}</span>
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
 
       <div className="flex items-center gap-0.5 pr-1">
-        <div className="flex items-center gap-1 text-xs text-secondaryText">
+        <div className="text-secondaryText flex items-center gap-1 text-xs">
           <span className="text-xs font-medium text-text">Words:</span>
           {word}
         </div>
-        <Separator orientation="vertical" className="h-4 shrink-0 mx-2" />
+        <Separator orientation="vertical" className="mx-2 h-4 shrink-0" />
 
         <Statistic
           text="Last edited"
           content={getTimeFromNow(chapter?.updated_at || new Date().getTime())}
           align="right"
-          className="shrink-0 text-secondaryText"
+          className="text-secondaryText shrink-0"
         />
 
         <Button
           variant="ghost"
           size="icon"
-          className="group transition-transform ease-in duration-200 ml-1"
+          className="group ml-1 transition-transform duration-200 ease-in"
         >
           {/* <PencilLineIcon
             size={16}
             strokeWidth={1.5}
             className={`${fileContent?.data.readonly ? 'hidden' : ''}`} */}
           {/* /> */}
-          <BookOpenTextIcon size={16} strokeWidth={1.5} />
+          <BookOpenTextIcon size={16} strokeWidth={1.5} className="shrink-0" />
         </Button>
-        <Separator orientation="vertical" className="h-4 shrink-0 mx-2" />
+        <Separator orientation="vertical" className="mx-2 h-4 shrink-0" />
 
         <button className="group w-5" onClick={() => setSidebarState(sidebarState ? '' : 'notes')}>
           {sidebarState ? (
-            <ChevronsRightIcon size={16} strokeWidth={1.5} className="" />
+            <ChevronsRightIcon size={16} strokeWidth={1.5} className="shrink-0" className="" />
           ) : (
             <>
-              <ChevronsLeftIcon size={16} strokeWidth={1.5} className="group-hover:block hidden" />
-              <MenuIcon size={16} strokeWidth={1.5} className="group-hover:hidden block" />
+              <ChevronsLeftIcon
+                size={16}
+                strokeWidth={1.5}
+                className="shrink-0"
+                className="hidden group-hover:block"
+              />
+              <MenuIcon
+                size={16}
+                strokeWidth={1.5}
+                className="shrink-0"
+                className="block group-hover:hidden"
+              />
             </>
           )}
         </button>
