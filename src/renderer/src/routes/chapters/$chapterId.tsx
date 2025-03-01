@@ -105,7 +105,7 @@ function RouteComponent() {
       <ResizablePanel
         key="file-sidebar"
         defaultSize={20}
-        className={`group relative mt-1 mr-2 flex h-full w-96 max-w-[600px] min-w-80 grow flex-col rounded-lg ring shadow ring-border ${sidebarState ? 'show' : 'hide'}`}
+        className={`group relative flex h-full w-96 max-w-[600px] min-w-80 grow flex-col p-2 pl-0.5 ${sidebarState ? 'show' : 'hide'}`}
       >
         <FileSidebar setSidebarState={setSidebarState} sidebarState={sidebarState || ''} />
       </ResizablePanel>

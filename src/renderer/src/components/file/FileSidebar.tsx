@@ -14,8 +14,8 @@ export const FileSidebar: FC<{
   setSidebarState: (state) => void
 }> = ({ sidebarState, setSidebarState }) => {
   return (
-    <div className="flex h-full flex-col rounded-lg pb-1 ring-black">
-      <div className="relative flex w-full gap-4 border-b px-2 py-1 text-xs font-medium">
+    <div className="grow flex-col overflow-hidden rounded-lg ring shadow ring-border">
+      <div className="flex w-full gap-4 border-b px-2 py-1 text-xs font-medium">
         <FileSidebarListItem
           name="notes"
           active={sidebarState === 'notes'}

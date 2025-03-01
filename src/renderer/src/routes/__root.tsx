@@ -50,21 +50,21 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
   const [sidebarState, setSidebarState] = useAtom(sidebarStateAtom)
 
   return (
-    <div className="h-screen flex flex-col">
-      <ResizablePanelGroup direction="horizontal" className={`w-full flex grow`}>
+    <div className="flex h-screen flex-col">
+      <ResizablePanelGroup direction="horizontal" className={`flex w-full grow`}>
         <ResizablePanel
           defaultSize={15}
-          className={`min-w-[280px] bg-sidebar relative max-w-[400px] flex flex-col grow group ${sidebarState ? 'show' : 'hide'}`}
+          className={`group relative flex max-w-[400px] min-w-[280px] grow flex-col bg-sidebar ${sidebarState ? 'show' : 'hide'}`}
         >
           <PrimarySidebar projectDir={data} />
         </ResizablePanel>
         <ResizableHandle onClick={() => setSidebarState((prev) => !prev)} />
         <ResizablePanel defaultSize={85}>
-          <section className="flex flex-col grow w-full h-full relative overflow-y-auto">
+          <section className="relative flex h-full w-full grow flex-col overflow-y-auto">
             <div>
               <Header />
             </div>
-            <div className="flex flex-col grow overflow-y-auto">{children}</div>
+            <div className="flex grow flex-col overflow-y-auto">{children}</div>
           </section>
         </ResizablePanel>
       </ResizablePanelGroup>
