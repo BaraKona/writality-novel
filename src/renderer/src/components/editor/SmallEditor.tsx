@@ -1,6 +1,6 @@
 import { FC } from 'react'
 import '@blocknote/core/fonts/inter.css'
-import { BlockNoteView } from '@blocknote/mantine'
+import { BlockNoteView, Theme } from '@blocknote/mantine'
 import '@blocknote/mantine/style.css'
 import { BlockNoteSchema, locales } from '@blocknote/core'
 import { useCreateBlockNote } from '@blocknote/react'
@@ -16,7 +16,8 @@ export const SmallEditor: FC<{
   editable?: boolean
   className?: string
   onChange: (content: string) => void
-}> = ({ content, editable = false, className, onChange }) => {
+  theme?: Theme
+}> = ({ content, editable = false, className, onChange, theme }) => {
   const editor = useCreateBlockNote(
     {
       // Adds column and column list blocks to the schema.
@@ -40,9 +41,10 @@ export const SmallEditor: FC<{
       className={cn('-mx-10 h-full font-serif !text-xs', className, {
         'pointer-events-none': !editable
       })}
+      theme={theme}
       data-color-scheme="theme-light"
       editable={editable}
-      style={{ fontSize: '0.25rem' }}
+      style={{ fontSize: '25rem !important' }}
       onChange={() => onChange(editor.document)}
     />
   )

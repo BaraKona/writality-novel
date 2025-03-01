@@ -81,7 +81,7 @@ function RouteComponent() {
               <SmallEditor
                 content={folder?.description || ''}
                 editable={true}
-                className="h-18 overflow-hidden !text-accent-foreground"
+                className="overflow-hidden !text-accent-foreground"
                 onChange={(content) => debouncedSaveFile(content)}
               />
             ) : (
