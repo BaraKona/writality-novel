@@ -31,3 +31,26 @@ export const useDebounce = (mainFunction, delay) => {
 
   return debouncedFunction
 }
+
+export const debounce = (mainFunction, delay) => {
+  let timer
+  let canceled = false
+
+  const debouncedFunction = function (...args) {
+    clearTimeout(timer)
+    canceled = false
+
+    timer = setTimeout(() => {
+      if (!canceled) {
+        mainFunction(...args)
+      }
+    }, delay)
+  }
+
+  debouncedFunction.cancel = () => {
+    canceled = true
+    clearTimeout(timer)
+  }
+
+  return debouncedFunction
+}

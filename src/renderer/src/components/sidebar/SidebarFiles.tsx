@@ -33,7 +33,7 @@ export function SidebarFiles({ project }: { project: Project }) {
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-      <SidebarGroupLabel className="flex justify-between items-center">
+      <SidebarGroupLabel className="flex items-center justify-between">
         Files
         <DropdownMenu>
           <DropdownMenuTrigger>
@@ -42,7 +42,7 @@ export function SidebarFiles({ project }: { project: Project }) {
           <DropdownMenuContent className="w-48 rounded-lg" side={'right'} align="start">
             <DropdownMenuItem onClick={() => createChapter('project')}>
               <FilePlus2 className="text-muted-foreground" />
-              <span>Create Folder</span>
+              <span>Create file</span>
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => createProjectFolder(null)}>
               <FolderPlus className="text-muted-foreground" />

@@ -8,8 +8,7 @@ export const useUpdateChapter = (): UseMutationResult<Chapter, Error, Chapter, u
     mutationFn: (chapter: Chapter) => window.api.updateChapter(chapter),
     mutationKey: ['updateProject'],
     onSuccess: (data: Chapter) => {
-      console.log('Project updated:', data)
-      queryClient.setQueryData(['chapters', data.id], (prevData: Chapter) => {
+      queryClient.setQueryData(['chapter', data.id], (prevData: Chapter) => {
         return { ...prevData, name: data.name }
       })
     }

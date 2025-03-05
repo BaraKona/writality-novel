@@ -1,3 +1,4 @@
+import { FolderFilled } from '@renderer/assets/FolderFilled'
 import { Emoji } from '@shared/models'
 import { FolderOpen } from 'lucide-react'
 import { FolderIcon, FolderOpenIcon, type LucideIcon } from 'lucide-react'
@@ -19,10 +20,11 @@ export const EmojiDisplay = ({
     return (
       <div className={className}>
         {emoji?.src ? (
-          <img src={emoji?.src} alt="emoji" className={`${file ? 'w-4 h-4' : 'w-28 h-28'}`} />
+          <img src={emoji?.src} alt="emoji" className={`${file ? 'h-4 w-4' : 'h-28 w-28'}`} />
         ) : (
           <span className={`${file ? 'text-lg' : ''}`}>
-            {emoji?.native || (folderOpen ? <FolderOpen size={16} /> : <FolderIcon size={16} />)}
+            {emoji?.native ||
+              (folderOpen ? <FolderOpen size={16} /> : <FolderFilled className="w-4.5 text-sm" />)}
           </span>
         )}
       </div>
@@ -33,7 +35,7 @@ export const EmojiDisplay = ({
     return (
       <div className={className}>
         {emoji?.src ? (
-          <img src={emoji?.src} alt="emoji" className={'w-5 h-5'} />
+          <img src={emoji?.src} alt="emoji" className={'h-5 w-5'} />
         ) : (
           <span className={`${file ? 'text-xl' : ''}`}>{emoji?.native || '📖'}</span>
         )}
@@ -44,7 +46,7 @@ export const EmojiDisplay = ({
   return (
     <div className={className}>
       {emoji?.src ? (
-        <img src={emoji?.src} alt="emoji" className={`${file ? 'w-4 h-4' : 'w-28 h-28'}`} />
+        <img src={emoji?.src} alt="emoji" className={`${file ? 'h-4 w-4' : 'h-28 w-28'}`} />
       ) : (
         <span className={`${file ? 'text-lg' : ''}`}>{emoji?.native || '📖'}</span>
       )}

@@ -165,7 +165,7 @@ export function PrimarySidebar({
 
   return (
     <aside
-      className="flex grow flex-col relative top-0 left-0 z-10 h-full bg-sidebar border-r pt-8"
+      className="relative top-0 left-0 z-10 flex h-full grow flex-col border-r bg-sidebar pt-8"
       {...props}
     >
       <section className="w-full p-2">

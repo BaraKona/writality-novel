@@ -18,36 +18,36 @@ export const PrimaryNavbar: FC = () => {
   // }, [location.pathname])
 
   return (
-    <nav className={`flex items-center py-1 gap-1 w-full grow overflow-x-auto`}>
+    <nav className={`flex w-full grow items-center gap-1 overflow-x-auto py-1`}>
       <Separator
         orientation="vertical"
-        className={`h-4 mx-1 ${sidebarState ? 'hidden' : 'ml-16'}`}
+        className={`mx-1 h-4 ${sidebarState ? 'hidden' : 'ml-16'}`}
       />
       <Button
         variant="ghost"
         size="icon"
-        className="shrink-0 hover:bg-background group"
+        className="group shrink-0 hover:bg-background"
         onClick={() => setSidebarState(!sidebarState)}
       >
-        <Menu size={16} strokeWidth={1.5} className={`group-hover:hidden block text-text`} />
+        <Menu size={16} strokeWidth={1.5} className={`block text-text group-hover:hidden`} />
         {sidebarState ? (
           <ChevronsLeft
             size={16}
             strokeWidth={1.5}
-            className="group-hover:block hidden text-text"
+            className="hidden text-text group-hover:block"
             onClick={() => setSidebarState((prev) => !prev)}
           />
         ) : (
           <ChevronsRight
             size={16}
             strokeWidth={1.5}
-            className="group-hover:block hidden text-text"
+            className="hidden text-text group-hover:block"
             onClick={() => setSidebarState((prev) => !prev)}
           />
         )}
       </Button>
-      <Separator orientation="vertical" className={`h-4 mx-1`} />
-      <ul className="flex gap-1 items-center overflow-x-auto">
+      <Separator orientation="vertical" className={`mx-1 h-4`} />
+      <ul className="flex items-center gap-1 overflow-x-auto">
         {tabs.map((tab, index) => (
           <TabListItem
             key={index}
@@ -58,7 +58,7 @@ export const PrimaryNavbar: FC = () => {
         ))}
       </ul>
 
-      {tabs.length > 0 && <Separator orientation="vertical" className="h-4 mx-1" />}
+      {tabs.length > 0 && <Separator orientation="vertical" className="mx-1 h-4" />}
 
       <Button variant="ghost" size="icon" onClick={createTab} className="shrink-0 p-1">
         <Plus color="gray" size={16} />

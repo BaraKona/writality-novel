@@ -26,37 +26,39 @@ export const Infobar: FC<{
   console.log()
   return (
     <div className="flex h-[2.25rem] w-full flex-shrink-0 items-center justify-between gap-2 overflow-x-auto px-2">
-      <Breadcrumb className="flex w-fit shrink-0 items-center gap-1">
-        {chapter.ancestors?.map((ancestor) => (
-          <BreadcrumbList key={ancestor.id} className="shrink-0 text-xs font-medium">
-            <Link
-              to={`/folders/$folderId`}
-              params={{ folderId: ancestor.id.toString() }}
-              disabled={ancestor.type === 'project'}
-              className={`group ${ancestor.type === 'project' ? '' : 'hover:bg-accent'} shrink-0 rounded-md p-1 px-1.5 text-xs font-medium`}
-            >
-              <BreadcrumbItem className="flex max-w-48 shrink-0 gap-1">
-                {ancestor.type === 'project' ? (
-                  <BookTextIcon size={16} strokeWidth={1.5} className="shrink-0" />
-                ) : (
-                  <FolderOpenIcon size={16} strokeWidth={1.5} className="shrink-0" />
-                )}
-                <span className="truncate">{ancestor.name}</span>
-              </BreadcrumbItem>
-            </Link>
+      <div className="flex items-center gap-0.5 pl-1">
+        <Breadcrumb className="flex w-fit shrink-0 items-center gap-1">
+          {chapter.ancestors?.map((ancestor) => (
+            <BreadcrumbList key={ancestor.id} className="shrink-0 text-xs font-medium">
+              <Link
+                to={`/folders/$folderId`}
+                params={{ folderId: ancestor.id.toString() }}
+                disabled={ancestor.type === 'project'}
+                className={`group ${ancestor.type === 'project' ? '' : 'hover:bg-accent'} shrink-0 rounded-md p-1 px-1.5 text-xs font-medium`}
+              >
+                <BreadcrumbItem className="flex max-w-48 shrink-0 gap-1">
+                  {ancestor.type === 'project' ? (
+                    <BookTextIcon size={16} strokeWidth={1.5} className="shrink-0" />
+                  ) : (
+                    <FolderOpenIcon size={16} strokeWidth={1.5} className="shrink-0" />
+                  )}
+                  <span className="truncate">{ancestor.name}</span>
+                </BreadcrumbItem>
+              </Link>
 
-            <BreadcrumbSeparator>
-              <ChevronRight size={16} strokeWidth={1.5} className="shrink-0" />
-            </BreadcrumbSeparator>
+              <BreadcrumbSeparator>
+                <ChevronRight size={16} strokeWidth={1.5} className="shrink-0" />
+              </BreadcrumbSeparator>
+            </BreadcrumbList>
+          ))}
+          <BreadcrumbList className="shrink-0 text-xs font-medium">
+            <BreadcrumbItem className="flex max-w-48 shrink-0 gap-1 pl-1">
+              <FileTextIcon size={16} strokeWidth={1.5} className="shrink-0" />
+              <span className="truncate">{chapter?.name}</span>
+            </BreadcrumbItem>
           </BreadcrumbList>
-        ))}
-        <BreadcrumbList className="shrink-0 text-xs font-medium">
-          <BreadcrumbItem className="flex max-w-48 shrink-0 gap-1 pl-1">
-            <FileTextIcon size={16} strokeWidth={1.5} className="shrink-0" />
-            <span className="truncate">{chapter?.name}</span>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
+        </Breadcrumb>
+      </div>
 
       <div className="flex items-center gap-0.5 pr-1">
         <div className="text-secondaryText flex items-center gap-1 text-xs">
@@ -85,27 +87,25 @@ export const Infobar: FC<{
           <BookOpenTextIcon size={16} strokeWidth={1.5} className="shrink-0" />
         </Button>
         <Separator orientation="vertical" className="mx-2 h-4 shrink-0" />
-
-        <button className="group w-5" onClick={() => setSidebarState(sidebarState ? '' : 'notes')}>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="group hover:bg-background"
+          onClick={() => setSidebarState(sidebarState ? '' : 'notes')}
+        >
           {sidebarState ? (
-            <ChevronsRightIcon size={16} strokeWidth={1.5} className="shrink-0" className="" />
+            <ChevronsLeftIcon size={16} strokeWidth={1.5} className="shrink-0" className="" />
           ) : (
             <>
-              <ChevronsLeftIcon
+              <ChevronsRightIcon
                 size={16}
                 strokeWidth={1.5}
-                className="shrink-0"
-                className="hidden group-hover:block"
+                className="hidden shrink-0 group-hover:block"
               />
-              <MenuIcon
-                size={16}
-                strokeWidth={1.5}
-                className="shrink-0"
-                className="block group-hover:hidden"
-              />
+              <MenuIcon size={16} strokeWidth={1.5} className="block shrink-0 group-hover:hidden" />
             </>
           )}
-        </button>
+        </Button>
       </div>
     </div>
   )

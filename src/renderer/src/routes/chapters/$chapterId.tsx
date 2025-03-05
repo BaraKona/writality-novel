@@ -2,7 +2,6 @@ import { useChapter } from '@renderer/hooks/chapter/useChapter'
 import { useDebounce } from '@renderer/hooks/useDebounce'
 import { createFileRoute } from '@tanstack/react-router'
 import '@blocknote/core/fonts/inter.css'
-import { BlockNoteView } from '@blocknote/mantine'
 import '@blocknote/mantine/style.css'
 
 import { useCreateBlockNote } from '@blocknote/react'
@@ -21,6 +20,9 @@ import {
 } from '@renderer/components/ui/resizable'
 import useLocalStorage from '@renderer/hooks/useLocalStorage'
 import { FileSidebar } from '@renderer/components/file/FileSidebar'
+import { BasicEditor } from '@renderer/components/editor/BasicEditor'
+import { useCreateEditor } from '@renderer/components/editor/use-create-editor'
+import { useMemo } from 'react'
 
 export const Route = createFileRoute('/chapters/$chapterId')({
   component: RouteComponent
@@ -31,29 +33,13 @@ function RouteComponent() {
 
   const { data: chapter } = useChapter(Number(chapterId))
   const { mutate: updateChapter } = useUpdateChapter()
+  const editor = useCreateEditor({ value: chapter?.description })
 
   const [sidebarState, setSidebarState] = useLocalStorage('sidebarState', 'note')
 
-  const editor = useCreateBlockNote(
-    {
-      // Adds column and column list blocks to the schema.
-      schema: withMultiColumn(BlockNoteSchema.create()),
-      // The default drop cursor only shows up above and below blocks - we replace
-      // it with the multi-column one that also shows up on the sides of blocks.
-      dropCursor: multiColumnDropCursor,
-      // Merges the default dictionary with the multi-column dictionary.
-      dictionary: {
-        ...locales.en,
-        multi_column: multiColumnLocales.en
-      },
-      initialContent: chapter?.description || undefined
-    },
-    [chapter]
-  )
-
-  const debouncedSaveFile = useDebounce(
-    () => updateChapter({ ...chapter, description: editor.document }),
-    200
+  const debouncedFunc = useDebounce(
+    (value) => updateChapter({ ...chapter, description: value }),
+    2000
   )
 
   if (!chapter) {
@@ -77,11 +63,8 @@ function RouteComponent() {
           setSidebarState={setSidebarState}
           sidebarState={sidebarState || ''}
         />
-        <div
-          className="relative mx-auto flex h-full w-full max-w-5xl flex-col overflow-y-auto px-16"
-          key={chapterId}
-        >
-          <div className="w-full px-2 pt-14">
+        <div className="relative flex h-full w-full flex-col overflow-y-auto px-16" key={chapterId}>
+          <div className="mx-auto w-full max-w-3xl px-2 pt-14">
             <h1
               className="text-editorText mt-4 min-h-fit font-serif-thick text-4xl font-semibold ring-0 outline-none"
               contentEditable={true}
@@ -92,11 +75,10 @@ function RouteComponent() {
                 __html: chapter?.name || ''
               }}
             />
-            <BlockNoteView
+            <BasicEditor
               editor={editor}
-              className="-mx-12 mt-4 h-full"
-              data-color-scheme="theme-light"
-              onChange={debouncedSaveFile}
+              setContent={(value) => debouncedFunc(value)}
+              className="mt-4"
             />
           </div>
         </div>
@@ -105,7 +87,7 @@ function RouteComponent() {
       <ResizablePanel
         key="file-sidebar"
         defaultSize={20}
-        className={`group relative flex h-full w-96 max-w-[600px] min-w-80 grow flex-col p-2 pl-0.5 ${sidebarState ? 'show' : 'hide'}`}
+        className={`group relative flex h-full w-96 max-w-[600px] min-w-80 grow flex-col overflow-y-auto p-2 pt-1 pl-0.5 ${sidebarState ? 'show' : 'hide'}`}
       >
         <FileSidebar setSidebarState={setSidebarState} sidebarState={sidebarState || ''} />
       </ResizablePanel>

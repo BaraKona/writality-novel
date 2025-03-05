@@ -51,6 +51,8 @@
     "@tanstack/react-store": "^0.7.0",
     "@udecode/cn": "^44.0.1",
     "@udecode/plate": "^45.0.9",
+    "@udecode/plate-basic-elements": "^44.0.0",
+    "@udecode/plate-basic-marks": "^45.0.0",
     "ai": "^4.1.16",
     "better-sqlite3": "^11.8.1",
     "class-variance-authority": "^0.7.1",

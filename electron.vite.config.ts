@@ -10,7 +10,8 @@ export default defineConfig({
     resolve: {
       alias: {
         '@shared': resolve('src/shared'),
-        '@api': resolve('src/api/*')
+        '@api': resolve('src/api/*'),
+        '@': resolve('src/renderer/src')
       }
     }
   },
@@ -20,8 +21,9 @@ export default defineConfig({
   renderer: {
     resolve: {
       alias: {
+        '@': resolve('src/renderer/src'),
         '@renderer': resolve('src/renderer/src'),
-        '@shared': resolve('src/shared'),
+        '@shared': resolve('src/shared')
       }
     },
     plugins: [react(), TanStackRouterVite()]

@@ -6,6 +6,8 @@ import {
   FolderPlus,
   Forward,
   MoreHorizontal,
+  SquareArrowDown,
+  SquareArrowRight,
   Trash2
 } from 'lucide-react'
 
@@ -29,6 +31,8 @@ import { useCreateFolder } from '@renderer/hooks/folder/useCreateFolder'
 import { FileListItem } from './FileListItem'
 import { useAutoAnimate } from '@formkit/auto-animate/react'
 import { useFolderTree } from '@renderer/hooks/folder/useFolderTree'
+import { FolderFilled, TriangleDown } from '@renderer/assets/FolderFilled'
+import { TriangleRight } from '@renderer/assets/TriangleRight'
 
 export const FolderListItem = ({
   folder,
@@ -50,36 +54,28 @@ export const FolderListItem = ({
   return (
     <div className={`relative ${level > 0 ? 'mt-0.5' : ''}`} ref={animate}>
       <div
-        className="absolute bg-border z-10 bottom-0"
+        className="absolute bottom-0 z-10 bg-border"
         style={{
           left: `${spacing + level * spacing + 7}px`,
           width: '1px',
           height: 'calc(100% - 2.1rem)'
         }}
       ></div>
-      <SidebarMenuItem key={folder.name}>
-        <SidebarMenuButton asChild>
-          <Link
-            to={'/folders/$folderId'}
-            params={{ folderId: folder.id.toString() }}
-            activeProps={{ className: 'bg-sidebar-accent' }}
-            className={`group flex items-center gap-2 px-2 py-1.5 ring-0 outline-none group/folder cursor-default relative
-              ${level === 0 ? 'pl-3.5' : ''}`}
+      <div key={folder.name} className="flex w-full">
+        <Link
+          to={'/folders/$folderId'}
+          params={{ folderId: folder.id.toString() }}
+          activeProps={{ className: 'bg-sidebar-accent' }}
+          className={`group group/folder peer relative flex w-full cursor-default items-center gap-2 rounded-md px-2 py-1 text-sm ring-0 outline-none hover:bg-accent ${level === 0 ? 'pl-3.5' : ''}`}
+        >
+          <div
+            className="flex"
+            style={{
+              paddingLeft: `${level * spacing + (level === 0 ? 0 : 7)}px`
+            }}
           >
-            <div
-              className="flex"
-              style={{
-                paddingLeft: `${level * spacing + (level === 0 ? 0 : 7)}px`
-              }}
-            >
-              <EmojiDisplay
-                emoji={folder.emoji}
-                folderOpen={openFolders[folder.id]}
-                className="group-hover/menu-item:hidden block"
-                type="folder"
-              />
-              <Button
-                className="group-hover/menu-item:block hidden p-0"
+            {/* <Button
+                className="mr-2 p-0"
                 variant="ghost"
                 size="icon"
                 onClick={(e) => {
@@ -88,15 +84,36 @@ export const FolderListItem = ({
                   setOpenFolders({ ...openFolders, [folder.id]: !openFolders[folder.id] })
                 }}
               >
-                {openFolders[folder.id] ? <FolderOpenIcon size={16} /> : <FolderIcon size={16} />}
-              </Button>
-            </div>
-            <span>{folder.name}</span>
-          </Link>
-        </SidebarMenuButton>
+                {openFolders[folder.id] ? <SquareArrowDown /> : <SquareArrowRight />}
+              </Button> */}
+            {/* <EmojiDisplay
+                emoji={folder.emoji}
+                folderOpen={openFolders[folder.id]}
+                className="block group-hover/menu-item:hidden"
+                type="folder"
+              /> */}
+            <Button
+              className="p-0"
+              variant="ghost"
+              size="icon"
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                setOpenFolders({ ...openFolders, [folder.id]: !openFolders[folder.id] })
+              }}
+            >
+              {openFolders[folder.id] ? (
+                <FolderOpenIcon size={18} />
+              ) : (
+                <FolderFilled className="fill-muted-foreground stroke-muted-foreground" />
+              )}
+            </Button>
+          </div>
+          <span>{folder.name}</span>
+        </Link>
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <SidebarMenuAction showOnHover>
+          <DropdownMenuTrigger className="peer:hover:block hidden">
+            <SidebarMenuAction>
               <MoreHorizontal />
               <span className="sr-only">More</span>
             </SidebarMenuAction>
@@ -121,7 +138,7 @@ export const FolderListItem = ({
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-      </SidebarMenuItem>
+      </div>
       {openFolders[folder.id] && (
         <div className="">
           {folderFiles?.children?.map((item) => (

@@ -1,7 +1,6 @@
 import { getDateFromTime, getTimeFromNow } from '@renderer/lib/utils'
 import { Chapter } from '@shared/models'
 import { FileClock, FileSignature, FileText, Plus, Share, Trash2 } from 'lucide-react'
-import { SmallEditor } from '../editor/SmallEditor'
 import { Link } from '@tanstack/react-router'
 import { Button } from '../ui/button'
 
