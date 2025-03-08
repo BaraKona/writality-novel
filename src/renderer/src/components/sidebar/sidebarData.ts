@@ -1,6 +1,4 @@
-'use client'
-
-import * as React from 'react'
+import { Project } from '@shared/models'
 import {
   Frame,
   GalleryVerticalEnd,
@@ -12,28 +10,8 @@ import {
   SquareUser
 } from 'lucide-react'
 
-import { Sidebar } from '../ui/sidebar'
-import { ProjectSwitcher } from '../ProjectSwitcher'
-import { NavMain } from '../nav-main'
-import { SidebarFiles } from './SidebarFiles'
-import { NavUser } from '../nav-user'
-import { ProjectImage } from '../ProjectImage'
-import { useProject } from '@renderer/hooks/project/useProject'
-import { ProjectDirectory } from '@shared/models'
-import defaultBannerImage from '@renderer/assets/images/fantasy-endless-hole-landscape.jpg'
-
-export function PrimarySidebar({
-  projectDir,
-  ...props
-}: React.ComponentProps<typeof Sidebar> & { projectDir: ProjectDirectory }) {
-  const { data: currentProject } = useProject(projectDir?.currentProjectId)
-
-  const data = {
-    // user: {
-    //   name: projectDir?.name,
-    //   position: 'Writer',
-    //   avatar: '/avatars/shadcn.jpg'
-    // },
+export const data = (currentProject: Project) => {
+  return {
     openProject: {
       name: currentProject?.name || 'Untitled'
     },
@@ -54,7 +32,7 @@ export function PrimarySidebar({
         title: 'World',
         url: '/world',
         icon: Globe2Icon,
-        isActive: true,
+        // isActive: true,
         items: [
           {
             title: 'Map',
@@ -158,29 +136,4 @@ export function PrimarySidebar({
       }
     ]
   }
-
-  if (!currentProject) {
-    return null
-  }
-
-  return (
-    <aside
-      className="relative top-0 left-0 z-10 flex h-full grow flex-col border-r bg-sidebar pt-8"
-      {...props}
-    >
-      <section className="w-full p-2">
-        <ProjectImage image={defaultBannerImage} />
-        <ProjectSwitcher currentProject={currentProject} />
-      </section>
-      <section className="flex-grow overflow-y-auto">
-        <NavMain items={data.navMain} />
-        <SidebarFiles project={currentProject} />
-      </section>
-      <section className="mt-auto">
-        <NavUser
-          user={{ name: projectDir?.name, position: 'Writer', avatar: '/avatars/shadcn.jpg' }}
-        />
-      </section>
-    </aside>
-  )
 }

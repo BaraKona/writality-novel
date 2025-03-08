@@ -39,7 +39,6 @@ export function NavMain({
 
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>Platform</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => (
           <Collapsible
@@ -68,7 +67,7 @@ export function NavMain({
                   : item.icon
                     ? React.createElement(item.icon as React.ElementType)
                     : null}
-                <span>{item.title}</span>
+                <span className="font-medium">{item.title}</span>
                 <CollapsibleTrigger
                   asChild
                   onClick={(e) => {

@@ -33,7 +33,7 @@ export function NavUser({
 }) {
   return (
     <SidebarMenu>
-      <SidebarMenuItem className="p-2">
+      <SidebarMenuItem className="px-2">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton

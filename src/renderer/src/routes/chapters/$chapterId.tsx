@@ -53,6 +53,14 @@ function RouteComponent() {
       direction="horizontal"
     >
       <ResizablePanel
+        key="file-sidebar"
+        defaultSize={20}
+        className={`group relative flex h-full w-96 max-w-[600px] min-w-80 grow flex-col overflow-y-auto p-2 pt-1 pr-0.5 ${sidebarState ? 'show' : 'hide'}`}
+      >
+        <FileSidebar setSidebarState={setSidebarState} sidebarState={sidebarState || ''} />
+      </ResizablePanel>
+      <ResizableHandle className={`${sidebarState ? 'show' : 'hide'}`} key="111" />
+      <ResizablePanel
         className="relative z-10 flex w-full grow flex-col overflow-y-auto"
         defaultSize={80}
         key="file-content"
@@ -82,14 +90,6 @@ function RouteComponent() {
             />
           </div>
         </div>
-      </ResizablePanel>
-      <ResizableHandle className={`${sidebarState ? 'show' : 'hide'}`} key="111" />
-      <ResizablePanel
-        key="file-sidebar"
-        defaultSize={20}
-        className={`group relative flex h-full w-96 max-w-[600px] min-w-80 grow flex-col overflow-y-auto p-2 pt-1 pl-0.5 ${sidebarState ? 'show' : 'hide'}`}
-      >
-        <FileSidebar setSidebarState={setSidebarState} sidebarState={sidebarState || ''} />
       </ResizablePanel>
     </ResizablePanelGroup>
   )

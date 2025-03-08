@@ -28,9 +28,13 @@ const teams = [
   }
 ]
 
-export function ProjectSwitcher({ currentProject }: { currentProject: Project }) {
+export function ProjectSwitcher({ currentProject }: { currentProject?: Project }) {
   const { mutate: createProject } = useCreateProject()
   const navigate = useNavigate()
+
+  if (!currentProject) {
+    return null
+  }
 
   return (
     <SidebarMenu className="px-2">

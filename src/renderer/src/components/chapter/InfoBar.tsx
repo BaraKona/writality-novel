@@ -26,7 +26,27 @@ export const Infobar: FC<{
   console.log()
   return (
     <div className="flex h-[2.25rem] w-full flex-shrink-0 items-center justify-between gap-2 overflow-x-auto px-2">
-      <div className="flex items-center gap-0.5 pl-1">
+      <div className="flex items-center gap-0.5">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="group hover:bg-background"
+          onClick={() => setSidebarState(sidebarState ? '' : 'notes')}
+        >
+          {sidebarState ? (
+            <ChevronsLeftIcon size={16} strokeWidth={1.5} className="shrink-0" className="" />
+          ) : (
+            <>
+              <ChevronsRightIcon
+                size={16}
+                strokeWidth={1.5}
+                className="hidden shrink-0 group-hover:block"
+              />
+              <MenuIcon size={16} strokeWidth={1.5} className="block shrink-0 group-hover:hidden" />
+            </>
+          )}
+        </Button>
+        <Separator orientation="vertical" className="mx-2 h-4 shrink-0" />
         <Breadcrumb className="flex w-fit shrink-0 items-center gap-1">
           {chapter.ancestors?.map((ancestor) => (
             <BreadcrumbList key={ancestor.id} className="shrink-0 text-xs font-medium">
@@ -85,26 +105,6 @@ export const Infobar: FC<{
             className={`${fileContent?.data.readonly ? 'hidden' : ''}`} */}
           {/* /> */}
           <BookOpenTextIcon size={16} strokeWidth={1.5} className="shrink-0" />
-        </Button>
-        <Separator orientation="vertical" className="mx-2 h-4 shrink-0" />
-        <Button
-          variant="ghost"
-          size="icon"
-          className="group hover:bg-background"
-          onClick={() => setSidebarState(sidebarState ? '' : 'notes')}
-        >
-          {sidebarState ? (
-            <ChevronsLeftIcon size={16} strokeWidth={1.5} className="shrink-0" className="" />
-          ) : (
-            <>
-              <ChevronsRightIcon
-                size={16}
-                strokeWidth={1.5}
-                className="hidden shrink-0 group-hover:block"
-              />
-              <MenuIcon size={16} strokeWidth={1.5} className="block shrink-0 group-hover:hidden" />
-            </>
-          )}
         </Button>
       </div>
     </div>

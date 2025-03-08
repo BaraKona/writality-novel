@@ -64,6 +64,8 @@
   --font-serif-thick: 'Gelasio', sans-serif;
   --font-inter: 'Inter', sans-serif;
 
+  --ease-sidebar: ease-[cubic-bezier(0.165, 0.84, 0.44, 1)];
+
   @keyframes accordion-down {
     from {
       height: 0;
@@ -135,7 +137,7 @@
     display: flex;
   }
   to {
-    transform: translateX(40px);
+    transform: translateX(-40px);
     opacity: 0;
     display: none;
   }
@@ -143,22 +145,12 @@
 
 @keyframes slidein {
   from {
-    transform: translateX(40px);
+    transform: translateX(-40px);
     opacity: 0;
   }
   to {
     display: flex;
   }
-}
-
-.show {
-  animation: slidein 200ms;
-  display: flex;
-}
-
-.hide {
-  animation: slideaway 200ms;
-  display: none;
 }
 
 @layer utilities {
@@ -233,17 +225,6 @@
   --bn-border-radius: 0.6rem;
   --bn-font-family: Helvetica Neue, sans-serif;
 }
-
-/* ::-webkit-scrollbar {
-  width: 4px;
-  height: 4px;
-}
-::-webkit-scrollbar-thumb {
-  border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--border));
-} */
 
 @layer utilities {
   nav,
