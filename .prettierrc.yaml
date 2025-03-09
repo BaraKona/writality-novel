@@ -1,7 +1,0 @@
-singleQuote: true
-semi: false
-printWidth: 100
-trailingComma: none
-tailwindConfig: src/renderer/src/assets/index.css
-plugins:
-  - prettier-plugin-tailwindcss
