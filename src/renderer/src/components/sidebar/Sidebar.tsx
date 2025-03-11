@@ -41,7 +41,7 @@ export const Sidebar: FC<{ children: ReactNode }> = ({ children }) => {
     <div className="flex h-full h-screen w-screen justify-start">
       <nav
         className={clsx(
-          "fixed top-0 bottom-0 left-0 z-[100] flex h-screen max-h-screen flex-shrink-0 flex-col space-y-2 border-r bg-sidebar transition-transform duration-300 ease-sidebar",
+          "fixed top-0 bottom-0 left-0 z-20 flex h-screen max-h-screen flex-shrink-0 flex-col space-y-2 border-r bg-sidebar transition-transform duration-300 ease-sidebar",
           {
             ["cursor-col-resize"]: isDragging,
           },
