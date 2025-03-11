@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "ef24d57b-7ae4-439e-be53-2fae4a1851d1",
+  "id": "fadb36c3-f251-4371-94fe-e69af5bd9f4e",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "chapter_parents": {
@@ -82,19 +82,19 @@
         },
         "created_at": {
           "name": "created_at",
-          "type": "text",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
-          "default": "'current_timestamp'"
+          "default": "(unixepoch())"
         },
         "updated_at": {
           "name": "updated_at",
-          "type": "text",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
-          "default": "'current_timestamp'"
+          "default": "(unixepoch())"
         }
       },
       "indexes": {},
@@ -157,19 +157,19 @@
         },
         "created_at": {
           "name": "created_at",
-          "type": "text",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
-          "default": "'current_timestamp'"
+          "default": "(unixepoch())"
         },
         "updated_at": {
           "name": "updated_at",
-          "type": "text",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
-          "default": "'current_timestamp'"
+          "default": "(unixepoch())"
         }
       },
       "indexes": {},
@@ -238,19 +238,19 @@
         },
         "created_at": {
           "name": "created_at",
-          "type": "text",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
-          "default": "'current_timestamp'"
+          "default": "(unixepoch())"
         },
         "updated_at": {
           "name": "updated_at",
-          "type": "text",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
-          "default": "'current_timestamp'"
+          "default": "(unixepoch())"
         }
       },
       "indexes": {},

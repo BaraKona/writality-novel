@@ -1,27 +1,20 @@
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import { Project } from "@shared/models";
-import { database } from "@renderer/db";
-import {
-  chapterParentsTable,
-  chaptersTable,
-  projectsTable,
-} from "../../../../db/schema";
-import { eq } from "drizzle-orm";
 
 export const useProjectFiles = (id: number): UseQueryResult<Project, Error> => {
   return useQuery({
-    queryKey: ["projects", "files", id],
-    queryFn: () =>
-      database
-        .select()
-        .from(chaptersTable)
-        .innerJoin(
-          chapterParentsTable,
-          eq(chapterParentsTable.chapter_id, chaptersTable.id),
-        )
-        .where(eq(projectsTable.id, id))
-        .all(),
-    enabled: !!id,
+    // queryKey: ["projects", "files", id],
+    // queryFn: () =>
+    //   database
+    //     .select()
+    //     .from(chaptersTable)
+    //     .innerJoin(
+    //       chapterParentsTable,
+    //       eq(chapterParentsTable.chapter_id, chaptersTable.id),
+    //     )
+    //     .where(eq(projectsTable.id, id))
+    //     .all(),
+    // enabled: !!id,
   });
 };
 

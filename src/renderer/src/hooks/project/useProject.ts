@@ -1,6 +1,6 @@
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import { Project } from "@shared/models";
-import { database } from "@renderer/db";
+import { database, deserialize } from "@renderer/db";
 import { projectsTable } from "../../../../db/schema";
 import { eq } from "drizzle-orm";
 
@@ -17,7 +17,10 @@ export const useProject = (id: number): UseQueryResult<Project, Error> => {
       if (!result) {
         throw new Error(`Project with id ${id} not found`);
       }
-      return result;
+      return {
+        ...result,
+        description: deserialize(result.description),
+      };
     },
     enabled: !!id,
   });

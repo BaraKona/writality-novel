@@ -20,7 +20,8 @@ export const projectsTable = sqliteTable("projects", {
     .default(sql`(unixepoch())`),
   updated_at: int("updated_at", { mode: "timestamp" })
     .notNull()
-    .default(sql`(unixepoch())`),
+    .default(sql`(unixepoch())`)
+    .$onUpdate(() => sql`(unixepoch())`),
 });
 
 // Folders Table
@@ -41,7 +42,8 @@ export const foldersTable = sqliteTable("folders", {
     .default(sql`(unixepoch())`),
   updated_at: int("updated_at", { mode: "timestamp" })
     .notNull()
-    .default(sql`(unixepoch())`),
+    .default(sql`(unixepoch())`)
+    .$onUpdate(() => sql`(unixepoch())`),
 });
 
 // Chapters Table
@@ -55,7 +57,8 @@ export const chaptersTable = sqliteTable("chapters", {
     .default(sql`(unixepoch())`),
   updated_at: int("updated_at", { mode: "timestamp" })
     .notNull()
-    .default(sql`(unixepoch())`),
+    .default(sql`(unixepoch())`)
+    .$onUpdate(() => sql`(unixepoch())`),
 });
 
 // Chapter Parents Table (For polymorphic parent relationships)

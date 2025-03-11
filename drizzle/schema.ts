@@ -1,19 +1,13 @@
-import { sqliteTable, AnySQLiteColumn, foreignKey, integer, text, uniqueIndex } from "drizzle-orm/sqlite-core"
+import { sqliteTable, AnySQLiteColumn, integer, text, foreignKey, uniqueIndex } from "drizzle-orm/sqlite-core"
   import { sql } from "drizzle-orm"
-
-export const chapterParents = sqliteTable("chapter_parents", {
-	chapterId: integer("chapter_id").notNull().references(() => chapters.id, { onDelete: "cascade" } ),
-	parentType: text("parent_type").notNull(),
-	parentId: integer("parent_id").notNull(),
-});
 
 export const chapters = sqliteTable("chapters", {
 	id: integer().primaryKey({ autoIncrement: true }).notNull(),
 	name: text().notNull(),
 	description: text(),
 	position: integer().notNull(),
-	createdAt: text("created_at").default("current_timestamp").notNull(),
-	updatedAt: text("updated_at").default("current_timestamp").notNull(),
+	createdAt: integer("created_at").default(sql`(unixepoch())`).notNull(),
+	updatedAt: integer("updated_at").default(sql`(unixepoch())`).notNull(),
 });
 
 export const folders = sqliteTable("folders", {
@@ -24,8 +18,8 @@ export const folders = sqliteTable("folders", {
 	description: text().notNull(),
 	emoji: text().notNull(),
 	position: integer().notNull(),
-	createdAt: text("created_at").default("current_timestamp").notNull(),
-	updatedAt: text("updated_at").default("current_timestamp").notNull(),
+	createdAt: integer("created_at").default(sql`(unixepoch())`).notNull(),
+	updatedAt: integer("updated_at").default(sql`(unixepoch())`).notNull(),
 },
 (table) => [
 	foreignKey(() => ({
@@ -40,8 +34,8 @@ export const projects = sqliteTable("projects", {
 	name: text().notNull(),
 	description: text(),
 	emoji: text(),
-	createdAt: text("created_at").default("current_timestamp").notNull(),
-	updatedAt: text("updated_at").default("current_timestamp").notNull(),
+	createdAt: integer("created_at").default(sql`(unixepoch())`).notNull(),
+	updatedAt: integer("updated_at").default(sql`(unixepoch())`).notNull(),
 });
 
 export const users = sqliteTable("users", {
@@ -53,4 +47,13 @@ export const users = sqliteTable("users", {
 (table) => [
 	uniqueIndex("users_email_unique").on(table.email),
 ]);
+
+export const chapterParents = sqliteTable("chapter_parents", {
+	chapterId: integer("chapter_id").notNull().references(() => chapters.id, { onDelete: "cascade" } ),
+	parentType: text("parent_type").notNull(),
+	parentId: integer("parent_id").notNull(),
+});
+
+export const drizzleMigrations = sqliteTable("__drizzle_migrations", {
+});
 

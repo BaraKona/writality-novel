@@ -15,3 +15,12 @@ export const database = drizzle(
     schema: schema,
   },
 );
+
+export const serialize = (data: any) => {
+  return JSON.stringify(data);
+};
+
+export const deserialize = (data: string | null) => {
+  if (!data) return null;
+  return JSON.parse(data);
+};

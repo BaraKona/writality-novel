@@ -1,16 +1,5 @@
 import { relations } from "drizzle-orm/relations";
-import { chapters, chapterParents, folders, projects } from "./schema";
-
-export const chapterParentsRelations = relations(chapterParents, ({one}) => ({
-	chapter: one(chapters, {
-		fields: [chapterParents.chapterId],
-		references: [chapters.id]
-	}),
-}));
-
-export const chaptersRelations = relations(chapters, ({many}) => ({
-	chapterParents: many(chapterParents),
-}));
+import { folders, projects, chapters, chapterParents } from "./schema";
 
 export const foldersRelations = relations(folders, ({one, many}) => ({
 	folder: one(folders, {
@@ -29,4 +18,15 @@ export const foldersRelations = relations(folders, ({one, many}) => ({
 
 export const projectsRelations = relations(projects, ({many}) => ({
 	folders: many(folders),
+}));
+
+export const chapterParentsRelations = relations(chapterParents, ({one}) => ({
+	chapter: one(chapters, {
+		fields: [chapterParents.chapterId],
+		references: [chapters.id]
+	}),
+}));
+
+export const chaptersRelations = relations(chapters, ({many}) => ({
+	chapterParents: many(chapterParents),
 }));
