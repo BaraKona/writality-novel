@@ -1,11 +1,18 @@
 {
   "files": [],
-  "references": [{ "path": "./tsconfig.node.json" }, { "path": "./tsconfig.web.json" }],
+  "references": [
+    { "path": "./tsconfig.node.json" },
+    { "path": "./tsconfig.web.json" }
+  ],
   "compilerOptions": {
     "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/renderer/src/*"],
+      "@/*": ["./src/*"],
+      "@renderer/*": ["./src/renderer/src/*"],
+      "@main/*": ["./src/main/*"],
+      "@db/*": ["./src/db/*"],
+      "@shared/*": ["./src/shared/*"]
     }
   }
 }

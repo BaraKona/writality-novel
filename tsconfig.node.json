@@ -1,6 +1,14 @@
 {
   "extends": "@electron-toolkit/tsconfig/tsconfig.node.json",
-  "include": ["electron.vite.config.*", "src/main/*", "src/preload/*", "src/shared/*", "src/main/api/*", "src/main/db/*"],
+  "include": [
+    "electron.vite.config.*",
+    "src/main/*",
+    "src/preload/*",
+    "src/shared/*",
+    "src/main/api/*",
+    "src/main/db/*",
+    "src/db/*"
+  ],
   "compilerOptions": {
     "composite": true,
     "esModuleInterop": true,
@@ -8,9 +16,8 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/renderer/src/*"],
-      "@shared/*": [
-        "src/shared/*"
-      ],
+      "@shared/*": ["src/shared/*"],
+      "@db/*": ["src/db/*"]
     }
   }
 }

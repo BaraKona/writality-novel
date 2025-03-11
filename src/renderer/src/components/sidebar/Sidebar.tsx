@@ -54,7 +54,7 @@ export const Sidebar: FC<{ children: ReactNode }> = ({ children }) => {
         style={{ width }}
       >
         <div className="flex h-full flex-col overflow-auto pt-8">
-          <section className="px-1.5">
+          <section className="px-1.5 space-y-1">
             <ProjectImage image={defaultBannerImage} />
             <ProjectSwitcher currentProject={currentProject} />
           </section>

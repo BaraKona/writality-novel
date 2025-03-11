@@ -1,15 +1,23 @@
-import { useMutation, UseMutationResult, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { database } from "@renderer/db";
+import { projectsTable } from "../../../../db/schema";
+import { eq } from "drizzle-orm";
 
 export const useDeleteProject = () => {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (id: number) => window.api.deleteProject(id),
-    mutationKey: ['delete-project'],
+    mutationFn: async (id: number) =>
+      await database
+        .delete(projectsTable)
+        .where(eq(projectsTable.id, id))
+        .run(),
+
+    mutationKey: ["delete-project"],
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ['projects']
-      })
-    }
-  })
-}
+        queryKey: ["projects"],
+      });
+    },
+  });
+};

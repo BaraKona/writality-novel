@@ -1,5 +1,5 @@
-import { Chapter } from '@shared/models'
-import { database, deserialize, serialize } from '.'
+import { Chapter } from "@shared/models";
+import { database, deserialize, serialize } from ".";
 
 // Chapters
 
@@ -7,13 +7,13 @@ import { database, deserialize, serialize } from '.'
 const INSERT_CHAPTER = `
   INSERT INTO chapters (name, position, created_at, updated_at)
   VALUES (?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-`
+`;
 
 // Inserts a new chapter parent relationship
 const INSERT_CHAPTER_PARENT = `
   INSERT INTO chapter_parents (chapter_id, parent_type, parent_id)
   VALUES (?, ?, ?)
-`
+`;
 
 // Selects all chapters by project ID
 const SELECT_CHAPTERS_BY_PROJECT_ID = `
@@ -22,7 +22,7 @@ const SELECT_CHAPTERS_BY_PROJECT_ID = `
   JOIN chapter_parents cp ON c.id = cp.chapter_id
   WHERE cp.parent_type = 'project' AND cp.parent_id = ?
   ORDER BY c.position ASC
-`
+`;
 
 const SELECT_CHAPTERS_BY_FOLDER_ID = `
   SELECT c.*
@@ -30,19 +30,20 @@ const SELECT_CHAPTERS_BY_FOLDER_ID = `
   JOIN chapter_parents cp ON c.id = cp.chapter_id
   WHERE cp.parent_type = 'folder' AND cp.parent_id = ?
   ORDER BY c.position ASC
-`
+`;
 
-const SELECT_CHAPTER_BY_ID = 'SELECT * FROM chapters WHERE id = ?'
+const SELECT_CHAPTER_BY_ID = "SELECT * FROM chapters WHERE id = ?";
 
 const UPDATE_CHAPTER = `
   UPDATE chapters
   SET name = ?, description = ?, position = ?, updated_at = CURRENT_TIMESTAMP
   WHERE id = ?
-`
+`;
 
-const DELETE_CHAPTER = 'DELETE FROM chapters WHERE id = ?'
+const DELETE_CHAPTER = "DELETE FROM chapters WHERE id = ?";
 
-const DELETE_CHAPTER_PARENTS = 'DELETE FROM chapter_parents WHERE chapter_id = ?'
+const DELETE_CHAPTER_PARENTS =
+  "DELETE FROM chapter_parents WHERE chapter_id = ?";
 
 const CREATE_CHAPTERS_TABLE = `
   CREATE TABLE IF NOT EXISTS chapters (
@@ -53,7 +54,7 @@ const CREATE_CHAPTERS_TABLE = `
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
   )
-`
+`;
 
 const CREATE_CHAPTER_PARENT_TABLE = `
   CREATE TABLE IF NOT EXISTS chapter_parents (
@@ -63,115 +64,127 @@ const CREATE_CHAPTER_PARENT_TABLE = `
     PRIMARY KEY (chapter_id, parent_type, parent_id),
     FOREIGN KEY (chapter_id) REFERENCES chapters(id) ON DELETE CASCADE
   )
-`
+`;
 
-database.exec(CREATE_CHAPTER_PARENT_TABLE)
-database.exec(CREATE_CHAPTERS_TABLE)
+// database.exec(CREATE_CHAPTER_PARENT_TABLE)
+// database.exec(CREATE_CHAPTERS_TABLE)
 
 export const useChapter = () => {
-  function createChapter(parent_type: string, parent_id: number): { id: number } {
-    console.log({ parent_type, parent_id })
+  function createChapter(
+    parent_type: string,
+    parent_id: number,
+  ): { id: number } {
+    console.log({ parent_type, parent_id });
     try {
       // Insert the chapter
-      const stmt = database.prepare(INSERT_CHAPTER)
-      const result = stmt.run('New Chapter', 0)
-      const chapterId = result.lastInsertRowid as number
+      const stmt = database.prepare(INSERT_CHAPTER);
+      const result = stmt.run("New Chapter", 0);
+      const chapterId = result.lastInsertRowid as number;
 
       // Link the chapter to its parent
-      const parentStmt = database.prepare(INSERT_CHAPTER_PARENT)
-      parentStmt.run(chapterId, parent_type, parent_id)
+      const parentStmt = database.prepare(INSERT_CHAPTER_PARENT);
+      parentStmt.run(chapterId, parent_type, parent_id);
 
-      return { id: chapterId }
+      return { id: chapterId };
     } catch (error) {
-      console.error('Error creating chapter:', error)
-      throw error
+      console.error("Error creating chapter:", error);
+      throw error;
     }
   }
 
   function getChaptersByProjectId(projectId: number): Chapter[] {
     try {
-      const stmt = database.prepare(SELECT_CHAPTERS_BY_PROJECT_ID)
-      const chapters = stmt.all(projectId) as Chapter[]
+      const stmt = database.prepare(SELECT_CHAPTERS_BY_PROJECT_ID);
+      const chapters = stmt.all(projectId) as Chapter[];
       return chapters.map((chapter) => ({
         ...chapter,
-        description: deserialize(chapter.description)
-      }))
+        description: deserialize(chapter.description),
+      }));
     } catch (error) {
-      console.error('Error fetching chapters by project ID:', error)
-      throw error
+      console.error("Error fetching chapters by project ID:", error);
+      throw error;
     }
   }
 
   function getChaptersByFolderId(folderId: number): Chapter[] {
     try {
-      const stmt = database.prepare(SELECT_CHAPTERS_BY_FOLDER_ID)
-      const chapters = stmt.all(folderId) as Chapter[]
+      const stmt = database.prepare(SELECT_CHAPTERS_BY_FOLDER_ID);
+      const chapters = stmt.all(folderId) as Chapter[];
       return chapters.map((chapter) => ({
         ...chapter,
-        description: deserialize(chapter.description)
-      }))
+        description: deserialize(chapter.description),
+      }));
     } catch (error) {
-      console.error('Error fetching chapters by folder ID:', error)
-      throw error
+      console.error("Error fetching chapters by folder ID:", error);
+      throw error;
     }
   }
 
   function updateChapter(chapter: Chapter): Chapter | null {
     try {
-      const stmt = database.prepare(UPDATE_CHAPTER)
-      stmt.run(chapter.name, serialize(chapter.description), chapter.position, chapter.id)
-      return getChapterById(chapter.id!) // Return the updated chapter
+      const stmt = database.prepare(UPDATE_CHAPTER);
+      stmt.run(
+        chapter.name,
+        serialize(chapter.description),
+        chapter.position,
+        chapter.id,
+      );
+      return getChapterById(chapter.id!); // Return the updated chapter
     } catch (error) {
-      console.error('Error updating chapter:', error)
-      throw error
+      console.error("Error updating chapter:", error);
+      throw error;
     }
   }
 
   function deleteChapter(id: number): boolean {
     try {
       // Delete chapter parents first
-      const deleteParentsStmt = database.prepare(DELETE_CHAPTER_PARENTS)
-      deleteParentsStmt.run(id)
+      const deleteParentsStmt = database.prepare(DELETE_CHAPTER_PARENTS);
+      deleteParentsStmt.run(id);
 
       // Delete the chapter
-      const stmt = database.prepare(DELETE_CHAPTER)
-      const result = stmt.run(id)
-      return result.changes > 0 // Return true if a chapter was deleted
+      const stmt = database.prepare(DELETE_CHAPTER);
+      const result = stmt.run(id);
+      return result.changes > 0; // Return true if a chapter was deleted
     } catch (error) {
-      console.error('Error deleting chapter:', error)
-      throw error
+      console.error("Error deleting chapter:", error);
+      throw error;
     }
   }
 
   function getChapterById(
-    id: number
-  ): (Chapter & { ancestors: { id: number; name: string; type: string }[] }) | null {
+    id: number,
+  ):
+    | (Chapter & { ancestors: { id: number; name: string; type: string }[] })
+    | null {
     try {
       // Fetch the chapter
-      const chapterStmt = database.prepare(SELECT_CHAPTER_BY_ID)
-      const chapter = chapterStmt.get(id) as Chapter | undefined
-      if (!chapter) return null
+      const chapterStmt = database.prepare(SELECT_CHAPTER_BY_ID);
+      const chapter = chapterStmt.get(id) as Chapter | undefined;
+      if (!chapter) return null;
 
       // Fetch the parent of the chapter (either a folder or a project)
       const parentStmt = database.prepare(`
       SELECT parent_type, parent_id
       FROM chapter_parents
       WHERE chapter_id = ?
-    `)
-      const parent = parentStmt.get(id) as { parent_type: string; parent_id: number } | undefined
+    `);
+      const parent = parentStmt.get(id) as
+        | { parent_type: string; parent_id: number }
+        | undefined;
 
       if (!parent) {
         return {
           ...chapter,
           description: deserialize(chapter.description),
-          ancestors: [] // No ancestors if no parent is found
-        }
+          ancestors: [], // No ancestors if no parent is found
+        };
       }
 
       // Fetch ancestors based on the parent type
-      let ancestors: { id: number; name: string; type: string }[] = []
+      let ancestors: { id: number; name: string; type: string }[] = [];
 
-      if (parent.parent_type === 'folder') {
+      if (parent.parent_type === "folder") {
         // If the parent is a folder, fetch its hierarchy using the folder_closure table
         const ancestorsStmt = database.prepare(`
         WITH RECURSIVE folder_hierarchy AS (
@@ -197,35 +210,35 @@ export const useChapter = () => {
         )
         SELECT id, name, type FROM folder_hierarchy
         ORDER BY depth DESC
-      `)
+      `);
         ancestors = ancestorsStmt.all(parent.parent_id) as {
-          id: number
-          name: string
-          type: string
-        }[]
-      } else if (parent.parent_type === 'project') {
+          id: number;
+          name: string;
+          type: string;
+        }[];
+      } else if (parent.parent_type === "project") {
         // If the parent is a project, fetch the project directly
         const projectStmt = database.prepare(`
         SELECT id, name, 'project' AS type
         FROM projects
         WHERE id = ?
-      `)
+      `);
         const project = projectStmt.get(parent.parent_id) as
           | { id: number; name: string; type: string }
-          | undefined
+          | undefined;
         if (project) {
-          ancestors = [project]
+          ancestors = [project];
         }
       }
 
       return {
         ...chapter,
         description: deserialize(chapter.description),
-        ancestors: ancestors // Return the ancestors in the correct order
-      }
+        ancestors: ancestors, // Return the ancestors in the correct order
+      };
     } catch (error) {
-      console.error('Error fetching chapter:', error)
-      throw error
+      console.error("Error fetching chapter:", error);
+      throw error;
     }
   }
 
@@ -235,6 +248,6 @@ export const useChapter = () => {
     updateChapter,
     deleteChapter,
     getChapterById,
-    getChaptersByProjectId
-  }
-}
+    getChaptersByProjectId,
+  };
+};
