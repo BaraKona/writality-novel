@@ -30,7 +30,7 @@ function createMainWindow(): void {
     titleBarStyle: "hidden",
     frame: false,
     titleBarOverlay: true,
-    trafficLightPosition: { x: 10, y: 10 },
+    trafficLightPosition: { x: 18, y: 18 },
   });
 
   mainWindow.on("ready-to-show", () => {

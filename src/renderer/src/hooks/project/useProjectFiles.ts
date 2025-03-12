@@ -1,64 +1,52 @@
-import { useQuery, UseQueryResult } from "@tanstack/react-query";
-import { Project } from "@shared/models";
+import { useQuery } from "@tanstack/react-query";
+import { database } from "@renderer/db";
+import { foldersTable, chaptersTable } from "../../../../db/schema";
+import { eq, isNull, and } from "drizzle-orm";
 
-export const useProjectFiles = (id: number): UseQueryResult<Project, Error> => {
+export const useProjectFiles = (id) => {
   return useQuery({
-    // queryKey: ["projects", "files", id],
-    // queryFn: () =>
-    //   database
-    //     .select()
-    //     .from(chaptersTable)
-    //     .innerJoin(
-    //       chapterParentsTable,
-    //       eq(chapterParentsTable.chapter_id, chaptersTable.id),
-    //     )
-    //     .where(eq(projectsTable.id, id))
-    //     .all(),
-    // enabled: !!id,
+    queryKey: ["projects", "files", id],
+    queryFn: async () => {
+      // Fetch top-level folders and chapters
+      const topLevelFolders = await database
+        .select()
+        .from(foldersTable)
+        .where(
+          and(
+            eq(foldersTable.project_id, id),
+            isNull(foldersTable.parent_folder_id),
+          ),
+        )
+        .all();
+
+      const topLevelChapters = await database
+        .select()
+        .from(chaptersTable)
+        // .where(eq(chaptersTable.parentId, id)) // Assuming chapters have a parentId
+        .all();
+
+      // Fetch top-level children for each folder
+      const result = await Promise.all(
+        topLevelFolders.map(async (folder) => {
+          const children = await database
+            .select()
+            .from(foldersTable)
+            .where(eq(foldersTable.parent_folder_id, folder.id))
+            .all();
+
+          return {
+            ...folder,
+            children,
+          };
+        }),
+      );
+
+      // Combine folders with children and chapters
+      return {
+        folders: result,
+        chapters: topLevelChapters,
+      };
+    },
+    enabled: !!id,
   });
 };
-
-// function chaptersAndFolders() {
-//   // Fetch all chapters linked to the project
-//   const chapters = database
-//     .select()
-//     .from(chaptersTable)
-//     .innerJoin(
-//       chapterParentsTable,
-//       eq(chapterParentsTable.chapter_id, chaptersTable.id),
-//     )
-//     .where(eq(chapterParentsTable.parent_type, "project"))
-//     .and(eq(chapterParentsTable.parent_id, projectId))
-//     .all();
-//   return chapters;
-// }
-
-//       .select()
-//       .from(chaptersTable)
-//       .innerJoin(
-//         chapterParentsTable,
-//         eq(chapterParentsTable.chapter_id, chaptersTable.id),
-//       )
-//       .where(eq(chapterParentsTable.parent_type, "project"))
-//       .and(eq(chapterParentsTable.parent_id, projectId))
-//       .all();
-
-//     // Fetch all folders linked to the project
-//     const folders = database
-//       .select()
-//       .from(foldersTable)
-//       .where(eq(foldersTable.project_id, projectId))
-//       .all();
-
-//     return {
-//       chapters: chapters.map((chapter) => ({
-//         ...chapter,
-//         description: deserialize(chapter.description), // Deserialize JSON fields
-//       })),
-//       folders: folders.map((folder) => ({
-//         ...folder,
-//         description: deserialize(folder.description),
-//         emoji: deserialize(folder.emoji),
-//         // children: getFoldersByParentFolderId(folder.id!), // Recursively fetch nested folders
-//         // chapters: useChapter().getChaptersByFolderId(folder.id!), // Fetch chapters in this folder
-//       })),

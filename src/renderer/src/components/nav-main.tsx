@@ -1,41 +1,40 @@
-import { ChevronRight, type LucideIcon } from 'lucide-react'
-import { Link, useLocation, useNavigate } from '@tanstack/react-router'
+import { ChevronRight, type LucideIcon } from "lucide-react";
+import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import {
   Collapsible,
   CollapsibleContent,
-  CollapsibleTrigger
-} from '@renderer/components/ui/collapsible'
+  CollapsibleTrigger,
+} from "@renderer/components/ui/collapsible";
 import {
   SidebarGroup,
-  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarMenuSub,
   SidebarMenuSubButton,
-  SidebarMenuSubItem
-} from '@renderer/components/ui/sidebar'
-import React from 'react'
-import { useAutoAnimate } from '@formkit/auto-animate/react'
+  SidebarMenuSubItem,
+} from "@renderer/components/ui/sidebar";
+import React from "react";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 export function NavMain({
-  items
+  items,
 }: {
   items: {
-    title: string
-    url: string
-    icon?: React.ReactNode | LucideIcon
-    isActive?: boolean
+    title: string;
+    url: string;
+    icon?: React.ReactNode | LucideIcon;
+    isActive?: boolean;
     items?: {
-      title: string
-      url: string
-    }[]
-  }[]
+      title: string;
+      url: string;
+    }[];
+  }[];
 }) {
-  const navigate = useNavigate()
-  const location = useLocation()
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  const [animate] = useAutoAnimate()
+  const [animate] = useAutoAnimate();
 
   return (
     <SidebarGroup>
@@ -48,18 +47,18 @@ export function NavMain({
             className="group/collapsible"
             ref={(el) => {
               if (el) {
-                animate
+                animate;
               }
             }}
           >
             <SidebarMenuItem>
               <SidebarMenuButton
                 tooltip={item.title}
-                className={`${location.pathname === item.url ? 'bg-sidebar-accent text-sidebar-accent-foreground' : ''}`}
+                className={`${location.pathname === item.url ? "bg-sidebar-accent/10" : ""}`}
                 onClick={() => {
                   navigate({
-                    to: item.url
-                  })
+                    to: item.url,
+                  });
                 }}
               >
                 {item.icon && React.isValidElement(item.icon)
@@ -67,11 +66,15 @@ export function NavMain({
                   : item.icon
                     ? React.createElement(item.icon as React.ElementType)
                     : null}
-                <span className="font-medium">{item.title}</span>
+                <span
+                  className={`font-medium ${location.pathname === item.url ? "text-sidebar-accent-foreground" : "text-sidebar-foreground"}`}
+                >
+                  {item.title}
+                </span>
                 <CollapsibleTrigger
                   asChild
                   onClick={(e) => {
-                    e.stopPropagation()
+                    e.stopPropagation();
                   }}
                 >
                   <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
@@ -85,7 +88,8 @@ export function NavMain({
                         <Link
                           to={subItem.url}
                           activeProps={{
-                            className: 'bg-sidebar-accent text-sidebar-accent-foreground'
+                            className:
+                              "bg-sidebar-accent/50 text-sidebar-accent-foreground",
                           }}
                         >
                           <span>{subItem.title}</span>
@@ -100,5 +104,5 @@ export function NavMain({
         ))}
       </SidebarMenu>
     </SidebarGroup>
-  )
+  );
 }

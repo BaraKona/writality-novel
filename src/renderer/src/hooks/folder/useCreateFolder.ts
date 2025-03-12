@@ -1,14 +1,26 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { foldersTable } from "../../../../db/schema";
+import { database } from "@renderer/db";
 
 export const useCreateFolder = (projectId: number) => {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
 
   return useMutation({
-    mutationKey: ['createProject'],
-    mutationFn: (parent_id: number | null) => window.api.createFolder(projectId, parent_id),
+    mutationKey: ["createProject"],
+    mutationFn: (parent_id: number | null) =>
+      database
+        .insert(foldersTable)
+        .values({
+          name: "New Folder",
+          project_id: projectId,
+          parent_id,
+        })
+        .run(),
+    // window.api.createFolder(projectId, parent_id),
     onSuccess: () =>
       queryClient.invalidateQueries({
-        queryKey: ['projectFolders', projectId]
-      })
-  })
-}
+        queryKey: ["projects", "files"],
+        // queryKey: ["projects", "files", id],
+      }),
+  });
+};

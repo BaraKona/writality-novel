@@ -1,45 +1,48 @@
-import { Chapter } from '@shared/models'
-import { FileText, Forward, MoreHorizontal, Trash2 } from 'lucide-react'
+import { Chapter } from "@shared/models";
+import { FileText, Forward, MoreHorizontal, Trash2 } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from '@renderer/components/ui/dropdown-menu'
+  DropdownMenuTrigger,
+} from "@renderer/components/ui/dropdown-menu";
 import {
   SidebarMenuAction,
   SidebarMenuButton,
-  SidebarMenuItem
-} from '@renderer/components/ui/sidebar'
-import { Link } from '@tanstack/react-router'
+  SidebarMenuItem,
+} from "@renderer/components/ui/sidebar";
+import { Link } from "@tanstack/react-router";
 
 export const FileListItem = ({
   chapter,
   level,
-  spacing = 15
+  spacing = 15,
 }: {
-  chapter: Chapter
-  level: number
-  spacing?: number
+  chapter: Chapter;
+  level: number;
+  spacing?: number;
 }) => {
   return (
-    <SidebarMenuItem key={chapter.name} className={`relative ${level > 0 ? 'mt-0.5' : ''}`}>
+    <SidebarMenuItem
+      key={chapter.name}
+      className={`relative ${level > 0 ? "mt-0.5" : ""}`}
+    >
       <SidebarMenuButton asChild>
         <Link
           to={`/chapters/$chapterId`}
           params={{ chapterId: chapter.id.toString() }}
-          activeProps={{ className: 'bg-sidebar-accent' }}
-          className={`group ${level === 0 ? 'pl-3.5' : ''}`}
+          activeProps={{ className: "bg-sidebar-accent" }}
+          className={`group text-sidebar-foreground ${level === 0 ? "pl-3.5" : ""}`}
         >
           <FileText
             className="shrink-0"
             size={16}
             style={{
-              marginLeft: `${level * spacing + (level === 0 ? 0 : 7)}px`
+              marginLeft: `${level * spacing + (level === 0 ? 0 : 7)}px`,
             }}
           />
-          <span>{chapter.name}</span>
+          <span className="text-sidebar-foreground">{chapter.name}</span>
         </Link>
       </SidebarMenuButton>
       <DropdownMenu>
@@ -49,7 +52,11 @@ export const FileListItem = ({
             <span className="sr-only">More</span>
           </SidebarMenuAction>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-48 rounded-lg" side={'right'} align="start">
+        <DropdownMenuContent
+          className="w-48 rounded-lg"
+          side={"right"}
+          align="start"
+        >
           <DropdownMenuItem>
             <Forward className="text-muted-foreground" />
             <span>Share Project</span>
@@ -62,5 +69,5 @@ export const FileListItem = ({
         </DropdownMenuContent>
       </DropdownMenu>
     </SidebarMenuItem>
-  )
-}
+  );
+};

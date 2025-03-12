@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { projectsTable } from "../../../../db/schema";
 import { database } from "@renderer/db";
-export const useCreateProject = () => {
+export const useCreateProject = (): ReturnType<typeof useMutation> => {
   const queryClient = useQueryClient();
 
   return useMutation({

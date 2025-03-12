@@ -13,7 +13,7 @@ export const useUpdateProject = () => {
           .update(projectsTable)
           .set({
             name: project.name,
-            emoji: project.emoji,
+            emoji: serialize(project.emoji),
             description: serialize(project.description),
           })
           .where(eq(projectsTable.id, project.id))

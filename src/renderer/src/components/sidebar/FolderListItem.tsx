@@ -47,7 +47,7 @@ export const FolderListItem = ({
   const spacing = 15;
 
   return (
-    <SidebarMenuItem className={` ${level > 0 ? "mt-0.5" : ""}`} ref={animate}>
+    <SidebarMenuItem className={`${level > 0 ? "mt-0.5" : ""}`} ref={animate}>
       <div
         className="absolute bottom-0 z-10 bg-border"
         style={{
@@ -93,7 +93,7 @@ export const FolderListItem = ({
               )}
             </Button>
           </div>
-          <span>{folder.name}</span>
+          <span className="text-sidebar-foreground">{folder.name}</span>
         </Link>
       </SidebarMenuButton>
       <DropdownMenu>

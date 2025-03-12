@@ -41,7 +41,7 @@ export const Sidebar: FC<{ children: ReactNode }> = ({ children }) => {
     <div className="flex h-full h-screen w-screen justify-start">
       <nav
         className={clsx(
-          "fixed top-0 bottom-0 left-0 z-20 flex h-screen max-h-screen flex-shrink-0 flex-col space-y-2 border-r bg-sidebar transition-transform duration-300 ease-sidebar",
+          "fixed top-0 bottom-0 left-0 z-20 flex h-screen max-h-screen flex-shrink-0 grainy bg-sidebar flex-col space-y-2  transition-transform duration-300 ease-sidebar",
           {
             ["cursor-col-resize"]: isDragging,
           },
@@ -53,7 +53,7 @@ export const Sidebar: FC<{ children: ReactNode }> = ({ children }) => {
         aria-labelledby="nav-heading"
         style={{ width }}
       >
-        <div className="flex h-full flex-col overflow-auto pt-8">
+        <div className="flex h-full flex-col overflow-auto pt-12">
           <section className="px-1.5 space-y-1">
             <ProjectImage image={defaultBannerImage} />
             <ProjectSwitcher currentProject={currentProject} />
@@ -86,17 +86,16 @@ export const Sidebar: FC<{ children: ReactNode }> = ({ children }) => {
           setState={setSidebarState}
         />
       </nav>
-
       <main
-        style={{ paddingLeft: sidebarState === Open.Open ? width : 0 }}
+        style={{ paddingLeft: sidebarState === Open.Open ? width : 8 }}
         className={clsx(
-          "flex max-h-screen w-full flex-grow",
+          "flex max-h-screen w-full flex-grow p-2 bg-sidebar grainy z-[0] border",
           isDragging
             ? "transition-none"
             : "transition-all duration-300 ease-sidebar",
         )}
       >
-        <div className="flex flex-grow grow flex-col overflow-auto">
+        <div className="flex flex-grow grow flex-col overflow-auto bg-background shadow-sm rounded-lg">
           {children}
         </div>
       </main>

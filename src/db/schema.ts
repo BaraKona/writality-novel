@@ -20,8 +20,7 @@ export const projectsTable = sqliteTable("projects", {
     .default(sql`(unixepoch())`),
   updated_at: int("updated_at", { mode: "timestamp" })
     .notNull()
-    .default(sql`(unixepoch())`)
-    .$onUpdate(() => sql`(unixepoch())`),
+    .default(sql`(unixepoch())`),
 });
 
 // Folders Table
@@ -34,16 +33,15 @@ export const foldersTable = sqliteTable("folders", {
     onDelete: "cascade",
   }), // Self-referencing foreign key for folder hierarchy
   name: text().notNull(),
-  description: text().notNull(),
-  emoji: text().notNull(),
-  position: int().notNull(), // Position within the folder hierarchy
+  description: text(),
+  emoji: text(),
+  position: int(), // Position within the folder hierarchy
   created_at: int("created_at", { mode: "timestamp" })
     .notNull()
     .default(sql`(unixepoch())`),
   updated_at: int("updated_at", { mode: "timestamp" })
     .notNull()
-    .default(sql`(unixepoch())`)
-    .$onUpdate(() => sql`(unixepoch())`),
+    .default(sql`(unixepoch())`),
 });
 
 // Chapters Table
@@ -51,14 +49,13 @@ export const chaptersTable = sqliteTable("chapters", {
   id: int().primaryKey({ autoIncrement: true }),
   name: text().notNull(),
   description: text(),
-  position: int().notNull(),
+  position: int(),
   created_at: int("created_at", { mode: "timestamp" })
     .notNull()
     .default(sql`(unixepoch())`),
   updated_at: int("updated_at", { mode: "timestamp" })
     .notNull()
-    .default(sql`(unixepoch())`)
-    .$onUpdate(() => sql`(unixepoch())`),
+    .default(sql`(unixepoch())`),
 });
 
 // Chapter Parents Table (For polymorphic parent relationships)
