@@ -74,7 +74,7 @@ export const Infobar: FC<{
             </BreadcrumbList>
           ))}
           <BreadcrumbList className="shrink-0 text-xs font-medium">
-            <BreadcrumbItem className="flex max-w-48 shrink-0 gap-1 pl-1">
+            <BreadcrumbItem className="flex max-w-48 shrink-0 gap-1 pl-1 text-text">
               <FileTextIcon size={16} strokeWidth={1.5} className="shrink-0" />
               <span className="truncate">{chapter?.name}</span>
             </BreadcrumbItem>

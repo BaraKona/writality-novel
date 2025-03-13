@@ -4,8 +4,8 @@ import {
   BadgeCheck,
   Bell,
   ChevronDown,
-  CreditCard,
   LogOut,
+  Settings2,
   Sparkles,
 } from "lucide-react";
 
@@ -90,9 +90,10 @@ export function NavUser({
                 <BadgeCheck />
                 Account
               </DropdownMenuItem>
+
               <DropdownMenuItem>
-                <CreditCard />
-                Billing
+                <Settings2 />
+                Settings
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <Bell />

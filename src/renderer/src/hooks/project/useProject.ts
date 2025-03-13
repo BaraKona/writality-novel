@@ -1,10 +1,9 @@
-import { useQuery, UseQueryResult } from "@tanstack/react-query";
-import { Project } from "@shared/models";
+import { useQuery } from "@tanstack/react-query";
 import { database, deserialize } from "@renderer/db";
 import { projectsTable } from "../../../../db/schema";
 import { eq } from "drizzle-orm";
 
-export const useProject = (id: number): UseQueryResult<Project, Error> => {
+export const useProject = (id: number) => {
   return useQuery({
     queryKey: ["projects", id],
     queryFn: async () => {

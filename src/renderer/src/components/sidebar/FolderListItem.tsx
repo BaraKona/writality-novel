@@ -49,7 +49,7 @@ export const FolderListItem = ({
   return (
     <SidebarMenuItem className={`${level > 0 ? "mt-0.5" : ""}`} ref={animate}>
       <div
-        className="absolute bottom-0 z-10 bg-border"
+        className="absolute bottom-0 z-10 bg-foreground/20"
         style={{
           left: `${spacing + level * spacing + 7}px`,
           width: "1px",

@@ -19,7 +19,11 @@ export const BasicEditor: FC<{
 }) => {
   return (
     <Plate editor={editor} onChange={({ value }) => setContent(value)}>
-      <EditorContainer className={className}>
+      <EditorContainer
+        variant="default"
+        className={className}
+        id="scroll_container"
+      >
         <Editor
           placeholder={placeholder}
           className={editorClassName}

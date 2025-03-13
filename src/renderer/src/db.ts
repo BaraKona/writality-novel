@@ -6,7 +6,7 @@ export const database = drizzle(
     try {
       const result = await window.api.execute(...args);
       return { rows: result };
-    } catch (e: any) {
+    } catch (e) {
       console.error("Error from sqlite proxy server: ", e.response.data);
       return { rows: [] };
     }
@@ -16,11 +16,12 @@ export const database = drizzle(
   },
 );
 
-export const serialize = (data: any) => {
+export const serialize = (data: unknown): string => {
   return JSON.stringify(data);
 };
 
-export const deserialize = (data: string | null) => {
+export const deserialize = (data: string | null | unknown): unknown => {
   if (!data) return null;
+
   return JSON.parse(data);
 };

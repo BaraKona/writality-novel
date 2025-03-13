@@ -1,13 +1,12 @@
-import {useMutation, useQueryClient} from '@tanstack/react-query';
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export const useSetProjectDir = () => {
   const queryClient = useQueryClient();
- return useMutation<void, Error, number>({
+  return useMutation<void, Error, number>({
     mutationFn: (newId: number) => window.api.setCurrentProjectId(newId),
-    mutationKey: ['switchProject'],
+    mutationKey: ["switchProject"],
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['currentProjectDir'] })
-    }
-  })
-}
-
+      queryClient.invalidateQueries({ queryKey: ["currentProjectDir"] });
+    },
+  });
+};

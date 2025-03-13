@@ -1,8 +1,5 @@
-import { useAtom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
 import { createRootRoute, Outlet, ReactNode } from "@tanstack/react-router";
-import { useCurrentDir } from "@renderer/hooks/useProjectDir";
-import { useEffect } from "react";
 import { ProjectDirectory } from "@shared/models";
 import { Header } from "@renderer/components/Header";
 import { Sidebar } from "@renderer/components/sidebar/Sidebar";
@@ -24,7 +21,7 @@ export const Route = createRootRoute({
   component: RootComponent,
 });
 
-function RootComponent() {
+function RootComponent(): JSX.Element {
   return (
     <RootDocument>
       <Outlet />
@@ -48,17 +45,14 @@ export const projectDirAtom = atomWithStorage<ProjectDirectory | null>(
   null,
 );
 
-function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
-  const { data: projectDir } = useCurrentDir();
+export const currentProjectIdAtom = atomWithStorage<number | null>(
+  "currentProjectId",
+  null,
+);
 
-  const [projectDirState, setProjectDirState] = useAtom(projectDirAtom);
-
-  useEffect(() => {
-    if (projectDir) {
-      setProjectDirState(projectDir);
-    }
-  }, [projectDir]);
-
+function RootDocument({
+  children,
+}: Readonly<{ children: ReactNode }>): JSX.Element {
   return (
     <Sidebar>
       <Header />

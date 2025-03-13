@@ -4,6 +4,6 @@ export const Route = createLazyFileRoute("/")({
   component: Index,
 });
 
-function Index() {
-  return <Navigate to={`/world`} />;
+function Index(): JSX.Element {
+  return <Navigate to={`/overview`} />;
 }

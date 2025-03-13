@@ -9,7 +9,6 @@ import {
   ImageIcon,
   BlocksIcon,
   LibraryBigIcon,
-  SearchIcon,
   SettingsIcon,
   SquareUserIcon,
   TrashIcon,
@@ -17,6 +16,7 @@ import {
   X,
   Flower2,
   CirclePlus,
+  LibraryBig,
 } from "lucide-react";
 
 export const TabListItem: FC<{
@@ -62,8 +62,8 @@ function iconList(tabUrl: string | undefined): JSX.Element {
   const stroke = 1.5;
   if (tabUrl.includes("home") || tabUrl === "/") {
     return <LibraryBigIcon size={size} strokeWidth={stroke} />;
-  } else if (tabUrl.includes("search")) {
-    return <SearchIcon size={size} strokeWidth={stroke} />;
+  } else if (tabUrl.includes("overview")) {
+    return <LibraryBig size={size} strokeWidth={stroke} />;
   } else if (tabUrl.includes("settings")) {
     return <SettingsIcon size={size} strokeWidth={stroke} />;
   } else if (tabUrl.includes("chapter")) {

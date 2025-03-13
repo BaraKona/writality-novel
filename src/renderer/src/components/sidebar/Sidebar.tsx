@@ -5,8 +5,8 @@ import defaultBannerImage from "@renderer/assets/images/fantasy-endless-hole-lan
 import { ReactNode } from "@tanstack/react-router";
 import { useAtom, useAtomValue } from "jotai";
 import {
+  currentProjectIdAtom,
   Open,
-  projectDirAtom,
   sidebarStateAtom,
 } from "@renderer/routes/__root";
 import { useProject } from "@renderer/hooks/project/useProject";
@@ -19,6 +19,7 @@ import { Separator } from "../ui/separator";
 import { SidebarExtender } from "./SidebarExtender";
 import { TanStackRouterDevtools } from "@tanstack/router-devtools";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { useCurrentDir } from "@renderer/hooks/useProjectDir";
 
 export const Sidebar: FC<{ children: ReactNode }> = ({ children }) => {
   const [width, setWidth] = useState(320);
@@ -27,15 +28,11 @@ export const Sidebar: FC<{ children: ReactNode }> = ({ children }) => {
   const [isDragging, setDragging] = useState(false);
 
   const [sidebarState, setSidebarState] = useAtom(sidebarStateAtom);
-  const projectDirState = useAtomValue(projectDirAtom);
+  const currentProjectId = useAtomValue(currentProjectIdAtom);
 
-  const { data: currentProject } = useProject(
-    projectDirState?.currentProjectId!,
-  );
+  const { data: projectDir } = useCurrentDir();
 
-  if (!currentProject || !projectDirState) {
-    return null;
-  }
+  const { data: currentProject } = useProject(currentProjectId);
 
   const sidebarData = data(currentProject);
 
@@ -71,7 +68,7 @@ export const Sidebar: FC<{ children: ReactNode }> = ({ children }) => {
           <section className="mt-auto">
             <NavUser
               user={{
-                name: projectDirState?.name,
+                name: projectDir?.name,
                 position: "Writer",
                 avatar: "/avatars/shadcn.jpg",
               }}
@@ -89,20 +86,24 @@ export const Sidebar: FC<{ children: ReactNode }> = ({ children }) => {
         />
       </nav>
       <main
-        style={{ paddingLeft: sidebarState === Open.Open ? width : 8 }}
+        style={{ paddingLeft: sidebarState === Open.Open ? width + 1 : 8 }}
         className={clsx(
-          "flex max-h-screen w-full flex-grow p-2 bg-sidebar grainy z-[0] border",
+          "flex max-h-screen w-full flex-grow p-2 bg-sidebar grainy z-2",
           isDragging
             ? "transition-none"
             : "transition-all duration-300 ease-sidebar",
         )}
       >
-        <div className="flex flex-grow grow flex-col overflow-auto bg-background shadow-sm rounded-lg">
+        <div className="flex flex-grow grow flex-col ring-border/50 ring overflow-auto bg-background shadow-sm rounded-lg">
           {children}
         </div>
       </main>
-      <TanStackRouterDevtools position="bottom-right" />
-      <ReactQueryDevtools initialIsOpen={false} />
+      <TanStackRouterDevtools position="bottom-left" />
+      <ReactQueryDevtools
+        initialIsOpen={false}
+        position="bottom"
+        buttonPosition="bottom-left"
+      />
     </div>
   );
 };

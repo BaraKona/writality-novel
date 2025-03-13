@@ -8,7 +8,6 @@ import {
 } from "@renderer/components/ui/popover";
 import { Clock3, FileClock } from "lucide-react";
 import { getTimeFromNow } from "@renderer/lib/utils";
-import { useCurrentDir } from "@renderer/hooks/useProjectDir";
 import { useProject } from "@renderer/hooks/project/useProject";
 import { useUpdateProject } from "@renderer/hooks/project/useUpdateProject";
 import { defaultDateTimeFormat } from "@shared/functions";
@@ -19,15 +18,17 @@ import "@blocknote/mantine/style.css";
 import { useDebounce } from "@renderer/hooks/useDebounce";
 import { BasicEditor } from "@renderer/components/editor/BasicEditor";
 import { useCreateEditor } from "@renderer/components/editor/use-create-editor";
+import { useAtomValue } from "jotai";
+import { currentProjectIdAtom } from "../__root";
 
 export const Route = createLazyFileRoute("/world/")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const { data: currentDir } = useCurrentDir();
+  const projectId = useAtomValue(currentProjectIdAtom);
 
-  const { data: project } = useProject(currentDir.currentProjectId);
+  const { data: project } = useProject(projectId);
   const { mutate: updateProject } = useUpdateProject();
 
   const editor = useCreateEditor({ value: project?.description });

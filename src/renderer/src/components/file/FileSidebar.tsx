@@ -5,8 +5,9 @@ import {
   ListTodoIcon,
   PencilRulerIcon,
 } from "lucide-react";
-import { FileNotes } from "./sidebar/FileNotes";
+import { FileNotes } from "./sidebar/notes/FileNotes";
 import { ChapterSidebarState } from "@renderer/routes/chapters/$chapterId";
+import { chaptersTable } from "@db/schema";
 
 type FileSidebarListItemProps = {
   name: string;
@@ -18,9 +19,10 @@ type FileSidebarListItemProps = {
 export const FileSidebar: FC<{
   sidebarState: ChapterSidebarState;
   setSidebarState: (state) => void;
-}> = ({ sidebarState, setSidebarState }) => {
+  file: typeof chaptersTable.$inferSelect;
+}> = ({ sidebarState, setSidebarState, file }) => {
   return (
-    <div className="grow flex flex-col rounded-l-xl border border-secondary-sidebar-border shadow-md pointer-events-auto bg-secondary-sidebar border-r-0">
+    <div className="grow flex flex-col rounded-l-xl border border-secondary-sidebar-border shadow-md pointer-events-auto shadow-md bg-secondary-sidebar border-r-0 overflow-y-auto">
       <div className="flex w-full gap-4 border-b border-secondary-sidebar-border px-2 py-1 text-xs font-medium">
         <FileSidebarListItem
           name="notes"
@@ -67,8 +69,8 @@ export const FileSidebar: FC<{
           />
         </FileSidebarListItem>
       </div>
-      <div className="flex grow flex-col overflow-y-auto pt-2">
-        {sidebarState.category === "notes" && <FileNotes />}
+      <div className="flex grow flex-col overflow-y-auto relative">
+        {sidebarState.category === "notes" && <FileNotes file={file} />}
       </div>
     </div>
   );

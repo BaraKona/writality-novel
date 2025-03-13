@@ -1,16 +1,15 @@
-import { Project } from "@shared/models";
+import { projectsTable } from "@db/schema";
 import {
   Frame,
   GalleryVerticalEnd,
   Map,
   PieChart,
-  Settings2,
   Image,
   Globe2Icon,
   SquareUser,
 } from "lucide-react";
 
-export const data = (currentProject: Project) => {
+export const data = (currentProject?: typeof projectsTable) => {
   return {
     openProject: {
       name: currentProject?.name || "Untitled",
@@ -90,29 +89,6 @@ export const data = (currentProject: Project) => {
           },
           {
             title: "Changelog",
-            url: "#",
-          },
-        ],
-      },
-      {
-        title: "Settings",
-        url: "#",
-        icon: Settings2,
-        items: [
-          {
-            title: "User",
-            url: "#",
-          },
-          {
-            title: "Appearance",
-            url: "#",
-          },
-          {
-            title: "Billing",
-            url: "#",
-          },
-          {
-            title: "Limits",
             url: "#",
           },
         ],

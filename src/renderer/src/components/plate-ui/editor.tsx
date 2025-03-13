@@ -1,5 +1,3 @@
-"use client";
-
 import React from "react";
 
 import type { PlateContentProps } from "@udecode/plate/react";
@@ -43,7 +41,7 @@ export const EditorContainer = ({
   variant,
   ...props
 }: React.HTMLAttributes<HTMLDivElement> &
-  VariantProps<typeof editorContainerVariants>) => {
+  VariantProps<typeof editorContainerVariants>): JSX.Element => {
   const editor = useEditorRef();
   const containerRef = useEditorContainerRef();
 

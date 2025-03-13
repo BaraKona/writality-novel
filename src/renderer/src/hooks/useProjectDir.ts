@@ -1,9 +1,12 @@
-import { ProjectDirectory } from '@shared/models'
-import { useQuery, UseQueryResult } from '@tanstack/react-query'
+import { ProjectDirectory } from "@shared/models";
+import { useQuery, UseQueryResult } from "@tanstack/react-query";
 
-export const useCurrentDir: () => UseQueryResult<ProjectDirectory, Error> = () => {
+export const useCurrentDir: () => UseQueryResult<
+  ProjectDirectory,
+  Error
+> = () => {
   return useQuery({
-    queryKey: ['currentProjectDir'],
-    queryFn: () => window.api.getCurrentProjectId()
-  })
-}
+    queryKey: ["currentProjectDir"],
+    queryFn: () => window.api.getCurrentProjectId(),
+  });
+};

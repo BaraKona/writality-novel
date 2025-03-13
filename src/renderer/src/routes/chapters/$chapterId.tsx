@@ -86,11 +86,14 @@ function RouteComponent(): JSX.Element {
         <FileSidebar
           setSidebarState={setSidebarState}
           sidebarState={sidebarState}
+          file={chapter}
         />
       </div>
       <div
         key="file-content"
-        style={{ paddingRight: sidebarState.state === Open.Open ? width : 0 }}
+        style={{
+          paddingRight: sidebarState.state === Open.Open ? width - 8 : 0,
+        }}
         className={clsx(
           "flex max-h-screen w-full flex-grow flex-col",
           isDragging

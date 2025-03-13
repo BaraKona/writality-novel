@@ -218,7 +218,7 @@
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 30 10% 90%;
+    --border: 30 10% 87%;
     --input: 30 10% 90%;
     --ring: 23 50% 25%;
 
@@ -233,13 +233,17 @@
     --sidebar-ring: 23 50% 25%;
 
     --secondary-sidebar-background: 30 10% 10%;
-    --secondary-sidebar-foreground: 30 10% 50%;
-    --secondary-sidebar-primary: 23 56% 45%;
+    --secondary-sidebar-foreground: 30 15% 75%;
+    --secondary-sidebar-primary: 30 10% 12%;
     --secondary-sidebar-primary-foreground: 0 0% 98%;
     --secondary-sidebar-accent: 23 30% 10%;
-    --secondary-sidebar-accent-foreground: 23 50% 25%;
-    --secondary-sidebar-border: 23 20% 20%;
+    --secondary-sidebar-accent-foreground: 30 20% 20%;
+    --secondary-sidebar-border: 30 10% 15%;
     --secondary-sidebar-ring: 23 50% 25%;
+  }
+
+  ::selection {
+    background: hsl(var(--muted-foreground));
   }
 }
 
@@ -282,7 +286,7 @@
 @layer base {
   * {
     @apply border-border;
-    @apply text-text;
+    /* @apply text-text; */
   }
   body {
     @apply bg-background text-foreground;

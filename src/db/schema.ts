@@ -67,3 +67,26 @@ export const chapterParentsTable = sqliteTable("chapter_parents", {
     .notNull(),
   parent_id: int().notNull(), // ID of the parent (could be a project or folder)
 });
+
+// Notes Table
+export const notesTable = sqliteTable("notes", {
+  id: int().primaryKey({ autoIncrement: true }),
+  project_id: int()
+    .notNull()
+    .references(() => projectsTable.id, { onDelete: "cascade" }), // Foreign key to projects
+  chapter_id: int().references(() => chaptersTable.id, {
+    onDelete: "set null",
+  }), // Optional foreign key to chapters
+  title: text().notNull(),
+  content: text(), // The main content of the note
+  position: int(),
+  status: text().default("active"), // Could be 'active', 'archived', 'deleted', etc.
+  pinned_to_project: int().default(0), // Boolean flag for notes pinned to project (0 or 1)
+  pinned_to_chapter: int().default(0), // Boolean flag for notes pinned to chapter (0 or 1)
+  created_at: int("created_at", { mode: "timestamp" })
+    .notNull()
+    .default(sql`(unixepoch())`),
+  updated_at: int("updated_at", { mode: "timestamp" })
+    .notNull()
+    .default(sql`(unixepoch())`),
+});
