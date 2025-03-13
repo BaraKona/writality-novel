@@ -1,6 +1,6 @@
-import { Separator } from '@radix-ui/react-separator'
-import { PrimaryNavbar } from './PrimaryNavbar'
-import { FC } from 'react'
+import { Separator } from "@radix-ui/react-separator";
+import { PrimaryNavbar } from "./PrimaryNavbar";
+import { FC } from "react";
 
 export const Header: FC = () => {
   return (
@@ -10,5 +10,5 @@ export const Header: FC = () => {
         <PrimaryNavbar />
       </div>
     </nav>
-  )
-}
+  );
+};

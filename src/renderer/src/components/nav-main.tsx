@@ -54,7 +54,7 @@ export function NavMain({
             <SidebarMenuItem>
               <SidebarMenuButton
                 tooltip={item.title}
-                className={`${location.pathname === item.url ? "bg-sidebar-accent/10" : ""}`}
+                className={`hover:bg-sidebar-accent/10 active:bg-sidebar-accent/20 ${location.pathname === item.url ? "bg-sidebar-accent/10" : ""}`}
                 onClick={() => {
                   navigate({
                     to: item.url,

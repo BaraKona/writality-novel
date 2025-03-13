@@ -21,7 +21,7 @@ export const SidebarExtender: FC<{
   dragPosition = "right",
   className,
 }) => {
-  const positionStyle = dragPosition === "left" ? "-left-0.5" : "right-0.5";
+  const positionStyle = dragPosition === "left" ? "-left-1.75" : "right-1.75";
   return (
     <div
       className={cn(
@@ -45,7 +45,7 @@ export const SidebarExtender: FC<{
           });
         }}
         className={clsx(
-          "h-full w-1 shrink-0 cursor-col-resize hover:bg-ring",
+          "h-full w-1.5 rounded-full shrink-0 cursor-col-resize hover:bg-ring/30",
           className,
         )}
       />

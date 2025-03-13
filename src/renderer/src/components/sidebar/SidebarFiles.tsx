@@ -27,11 +27,14 @@ import { FolderListItem } from "./FolderListItem";
 import { useLocalStorage } from "@renderer/hooks/useLocalStorage";
 import { useProjectFiles } from "@renderer/hooks/project/useProjectFiles";
 import { FileListItem } from "./FileListItem";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 export function SidebarFiles({ project }: { project: Project }) {
   const { data: projectFiles } = useProjectFiles(project?.id);
   const { mutate: createProjectFolder } = useCreateFolder(project?.id);
   const { mutate: createChapter } = useCreateChapter(project?.id, "project");
+
+  const [animate] = useAutoAnimate();
 
   const [openFolders, setOpenFolders] = useLocalStorage<{
     [key: string]: boolean;
@@ -70,7 +73,7 @@ export function SidebarFiles({ project }: { project: Project }) {
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarGroupLabel>
-      <SidebarMenu>
+      <SidebarMenu ref={animate}>
         {projectFiles?.folders?.map((item) => (
           <FolderListItem
             key={item.id}

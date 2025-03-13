@@ -79,7 +79,7 @@ export const useTabs = (): {
     const newTabs = tabs.map((tab) => {
       const activeTab = tabs.find((t) => t.active);
       const url = location.pathname;
-      const name = location.pathname === "/" ? "Library" : url;
+      const name = location.pathname === "/" ? "Library" : formatTabName(tab);
       const query = location.search.query;
 
       return {
@@ -108,6 +108,25 @@ export const useTabs = (): {
       },
     });
   };
+
+  function formatTabName(tab: Tab): string {
+    if (!tab.url) {
+      return "New Page";
+    }
+
+    if (tab.url.includes("home") || tab.url === "/") {
+      return "Library";
+    } else if (tab.url.includes("search")) {
+      return "Search";
+    } else if (tab.url.includes("settings")) {
+      return "Settings";
+    }
+
+    return tab.url
+      .replace("/", "")
+      .replace(/-/g, " ")
+      .replace(/\b\w/g, (l) => l.toUpperCase());
+  }
 
   return {
     createTab,

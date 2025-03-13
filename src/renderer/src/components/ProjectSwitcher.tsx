@@ -36,12 +36,12 @@ export function ProjectSwitcher({
   currentProject,
 }: {
   currentProject?: Project;
-}) {
+}): JSX.Element {
   const { mutate: createProject } = useCreateProject();
   const navigate = useNavigate();
 
   if (!currentProject) {
-    return null;
+    return <></>;
   }
 
   return (
@@ -49,7 +49,7 @@ export function ProjectSwitcher({
       <SidebarMenuItem>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <SidebarMenuButton className="ring-1 shadow-xs ring-sidebar-border data-[state=open]:bg-sidebar-accent/50 data-[state=open]:text-sidebar-accent-foreground">
+            <SidebarMenuButton className="border bg-primary-foreground text-sidebar-accent-foreground border hover:border-foreground/20 hover:bg-primary-background">
               <div className="rounded bg-background/20 backdrop-blur-sm">
                 <EmojiDisplay emoji={currentProject.emoji} type="project" />
               </div>

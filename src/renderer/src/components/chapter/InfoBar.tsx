@@ -32,7 +32,7 @@ export const Infobar: FC<{
 }> = ({ chapter, word, setSidebarState, sidebarState }) => {
   console.log();
   return (
-    <div className="flex h-[2.25rem] w-full flex-shrink-0 items-center justify-between gap-2 overflow-x-auto px-2">
+    <div className="flex h-[2.25rem] w-full flex-shrink-0 items-center border-b justify-between gap-2 overflow-x-auto px-2">
       <div className="flex items-center gap-0.5">
         <Breadcrumb className="flex w-fit shrink-0 items-center gap-1">
           {chapter.ancestors?.map((ancestor) => (

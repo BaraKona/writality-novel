@@ -1,4 +1,3 @@
-import { Chapter } from "@shared/models";
 import { FileText, Forward, MoreHorizontal, Trash2 } from "lucide-react";
 import {
   DropdownMenu,
@@ -13,25 +12,29 @@ import {
   SidebarMenuItem,
 } from "@renderer/components/ui/sidebar";
 import { Link } from "@tanstack/react-router";
+import { chaptersTable } from "@db/schema";
 
 export const FileListItem = ({
   chapter,
   level,
   spacing = 15,
 }: {
-  chapter: Chapter;
+  chapter: typeof chaptersTable;
   level: number;
   spacing?: number;
-}) => {
+}): JSX.Element => {
   return (
     <SidebarMenuItem
       key={chapter.name}
       className={`relative ${level > 0 ? "mt-0.5" : ""}`}
     >
-      <SidebarMenuButton asChild>
+      <SidebarMenuButton
+        asChild
+        className="hover:bg-sidebar-accent/10 active:bg-sidebar-accent/20"
+      >
         <Link
           to={`/chapters/$chapterId`}
-          params={{ chapterId: chapter.id.toString() }}
+          params={{ chapterId: chapter.id?.toString() }}
           activeProps={{ className: "bg-sidebar-accent/10" }}
           className={`group text-sidebar-foreground ${level === 0 ? "pl-3.5" : ""}`}
         >

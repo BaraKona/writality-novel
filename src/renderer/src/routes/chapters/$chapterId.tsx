@@ -33,8 +33,8 @@ const chapterSidebarStateAtom = atomWithStorage<ChapterSidebarState>(
   },
 );
 
-function RouteComponent() {
-  const [width, setWidth] = useState(320);
+function RouteComponent(): JSX.Element {
+  const [width, setWidth] = useState(400);
   const originalWidth = useRef(width);
   const originalClientX = useRef(width);
   const [isDragging, setDragging] = useState(false);
@@ -51,14 +51,14 @@ function RouteComponent() {
   );
 
   if (!chapter) {
-    return null;
+    return <div>Chapter not found</div>;
   }
 
   return (
     <div className="flex grow overflow-y-auto relative">
       <div
         className={clsx(
-          "fixed top-0 bottom-0 z-[100] flex h-full pt-11 pb-4 pointer-events-none bg-transparent max-h-screen flex-shrink-0 flex-col space-y-2 transition-transform duration-300 ease-sidebar",
+          "fixed top-0 bottom-0 z-[100] flex h-full pt-11.25 pb-4 pointer-events-none bg-transparent max-h-screen flex-shrink-0 flex-col space-y-2 transition-transform duration-300 ease-sidebar",
           {
             ["cursor-col-resize"]: isDragging,
           },
@@ -108,7 +108,7 @@ function RouteComponent() {
           className="relative flex h-full w-full flex-col overflow-y-auto px-16"
           key={chapterId}
         >
-          <div className="mx-auto w-full max-w-3xl px-2 pt-14">
+          <div className="mx-auto w-full max-w-screen-lg px-2 pt-14">
             <h1
               className="text-editorText mt-4 min-h-fit font-serif-thick text-4xl font-semibold ring-0 outline-none"
               contentEditable={true}

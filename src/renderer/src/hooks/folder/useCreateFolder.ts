@@ -6,14 +6,14 @@ export const useCreateFolder = (projectId: number) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationKey: ["createProject"],
+    mutationKey: ["createFolder"],
     mutationFn: (parent_id: number | null) =>
       database
         .insert(foldersTable)
         .values({
           name: "New Folder",
           project_id: projectId,
-          parent_id,
+          parent_folder_id: parent_id,
         })
         .run(),
     // window.api.createFolder(projectId, parent_id),

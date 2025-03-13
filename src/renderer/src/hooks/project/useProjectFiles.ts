@@ -1,6 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { database } from "@renderer/db";
-import { foldersTable, chaptersTable } from "../../../../db/schema";
+import {
+  foldersTable,
+  chaptersTable,
+  chapterParentsTable,
+} from "../../../../db/schema";
 import { eq, isNull, and } from "drizzle-orm";
 
 export const useProjectFiles = (id) => {
@@ -9,7 +13,11 @@ export const useProjectFiles = (id) => {
     queryFn: async () => {
       // Fetch top-level folders and chapters
       const topLevelFolders = await database
-        .select()
+        .select({
+          id: foldersTable.id,
+          name: foldersTable.name,
+          project_id: foldersTable.project_id,
+        })
         .from(foldersTable)
         .where(
           and(
@@ -20,10 +28,21 @@ export const useProjectFiles = (id) => {
         .all();
 
       const topLevelChapters = await database
-        .select()
+        .select({
+          id: chaptersTable.id,
+          name: chaptersTable.name,
+        })
         .from(chaptersTable)
-        // .where(eq(chaptersTable.parentId, id)) // Assuming chapters have a parentId
-        .all();
+        .innerJoin(
+          chapterParentsTable,
+          eq(chaptersTable.id, chapterParentsTable.chapter_id),
+        )
+        .where(
+          and(
+            eq(chapterParentsTable.parent_type, "project"),
+            eq(chapterParentsTable.parent_id, id),
+          ),
+        );
 
       // Fetch top-level children for each folder
       const result = await Promise.all(

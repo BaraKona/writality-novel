@@ -39,8 +39,8 @@ export const FolderListItem = ({
   level: number;
   openFolders: { [key: string]: boolean };
   setOpenFolders: (value: { [key: string]: boolean }) => void;
-}) => {
-  const { mutate: createChapter } = useCreateChapter(folder.id);
+}): JSX.Element => {
+  const { mutate: createChapter } = useCreateChapter(folder.id, "folder");
   const { mutate: createProjectFolder } = useCreateFolder(folder.project_id);
   const { data: folderFiles } = useFolderTree(folder.id);
   const [animate] = useAutoAnimate();
@@ -58,7 +58,7 @@ export const FolderListItem = ({
       ></div>
       <SidebarMenuButton
         key={folder.name}
-        className="flex w-full relative"
+        className="flex w-full relative hover:bg-sidebar-accent/10 active:bg-sidebar-accent/20"
         asChild
       >
         <Link
@@ -108,7 +108,7 @@ export const FolderListItem = ({
           side={"right"}
           align="start"
         >
-          <DropdownMenuItem onClick={() => createChapter("folder")}>
+          <DropdownMenuItem onClick={() => createChapter()}>
             <FilePlus className="text-muted-foreground" />
             <span>New File</span>
           </DropdownMenuItem>
@@ -129,7 +129,7 @@ export const FolderListItem = ({
       </DropdownMenu>
       {openFolders[folder.id] && (
         <div className="">
-          {folderFiles?.children?.map((item) => (
+          {folderFiles?.folders?.map((item) => (
             <FolderListItem
               key={item.id}
               folder={item}
