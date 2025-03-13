@@ -15,15 +15,16 @@ import { custom_emojis } from "@renderer/lib/custom_emoji";
 import { useUpdateFolder } from "@renderer/hooks/folder/useUpdateFolder";
 import { ChapterListItem } from "@renderer/components/sidebar/ChapterListItem";
 import { Button } from "@renderer/components/ui/button";
-import { SmallEditor } from "@renderer/components/editor/SmallEditor";
 import { useState } from "react";
 import { useDebounce } from "@renderer/hooks/useDebounce";
+import { useCreateEditor } from "@renderer/components/editor/use-create-editor";
+import { BasicEditor } from "@renderer/components/editor/BasicEditor";
 
 export const Route = createFileRoute("/folders/$folderId")({
   component: RouteComponent,
 });
 
-function RouteComponent() {
+function RouteComponent(): JSX.Element {
   const { folderId } = Route.useParams();
 
   const { data: folder } = useFolderById(Number(folderId));
@@ -31,9 +32,11 @@ function RouteComponent() {
 
   const [addDescription, setAddDescription] = useState(false);
 
-  const debouncedSaveFile = useDebounce(
-    (content) => updateFolder({ ...folder, description: content }),
-    200,
+  const editor = useCreateEditor({ value: folder?.description });
+
+  const debouncedFunc = useDebounce(
+    (value) => updateFolder({ ...folder, description: value }),
+    2000,
   );
 
   return (
@@ -86,13 +89,12 @@ function RouteComponent() {
               {getTimeFromNow(folder?.updated_at || "")}
             </div>
           </div>
-          <div className="h-fit w-full space-y-3 rounded-lg bg-accent p-8 text-sm text-accent-foreground">
+          <div className="h-fit w-full space-y-3 rounded-lg bg-accent p-8 text-sm text-accent-foreground border">
             {folder?.description || addDescription ? (
-              <SmallEditor
-                content={folder?.description || ""}
-                editable={true}
-                className="overflow-hidden !text-accent-foreground"
-                onChange={(content) => debouncedSaveFile(content)}
+              <BasicEditor
+                editor={editor}
+                setContent={(value) => debouncedFunc(value)}
+                className="mt-4"
               />
             ) : (
               <div className="space-y-3">

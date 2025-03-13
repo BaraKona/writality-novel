@@ -1,8 +1,6 @@
 import { useAtom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
 import { createRootRoute, Outlet, ReactNode } from "@tanstack/react-router";
-import { TanStackRouterDevtools } from "@tanstack/router-devtools";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useCurrentDir } from "@renderer/hooks/useProjectDir";
 import { useEffect } from "react";
 import { ProjectDirectory } from "@shared/models";
@@ -67,8 +65,6 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
       <div className="flex h-full grow flex-col overflow-y-auto">
         {children}
       </div>
-      <TanStackRouterDevtools position="bottom-right" />
-      <ReactQueryDevtools initialIsOpen={false} />
     </Sidebar>
   );
 }

@@ -58,7 +58,7 @@ function RouteComponent() {
     <div className="flex grow overflow-y-auto relative">
       <div
         className={clsx(
-          "fixed top-0 bottom-0 z-[100] flex h-full pt-9 pb-2 pointer-events-none bg-transparent max-h-screen flex-shrink-0 flex-col space-y-2 transition-transform duration-300 ease-sidebar",
+          "fixed top-0 bottom-0 z-[100] flex h-full pt-11 pb-4 pointer-events-none bg-transparent max-h-screen flex-shrink-0 flex-col space-y-2 transition-transform duration-300 ease-sidebar",
           {
             ["cursor-col-resize"]: isDragging,
           },
@@ -66,7 +66,7 @@ function RouteComponent() {
             ? "shadow-[rgba(0,0,0,0.2)_-2px_0px_0px_0px_inset]"
             : "shadow-[rgba(0,0,0,0.04)_-2px_0px_0px_0px_inset]",
           sidebarState.state === Open.Open
-            ? "-translate-x-0 right-1"
+            ? "-translate-x-0 right-0"
             : "translate-x-full right-0",
         )}
         aria-labelledby="nav-heading"
@@ -81,7 +81,7 @@ function RouteComponent() {
           setDragging={setDragging}
           setState={setSidebarState}
           dragPosition="left"
-          className="h-[94%] mt-auto"
+          className="h-[91%] mt-10"
         />
         <FileSidebar
           setSidebarState={setSidebarState}
@@ -89,7 +89,6 @@ function RouteComponent() {
         />
       </div>
       <div
-        // className="relative z-10 flex w-full grow flex-col overflow-y-auto"
         key="file-content"
         style={{ paddingRight: sidebarState.state === Open.Open ? width : 0 }}
         className={clsx(

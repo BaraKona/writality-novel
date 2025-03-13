@@ -30,7 +30,7 @@ export function NavMain({
       url: string;
     }[];
   }[];
-}) {
+}): JSX.Element {
   const navigate = useNavigate();
   const location = useLocation();
 

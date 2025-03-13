@@ -64,7 +64,7 @@ export const FolderListItem = ({
         <Link
           to={"/folders/$folderId"}
           params={{ folderId: folder.id.toString() }}
-          activeProps={{ className: "bg-sidebar-accent" }}
+          activeProps={{ className: "bg-sidebar-accent/10" }}
           className={`group group/folder peer relative flex w-full cursor-default items-center gap-2 rounded-md px-2 py-1 text-sm ring-0 outline-none hover:bg-accent ${level === 0 ? "pl-3.5" : ""}`}
         >
           <div

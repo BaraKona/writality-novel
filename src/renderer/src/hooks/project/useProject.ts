@@ -20,6 +20,7 @@ export const useProject = (id: number): UseQueryResult<Project, Error> => {
       return {
         ...result,
         description: deserialize(result.description),
+        emoji: deserialize(result.emoji),
       };
     },
     enabled: !!id,

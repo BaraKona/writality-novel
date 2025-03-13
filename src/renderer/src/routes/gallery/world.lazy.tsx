@@ -1,12 +1,9 @@
-import { createLazyFileRoute } from '@tanstack/react-router'
+import { createLazyFileRoute } from "@tanstack/react-router";
 
-export const Route = createLazyFileRoute('/gallery/world')({
+export const Route = createLazyFileRoute("/gallery/world")({
   component: RouteComponent,
-})
+});
 
-function RouteComponent() {
-  return (
-    <div>
-      Hello "/gallery/world"!
-    </div>)
+function RouteComponent(): JSX.Element {
+  return <div>Hello Gallery World</div>;
 }

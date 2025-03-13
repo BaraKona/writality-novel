@@ -17,6 +17,8 @@ import { data } from "./sidebarData";
 import { NavUser } from "../nav-user";
 import { Separator } from "../ui/separator";
 import { SidebarExtender } from "./SidebarExtender";
+import { TanStackRouterDevtools } from "@tanstack/router-devtools";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 export const Sidebar: FC<{ children: ReactNode }> = ({ children }) => {
   const [width, setWidth] = useState(320);
@@ -62,7 +64,7 @@ export const Sidebar: FC<{ children: ReactNode }> = ({ children }) => {
             <NavMain items={sidebarData.navMain} />
             <Separator
               orientation="horizontal"
-              className="h-px bg-sidebar-accent"
+              className="h-px bg-sidebar-accent/10"
             />
             <SidebarFiles project={currentProject} />
           </section>
@@ -99,6 +101,8 @@ export const Sidebar: FC<{ children: ReactNode }> = ({ children }) => {
           {children}
         </div>
       </main>
+      <TanStackRouterDevtools position="bottom-right" />
+      <ReactQueryDevtools initialIsOpen={false} />
     </div>
   );
 };

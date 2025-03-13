@@ -1,11 +1,9 @@
-import { createLazyFileRoute, Navigate } from '@tanstack/react-router'
+import { createLazyFileRoute, Navigate } from "@tanstack/react-router";
 
-export const Route = createLazyFileRoute('/')({
+export const Route = createLazyFileRoute("/")({
   component: Index,
-})
+});
 
 function Index() {
-  return (
-     <Navigate to={`/world`} />
-  )
+  return <Navigate to={`/world`} />;
 }

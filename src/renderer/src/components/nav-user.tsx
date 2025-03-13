@@ -1,16 +1,19 @@
-'use client'
+"use client";
 
 import {
   BadgeCheck,
   Bell,
   ChevronDown,
-  ChevronsUpDown,
   CreditCard,
   LogOut,
-  Sparkles
-} from 'lucide-react'
+  Sparkles,
+} from "lucide-react";
 
-import { Avatar, AvatarFallback, AvatarImage } from '@renderer/components/ui/avatar'
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@renderer/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,19 +21,23 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from '@renderer/components/ui/dropdown-menu'
-import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@renderer/components/ui/sidebar'
+  DropdownMenuTrigger,
+} from "@renderer/components/ui/dropdown-menu";
+import {
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+} from "@renderer/components/ui/sidebar";
 
 export function NavUser({
-  user
+  user,
 }: {
   user: {
-    position: string
-    avatar: string
-    name: string
-  }
-}) {
+    position: string;
+    avatar: string;
+    name: string;
+  };
+}): JSX.Element {
   return (
     <SidebarMenu>
       <SidebarMenuItem className="px-2">
@@ -38,12 +45,12 @@ export function NavUser({
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size="lg"
-              className="rounded-lg bg-linear-to-b from-sidebar to-accent text-sidebar-accent-foreground ring-1 ring-border hover:ring-foreground/20"
+              className="rounded-lg bg-primary-foreground text-sidebar-accent-foreground border hover:border-foreground/20 hover:bg-primary-background"
             >
               <Avatar className="h-8 w-8 rounded-lg font-serif">
                 <AvatarImage src={user.avatar} alt={user.name} />
                 <AvatarFallback className="rounded-lg uppercase">
-                  {`${user.name?.charAt(0) + user.name?.charAt(1)}`}{' '}
+                  {`${user.name?.charAt(0) + user.name?.charAt(1)}`}{" "}
                 </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
@@ -101,5 +108,5 @@ export function NavUser({
         </DropdownMenu>
       </SidebarMenuItem>
     </SidebarMenu>
-  )
+  );
 }
