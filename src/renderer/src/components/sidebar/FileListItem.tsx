@@ -13,16 +13,25 @@ import {
 } from "@renderer/components/ui/sidebar";
 import { Link } from "@tanstack/react-router";
 import { chaptersTable } from "@db/schema";
+import { useDeleteChapter } from "@renderer/hooks/chapter/useDeleteChapter";
+import { useAtomValue } from "jotai";
+import { currentProjectIdAtom } from "@renderer/routes/__root";
 
 export const FileListItem = ({
   chapter,
   level,
   spacing = 15,
 }: {
-  chapter: typeof chaptersTable;
+  chapter: typeof chaptersTable.$inferSelect;
   level: number;
   spacing?: number;
 }): JSX.Element => {
+  const currentProjectId = useAtomValue(currentProjectIdAtom);
+
+  const { mutate: deleteChapter } = useDeleteChapter(
+    currentProjectId as number,
+  );
+
   return (
     <SidebarMenuItem
       key={chapter.name}
@@ -65,7 +74,7 @@ export const FileListItem = ({
             <span>Share Project</span>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>
+          <DropdownMenuItem onClick={() => deleteChapter(chapter.id)}>
             <Trash2 className="text-muted-foreground" />
             <span>Delete Chapter</span>
           </DropdownMenuItem>

@@ -41,6 +41,7 @@ export const useProjectFiles = (id) => {
           and(
             eq(chapterParentsTable.parent_type, "project"),
             eq(chapterParentsTable.parent_id, id),
+            isNull(chaptersTable.deleted_at),
           ),
         );
 

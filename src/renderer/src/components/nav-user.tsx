@@ -6,7 +6,7 @@ import {
   ChevronDown,
   LogOut,
   Settings2,
-  Sparkles,
+  Trash2,
 } from "lucide-react";
 
 import {
@@ -80,13 +80,6 @@ export function NavUser({
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem>
-                <Sparkles />
-                Upgrade to Pro
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
                 <BadgeCheck />
                 Account
               </DropdownMenuItem>
@@ -98,6 +91,13 @@ export function NavUser({
               <DropdownMenuItem>
                 <Bell />
                 Notifications
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator />
+            <DropdownMenuGroup>
+              <DropdownMenuItem>
+                <Trash2 />
+                Deleted
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />

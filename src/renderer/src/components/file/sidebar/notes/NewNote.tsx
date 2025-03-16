@@ -5,7 +5,7 @@ import { Button } from "@renderer/components/ui/button";
 import { useCreateNote } from "@renderer/hooks/note/useCreateNote";
 import { currentProjectIdAtom } from "@renderer/routes/__root";
 import { useAtomValue } from "jotai";
-import { Save } from "lucide-react";
+import { Save, X } from "lucide-react";
 import { FC, useState } from "react";
 
 export const NewNote: FC<{
@@ -40,7 +40,7 @@ export const NewNote: FC<{
         <div className="flex justify-between items-start">
           <h2
             contentEditable={true}
-            className="ring-0 outline-none text-sm font-semibold"
+            className="ring-0 outline-none text-sm font-semibold pr-3"
             onInput={(e) => setName((e.target as HTMLElement).innerText)}
           >
             New Note
@@ -55,6 +55,14 @@ export const NewNote: FC<{
           />
         </div>
       </div>
+      <Button
+        size="icon"
+        className="absolute top-2 right-2"
+        onClick={setAddingNote}
+        variant="ghost"
+      >
+        <X size={16} />
+      </Button>
       <Button
         size="icon"
         variant="ghost"

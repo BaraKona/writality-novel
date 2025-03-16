@@ -50,6 +50,7 @@ export const chaptersTable = sqliteTable("chapters", {
   name: text().notNull(),
   description: text(),
   position: int(),
+  deleted_at: int("deleted_at", { mode: "timestamp" }), // Soft delete timestamp
   created_at: int("created_at", { mode: "timestamp" })
     .notNull()
     .default(sql`(unixepoch())`),

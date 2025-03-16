@@ -1,13 +1,9 @@
-import {
-  useMutation,
-  useQueryClient,
-  UseMutationResult,
-} from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { database, serialize } from "@renderer/db";
 import { chaptersTable } from "../../../../db/schema";
 import { eq } from "drizzle-orm";
 
-export const useUpdateChapter = (): UseMutationResult => {
+export const useUpdateChapter = (): ReturnType<typeof useMutation> => {
   const queryClient = useQueryClient();
 
   return useMutation({

@@ -3,6 +3,8 @@ import { createRootRoute, Outlet, ReactNode } from "@tanstack/react-router";
 import { ProjectDirectory } from "@shared/models";
 import { Header } from "@renderer/components/Header";
 import { Sidebar } from "@renderer/components/sidebar/Sidebar";
+import { Toaster } from "@renderer/components/ui/toaster";
+
 export const Route = createRootRoute({
   head: () => ({
     meta: [
@@ -59,6 +61,7 @@ function RootDocument({
       <div className="flex h-full grow flex-col overflow-y-auto">
         {children}
       </div>
+      <Toaster />
     </Sidebar>
   );
 }

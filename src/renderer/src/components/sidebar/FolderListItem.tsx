@@ -1,6 +1,7 @@
 import { Folder } from "@shared/models";
 import {
   FilePlus,
+  FolderIcon,
   FolderOpenIcon,
   FolderPlus,
   Forward,
@@ -27,7 +28,6 @@ import { useCreateFolder } from "@renderer/hooks/folder/useCreateFolder";
 import { FileListItem } from "./FileListItem";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { useFolderTree } from "@renderer/hooks/folder/useFolderTree";
-import { FolderFilled } from "@renderer/assets/FolderFilled";
 
 export const FolderListItem = ({
   folder,
@@ -75,7 +75,7 @@ export const FolderListItem = ({
           >
             <Button
               className="p-0"
-              variant="ghost"
+              variant="invisible"
               size="icon"
               onClick={(e) => {
                 e.preventDefault();
@@ -87,9 +87,12 @@ export const FolderListItem = ({
               }}
             >
               {openFolders[folder.id] ? (
-                <FolderOpenIcon size={18} />
+                <FolderOpenIcon
+                  size={18}
+                  className="fill-muted-foreground stroke-foreground"
+                />
               ) : (
-                <FolderFilled className="fill-muted-foreground stroke-muted-foreground" />
+                <FolderIcon className="fill-muted-foreground stroke-foreground" />
               )}
             </Button>
           </div>

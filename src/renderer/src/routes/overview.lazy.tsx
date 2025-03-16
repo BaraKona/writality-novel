@@ -73,9 +73,11 @@ function RouteComponent(): JSX.Element {
       </div>
       <div className="grow overflow-y-auto p-4">
         <div className="mx-auto h-full w-full max-w-(--breakpoint-sm) space-y-8 lg:max-w-(--breakpoint-lg)">
-          <h1 className="py-5 text-center font-serif-thick text-6xl leading-tight tracking-wide text-muted-foreground">
+          <h1 className="py-5 text-center font-serif-thick text-6xl leading-tight tracking-wide  text-foreground">
             {greetingTime()},{" "}
-            <span className="capitalize">{data?.name || "Stranger"}!</span>
+            <span className="capitalize text-muted-foreground">
+              {data?.name || "Stranger"}!
+            </span>
           </h1>
 
           {updatedProjects.map((category, index) => (

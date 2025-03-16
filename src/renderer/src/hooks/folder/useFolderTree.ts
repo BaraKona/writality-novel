@@ -5,7 +5,7 @@ import {
   chapterParentsTable,
   chaptersTable,
 } from "../../../../db/schema";
-import { eq, and } from "drizzle-orm";
+import { eq, and, isNull } from "drizzle-orm";
 
 export const useFolderTree = (id: number) => {
   type FolderTreeResult = {
@@ -31,6 +31,7 @@ export const useFolderTree = (id: number) => {
           and(
             eq(chapterParentsTable.parent_type, "folder"),
             eq(chapterParentsTable.parent_id, id),
+            isNull(chaptersTable.deleted_at),
           ),
         )
         .orderBy(chaptersTable.position);
