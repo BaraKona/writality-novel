@@ -81,6 +81,7 @@ export const notesTable = sqliteTable("notes", {
   title: text().notNull(),
   content: text(), // The main content of the note
   position: int(),
+  deleted_at: int("deleted_at", { mode: "timestamp" }), // Soft delete timestamp
   status: text().default("active"), // Could be 'active', 'archived', 'deleted', etc.
   pinned_to_project: int().default(0), // Boolean flag for notes pinned to project (0 or 1)
   pinned_to_chapter: int().default(0), // Boolean flag for notes pinned to chapter (0 or 1)

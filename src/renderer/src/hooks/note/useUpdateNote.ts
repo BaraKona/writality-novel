@@ -22,6 +22,12 @@ export const useUpdateNote = (): UseMutationResult => {
         .run();
       return note;
     },
+    onSuccess: (note) => {
+      queryClient.invalidateQueries({
+        queryKey: ["notes", note.chapter_id],
+      });
+    },
+
     mutationKey: ["updateFolder"],
   });
 };

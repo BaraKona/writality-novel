@@ -7,33 +7,22 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@renderer/components/ui/dropdown-menu";
-import { useUpdateNote } from "@renderer/hooks/note/useUpdateNote";
 import { getTimeFromNow } from "@renderer/lib/utils";
-import { Archive, Ellipsis } from "lucide-react";
-import { FC, useState } from "react";
+import { ArchiveRestore, ArchiveX, Ellipsis } from "lucide-react";
+import { FC } from "react";
 
-export const Note: FC<{
+export const DeletedNote: FC<{
   note: typeof notesTable.$inferSelect;
 }> = ({ note }) => {
   const editor = useCreateEditor({ value: note.content });
-  const [content, setContent] = useState(note.content);
-  const [title, setTitle] = useState(note.title);
-  const { mutate: updateNote } = useUpdateNote();
 
   return (
     <DropdownMenu>
-      <div
-        className="group/note p-4 rounded-md relative shadow border bg-secondary-sidebar-primary border-secondary-sidebar-border"
-        onBlur={() => updateNote({ ...note, content, title })}
-      >
+      <div className="group/note p-4 rounded-md relative shadow border bg-secondary-sidebar-primary border-secondary-sidebar-border">
         <div className="flex flex-col">
           <div className="">
             <div className="flex justify-between items-start">
-              <h2
-                contentEditable={true}
-                className="ring-0 outline-none text-sm font-semibold text-secondary-sidebar-primary-foreground/80 pr-4 w-full"
-                onInput={(e) => setTitle((e.target as HTMLElement).innerText)}
-              >
+              <h2 className="ring-0 outline-none text-sm font-semibold text-secondary-sidebar-primary-foreground/80 pr-4 w-full">
                 {note.title}
               </h2>
             </div>
@@ -41,26 +30,29 @@ export const Note: FC<{
           <div className="mt-3">
             <BasicEditor
               editor={editor}
-              setContent={(value) => setContent(value)}
-              editorClassName="text-sm text-secondary-sidebar-foreground"
+              setContent={() => {}}
+              editorClassName="text-sm text-secondary-sidebar-foreground pointer-events-none"
               placeholder="Start writing..."
             />
           </div>
           <div className="mt-2 ml-auto text-xs text-muted-foreground">
-            {getTimeFromNow(note.updated_at)}
+            Created: {getTimeFromNow(note.updated_at)}
+          </div>
+          <div className="mt-2 ml-auto text-xs text-muted-foreground">
+            Archived: {getTimeFromNow(note.deleted_at)}
           </div>
         </div>
         <DropdownMenuTrigger className="p-1 rounded-md hover:bg-secondaryBackground text-muted-foreground absolute top-2 right-2">
           <Ellipsis size={16} strokeWidth={2} />
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-48 rounded-lg" align="start">
-          <DropdownMenuItem
-            onClick={() =>
-              updateNote({ ...note, content, title, deleted_at: new Date() })
-            }
-          >
-            <Archive className="text-muted-foreground" />
-            <span>Archive note</span>
+          <DropdownMenuItem>
+            <ArchiveRestore className="text-muted-foreground" />
+            <span>Restore</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <ArchiveX className="text-muted-foreground" />
+            <span>Permanently remove</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </div>

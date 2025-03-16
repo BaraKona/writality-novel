@@ -1,17 +1,19 @@
 import { FC, useState } from "react";
 
-import { LightbulbIcon, PlusIcon } from "lucide-react";
+import { Archive, LightbulbIcon, PlusIcon } from "lucide-react";
 import { Button } from "@renderer/components/ui/button";
-import { chaptersTable, notesTable } from "@db/schema";
+import { chaptersTable } from "@db/schema";
 import { useChapterNotes } from "@renderer/hooks/note/useChapterNotes";
 import { NewNote } from "./NewNote";
 import { Note } from "./Note";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
+import { FileArchivedNotes } from "./FileArchivedNotes";
 
 export const FileNotes: FC<{ file: typeof chaptersTable.$inferSelect }> = ({
   file,
 }) => {
   const [addingNote, setAddingNote] = useState(false);
+  const [archiveTab, setArchiveTab] = useState(false);
   const [animate] = useAutoAnimate();
   const { data: notes, isLoading } = useChapterNotes(file?.id);
 
@@ -28,7 +30,7 @@ export const FileNotes: FC<{ file: typeof chaptersTable.$inferSelect }> = ({
     );
   }
 
-  if ((!notes || notes.length === 0) && !addingNote) {
+  if ((!notes || notes.length === 0) && !addingNote && !archiveTab) {
     return (
       <div className="w-full flex flex-col gap-0.5 items-center text-text p-2 grow overflow-y-auto group/todo-menu relative">
         <div className="flex items-center mt-8 gap-2 text-sm text-secondary-sidebar-foreground">
@@ -54,16 +56,30 @@ export const FileNotes: FC<{ file: typeof chaptersTable.$inferSelect }> = ({
           />
           Create note
         </Button>
+        <Button
+          className="absolute bottom-2 left-2 text-xs flex items-center gap-2 px-2 hover:bg-secondary-sidebar-primary-foreground/10"
+          size="icon"
+          variant="ghost"
+          onClick={() => setArchiveTab((prev) => !prev)}
+        >
+          <Archive
+            size={16}
+            strokeWidth={1.5}
+            className="stroke-secondary-sidebar-foreground"
+          />
+        </Button>
       </div>
     );
+  }
+
+  if (archiveTab) {
+    return <FileArchivedNotes file={file} setArchiveTab={setArchiveTab} />;
   }
 
   return (
     <div className="flex w-full flex-col overflow-y-auto grow" ref={animate}>
       <div className="flex flex-col gap-2 p-2 overflow-y-auto">
-        {notes?.map((note) => (
-          <Note key={note.id} note={note as typeof notesTable.$inferInsert} />
-        ))}
+        {notes?.map((note) => <Note key={note.id} note={note} />)}
       </div>
       {addingNote && (
         <div className="mt-auto p-2 pt-0">
@@ -71,7 +87,7 @@ export const FileNotes: FC<{ file: typeof chaptersTable.$inferSelect }> = ({
         </div>
       )}
       {!addingNote ? (
-        <div className="p-2 mt-auto">
+        <div className="p-2 mt-auto flex">
           <Button
             className=" text-xs flex items-center gap-2 px-2 ml-auto text-secondary-sidebar-foreground hover:text-secondary-sidebar-primary-foreground hover:bg-secondary-sidebar-primary-foreground/10"
             size="md"
@@ -87,6 +103,18 @@ export const FileNotes: FC<{ file: typeof chaptersTable.$inferSelect }> = ({
           </Button>
         </div>
       ) : null}
+      <Button
+        className="absolute bottom-2 left-2 text-xs flex items-center gap-2 px-2 hover:bg-secondary-sidebar-primary-foreground/10"
+        size="icon"
+        variant="ghost"
+        onClick={() => setArchiveTab((prev) => !prev)}
+      >
+        <Archive
+          size={16}
+          strokeWidth={1.5}
+          className="stroke-secondary-sidebar-foreground"
+        />
+      </Button>
     </div>
   );
 };

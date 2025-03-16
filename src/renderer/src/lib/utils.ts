@@ -10,7 +10,7 @@ dayjs.extend(relativeTime);
 
 export const cn = (...inputs: ClassValue[]): string => twMerge(clsx(inputs));
 
-export function getTimeFromNow(date: string | Date | number): string {
+export function getTimeFromNow(date?: string | Date | number | null): string {
   return dayjs(date).fromNow();
 }
 

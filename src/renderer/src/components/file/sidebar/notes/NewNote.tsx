@@ -18,7 +18,7 @@ export const NewNote: FC<{
 
   const editor = useCreateEditor({});
 
-  const { mutate } = useCreateNote(currentProjectId, file.id);
+  const { mutate } = useCreateNote(currentProjectId as number, file.id);
 
   const handleSave = (): void => {
     if (!content) {
@@ -35,7 +35,7 @@ export const NewNote: FC<{
   };
 
   return (
-    <div className="p-4 rounded-lg relative shadow border border-primary-foreground/20 bg-background hover:border-foreground/20">
+    <div className="p-4 rounded-lg relative shadow border border-primary-foreground/20 bg-background hover:border-foreground/20 z-10">
       <div className="group/note">
         <div className="flex justify-between items-start">
           <h2

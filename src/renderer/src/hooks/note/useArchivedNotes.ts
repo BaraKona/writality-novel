@@ -1,13 +1,13 @@
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import { notesTable } from "../../../../db/schema";
 import { database, deserialize } from "@renderer/db";
-import { eq, isNull, and } from "drizzle-orm";
+import { eq, isNotNull, and } from "drizzle-orm";
 
-export const useChapterNotes = (
+export const useArchivedNotes = (
   chapterId: number,
 ): UseQueryResult<(typeof notesTable.$inferSelect)[], Error> => {
   return useQuery({
-    queryKey: ["notes", chapterId],
+    queryKey: ["notes", chapterId, "archived"],
     queryFn: async () => {
       const result = await database
         .select()
@@ -15,9 +15,10 @@ export const useChapterNotes = (
         .where(
           and(
             eq(notesTable.chapter_id, chapterId),
-            isNull(notesTable.deleted_at),
+            isNotNull(notesTable.deleted_at),
           ),
         )
+
         .all();
 
       return result.map((note) => ({
