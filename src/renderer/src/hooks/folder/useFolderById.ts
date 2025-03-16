@@ -1,9 +1,15 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import { database, deserialize } from "@renderer/db";
-import { foldersTable } from "../../../../db/schema";
-import { eq } from "drizzle-orm";
+import {
+  foldersTable,
+  chaptersTable,
+  chapterParentsTable,
+} from "../../../../db/schema";
+import { eq, isNull, and } from "drizzle-orm";
 
-export const useFolderById = (id: number) => {
+export const useFolderById = (
+  id: number,
+): UseQueryResult<typeof foldersTable.$inferSelect, Error> => {
   return useQuery({
     queryKey: ["folder", "single", id],
     queryFn: async () => {
@@ -13,6 +19,25 @@ export const useFolderById = (id: number) => {
         .where(eq(foldersTable.id, id))
         .get();
 
+      const chapters = await database
+        .select({
+          id: chaptersTable.id,
+          name: chaptersTable.name,
+        })
+        .from(chaptersTable)
+        .innerJoin(
+          chapterParentsTable,
+          eq(chaptersTable.id, chapterParentsTable.chapter_id),
+        )
+        .where(
+          and(
+            eq(chapterParentsTable.parent_type, "folder"),
+            eq(chapterParentsTable.parent_id, id),
+            isNull(chaptersTable.deleted_at),
+          ),
+        )
+        .orderBy(chaptersTable.position);
+
       if (!result) {
         throw new Error(`Folder with id ${id} not found`);
       }
@@ -21,6 +46,7 @@ export const useFolderById = (id: number) => {
         ...result,
         description: deserialize(result.description),
         emoji: deserialize(result.emoji),
+        chapters,
       };
     },
   });

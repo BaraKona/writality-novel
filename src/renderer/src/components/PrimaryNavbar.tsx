@@ -40,19 +40,17 @@ export const PrimaryNavbar: FC = () => {
             size={16}
             strokeWidth={1.5}
             className="hidden text-text group-hover:block"
-            // onClick={() => setSidebarState((prev) => !prev)}
           />
         ) : (
           <ChevronsRight
             size={16}
             strokeWidth={1.5}
             className="hidden text-text group-hover:block"
-            // onClick={() => setSidebarState((prev) => !prev)}
           />
         )}
       </Button>
       <Separator orientation="vertical" className={`mx-1 h-4`} />
-      <ul className="flex items-center gap-1 overflow-x-auto">
+      <div className="flex items-center gap-1 overflow-x-auto">
         {tabs.map((tab, index) => (
           <TabListItem
             key={index}
@@ -61,7 +59,7 @@ export const PrimaryNavbar: FC = () => {
             changeTab={() => changeTab(tab.id)}
           />
         ))}
-      </ul>
+      </div>
 
       {tabs.length > 0 && (
         <Separator orientation="vertical" className="mx-1 h-4" />

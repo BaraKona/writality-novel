@@ -101,7 +101,7 @@ export const FolderListItem = ({
       </SidebarMenuButton>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <SidebarMenuAction showOnHover>
+          <SidebarMenuAction showOnHover className="hover:bg-transparent">
             <MoreHorizontal />
             <span className="sr-only">More</span>
           </SidebarMenuAction>
@@ -111,7 +111,7 @@ export const FolderListItem = ({
           side={"right"}
           align="start"
         >
-          <DropdownMenuItem onClick={() => createChapter()}>
+          <DropdownMenuItem onClick={createChapter}>
             <FilePlus className="text-muted-foreground" />
             <span>New File</span>
           </DropdownMenuItem>

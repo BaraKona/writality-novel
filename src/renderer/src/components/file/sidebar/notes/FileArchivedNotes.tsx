@@ -1,6 +1,6 @@
 import { FC } from "react";
 
-import { Lightbulb } from "lucide-react";
+import { Info, Lightbulb } from "lucide-react";
 import { Button } from "@renderer/components/ui/button";
 import { chaptersTable } from "@db/schema";
 import { useArchivedNotes } from "@renderer/hooks/note/useArchivedNotes";
@@ -30,7 +30,11 @@ export const FileArchivedNotes: FC<{
   return (
     <div className="flex w-full flex-col overflow-y-auto grow">
       <div className="flex flex-col gap-2 p-2 overflow-y-auto">
-        <div className="p-4 rounded-md bg-sidebar-primary/40 text-secondary-sidebar-primary-foreground/70 font-light text-sm space-y-2 text-center">
+        <div className="border-sidebar-primary p-1.5 px-2 border gap-2 flex items-start rounded-md bg-sidebar-primary/40 text-secondary-sidebar-primary-foreground/70 font-light text-xs space-y-2">
+          <Info
+            size={16}
+            className="stroke-secondary-sidebar-foreground float-left shrink-0 mt-0.5"
+          />
           <div className="">
             Find your archived notes here. Explore, restore or delete them
             entirely

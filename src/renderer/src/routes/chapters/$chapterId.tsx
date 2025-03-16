@@ -22,7 +22,7 @@ export const Route = createFileRoute("/chapters/$chapterId")({
 
 export type ChapterSidebarState = {
   state: TOpen;
-  category: String;
+  category: string;
 };
 
 const chapterSidebarStateAtom = atomWithStorage<ChapterSidebarState>(
@@ -82,7 +82,7 @@ function RouteComponent(): JSX.Element {
         <FileSidebar
           setSidebarState={setSidebarState}
           sidebarState={sidebarState}
-          file={chapter}
+          file={chapter!}
         />
       </div>
       <div
@@ -98,7 +98,7 @@ function RouteComponent(): JSX.Element {
         )}
       >
         <Infobar
-          chapter={chapter}
+          chapter={chapter!}
           word={1000}
           setSidebarState={setSidebarState}
           sidebarState={sidebarState}

@@ -43,7 +43,7 @@ export const FileListItem = ({
       >
         <Link
           to={`/chapters/$chapterId`}
-          params={{ chapterId: chapter.id?.toString() }}
+          params={{ chapterId: `${chapter.id}` }}
           activeProps={{ className: "bg-sidebar-accent/10" }}
           className={`group text-sidebar-foreground ${level === 0 ? "pl-3.5" : ""}`}
         >

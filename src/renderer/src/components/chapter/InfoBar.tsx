@@ -21,7 +21,6 @@ export const Infobar: FC<{
   setSidebarState: (ChapterSidebarState) => void;
   sidebarState: ChapterSidebarState;
 }> = ({ chapter, word, setSidebarState, sidebarState }) => {
-  console.log();
   return (
     <div className="flex h-[2.25rem] w-full flex-shrink-0 items-center border-b justify-between gap-2 overflow-x-auto px-2">
       <div className="flex items-center gap-0.5">

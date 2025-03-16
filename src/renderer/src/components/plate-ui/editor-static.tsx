@@ -39,11 +39,10 @@ export const editorVariants = cva(
 );
 
 export function EditorStatic({
-  children,
   className,
   variant,
   ...props
-}: PlateStaticProps & VariantProps<typeof editorVariants>) {
+}: PlateStaticProps & VariantProps<typeof editorVariants>): JSX.Element {
   return (
     <PlateStatic
       className={cn(editorVariants({ variant }), className)}

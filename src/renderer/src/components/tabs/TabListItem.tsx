@@ -11,12 +11,12 @@ import {
   LibraryBigIcon,
   SettingsIcon,
   SquareUserIcon,
-  TrashIcon,
   HelpCircle,
   X,
   Flower2,
   CirclePlus,
   LibraryBig,
+  FolderOpen,
 } from "lucide-react";
 
 export const TabListItem: FC<{
@@ -24,7 +24,6 @@ export const TabListItem: FC<{
   removeTab: (tab: Tab) => void;
   changeTab: () => void;
 }> = ({ tab, removeTab, changeTab }) => {
-  console.log({ tab });
   return (
     <Button
       onClick={changeTab}
@@ -70,8 +69,14 @@ function iconList(tabUrl: string | undefined): JSX.Element {
     return <FileText size={size} strokeWidth={stroke} />;
   } else if (tabUrl.includes(".canvas")) {
     return <BlocksIcon size={size} strokeWidth={stroke} />;
-  } else if (tabUrl.includes("bin")) {
-    return <TrashIcon size={size} strokeWidth={stroke} />;
+  } else if (tabUrl.includes("folders")) {
+    return (
+      <FolderOpen
+        size={size}
+        strokeWidth={stroke}
+        className="fill-muted-foreground stroke-foreground"
+      />
+    );
   } else if (tabUrl.includes("analytics") || tabUrl.includes("stats")) {
     return <BarChart size={size} strokeWidth={stroke} />;
   } else if (tabUrl.includes("new")) {

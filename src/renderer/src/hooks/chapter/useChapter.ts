@@ -4,7 +4,7 @@ import { chaptersTable } from "../../../../db/schema";
 import { eq } from "drizzle-orm";
 export const useChapter = (
   id: number,
-): UseQueryResult<typeof chaptersTable.$inferInsert> => {
+): UseQueryResult<typeof chaptersTable.$inferSelect, Error> => {
   return useQuery({
     queryKey: ["chapter", id],
     queryFn: async () => {
