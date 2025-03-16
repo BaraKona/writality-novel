@@ -5,7 +5,7 @@ import { Button } from "@renderer/components/ui/button";
 import { chaptersTable } from "@db/schema";
 import { useArchivedNotes } from "@renderer/hooks/note/useArchivedNotes";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
-import { DeletedNote } from "./DeletedNote";
+import { ArchivedNote } from "./ArchivedNote";
 
 export const FileArchivedNotes: FC<{
   file: typeof chaptersTable.$inferSelect;
@@ -28,7 +28,7 @@ export const FileArchivedNotes: FC<{
   }
 
   return (
-    <div className="flex w-full flex-col overflow-y-auto grow" ref={animate}>
+    <div className="flex w-full flex-col overflow-y-auto grow">
       <div className="flex flex-col gap-2 p-2 overflow-y-auto">
         <div className="p-4 rounded-md bg-sidebar-primary/40 text-secondary-sidebar-primary-foreground/70 font-light text-sm space-y-2 text-center">
           <div className="">
@@ -36,9 +36,9 @@ export const FileArchivedNotes: FC<{
             entirely
           </div>
         </div>
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2" ref={animate}>
           {archivedNotes?.map((note) => (
-            <DeletedNote key={note.id} note={note} />
+            <ArchivedNote key={note.id} note={note} chapterId={file.id} />
           ))}
         </div>
       </div>

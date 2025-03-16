@@ -77,8 +77,8 @@ export const FileNotes: FC<{ file: typeof chaptersTable.$inferSelect }> = ({
   }
 
   return (
-    <div className="flex w-full flex-col overflow-y-auto grow" ref={animate}>
-      <div className="flex flex-col gap-2 p-2 overflow-y-auto">
+    <div className="flex w-full flex-col overflow-y-auto grow">
+      <div className="flex flex-col gap-2 p-2 overflow-y-auto" ref={animate}>
         {notes?.map((note) => <Note key={note.id} note={note} />)}
       </div>
       {addingNote && (

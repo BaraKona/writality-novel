@@ -7,14 +7,20 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@renderer/components/ui/dropdown-menu";
+import { useDeleteNote } from "@renderer/hooks/note/useDeleteNote";
+import { useUpdateNote } from "@renderer/hooks/note/useUpdateNote";
 import { getTimeFromNow } from "@renderer/lib/utils";
 import { ArchiveRestore, ArchiveX, Ellipsis } from "lucide-react";
 import { FC } from "react";
 
-export const DeletedNote: FC<{
+export const ArchivedNote: FC<{
   note: typeof notesTable.$inferSelect;
-}> = ({ note }) => {
+  chapterId: number;
+}> = ({ note, chapterId }) => {
   const editor = useCreateEditor({ value: note.content });
+
+  const { mutate: deleteNote } = useDeleteNote(chapterId);
+  const { mutate: updateNote } = useUpdateNote();
 
   return (
     <DropdownMenu>
@@ -46,11 +52,13 @@ export const DeletedNote: FC<{
           <Ellipsis size={16} strokeWidth={2} />
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-48 rounded-lg" align="start">
-          <DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => updateNote({ ...note, deleted_at: null })}
+          >
             <ArchiveRestore className="text-muted-foreground" />
             <span>Restore</span>
           </DropdownMenuItem>
-          <DropdownMenuItem>
+          <DropdownMenuItem onClick={() => deleteNote(note.id)}>
             <ArchiveX className="text-muted-foreground" />
             <span>Permanently remove</span>
           </DropdownMenuItem>
