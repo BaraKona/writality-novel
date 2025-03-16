@@ -1,31 +1,22 @@
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbList,
-  BreadcrumbSeparator,
-} from "../ui/breadcrumb";
+import { Breadcrumb, BreadcrumbItem, BreadcrumbList } from "../ui/breadcrumb";
 import { getTimeFromNow } from "@renderer/lib/utils";
 import {
   BookOpenTextIcon,
-  BookTextIcon,
-  ChevronRight,
   ChevronsLeftIcon,
   ChevronsRightIcon,
   FileTextIcon,
-  FolderOpenIcon,
   MenuIcon,
 } from "lucide-react";
 import { FC } from "react";
 import { Separator } from "../ui/separator";
 import { Statistic } from "../Statistic";
 import { Button } from "../ui/button";
-import { Chapter } from "@shared/models";
-import { Link } from "@tanstack/react-router";
 import { ChapterSidebarState } from "@renderer/routes/chapters/$chapterId";
 import { Open } from "@renderer/routes/__root";
+import { chaptersTable } from "@db/schema";
 
 export const Infobar: FC<{
-  chapter: Chapter;
+  chapter: typeof chaptersTable.$inferSelect;
   word: number;
   setSidebarState: (ChapterSidebarState) => void;
   sidebarState: ChapterSidebarState;
@@ -35,7 +26,7 @@ export const Infobar: FC<{
     <div className="flex h-[2.25rem] w-full flex-shrink-0 items-center border-b justify-between gap-2 overflow-x-auto px-2">
       <div className="flex items-center gap-0.5">
         <Breadcrumb className="flex w-fit shrink-0 items-center gap-1">
-          {chapter.ancestors?.map((ancestor) => (
+          {/* {chapter.ancestors?.map((ancestor) => (
             <BreadcrumbList
               key={ancestor.id}
               className="shrink-0 text-xs font-medium"
@@ -72,7 +63,7 @@ export const Infobar: FC<{
                 />
               </BreadcrumbSeparator>
             </BreadcrumbList>
-          ))}
+          ))} */}
           <BreadcrumbList className="shrink-0 text-xs font-medium">
             <BreadcrumbItem className="flex max-w-48 shrink-0 gap-1 pl-1 text-text">
               <FileTextIcon size={16} strokeWidth={1.5} className="shrink-0" />

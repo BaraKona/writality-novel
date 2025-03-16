@@ -50,10 +50,6 @@ function RouteComponent(): JSX.Element {
     2000,
   );
 
-  if (!chapter) {
-    return <div>Chapter not found</div>;
-  }
-
   return (
     <div className="flex grow overflow-y-auto relative">
       <div

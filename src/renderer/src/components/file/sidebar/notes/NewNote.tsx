@@ -1,9 +1,11 @@
 import { chaptersTable } from "@db/schema";
 import { BasicEditor } from "@renderer/components/editor/BasicEditor";
 import { useCreateEditor } from "@renderer/components/editor/use-create-editor";
+import { Button } from "@renderer/components/ui/button";
 import { useCreateNote } from "@renderer/hooks/note/useCreateNote";
 import { currentProjectIdAtom } from "@renderer/routes/__root";
 import { useAtomValue } from "jotai";
+import { Save } from "lucide-react";
 import { FC, useState } from "react";
 
 export const NewNote: FC<{
@@ -19,23 +21,21 @@ export const NewNote: FC<{
   const { mutate } = useCreateNote(currentProjectId, file.id);
 
   const handleSave = (): void => {
-    if (!content || content.length === 0) {
+    if (!content) {
       setAddingNote();
       return;
     }
 
     mutate({
       title: name,
+      content,
     });
 
     setAddingNote();
   };
 
   return (
-    <div
-      className="p-4 rounded-lg relative shadow border border-primary-foreground/20 bg-background hover:border-foreground/20"
-      onBlur={handleSave}
-    >
+    <div className="p-4 rounded-lg relative shadow border border-primary-foreground/20 bg-background hover:border-foreground/20">
       <div className="group/note">
         <div className="flex justify-between items-start">
           <h2
@@ -55,6 +55,14 @@ export const NewNote: FC<{
           />
         </div>
       </div>
+      <Button
+        size="icon"
+        variant="ghost"
+        className="absolute bottom-2 right-2 cursor-pointer"
+        onClick={handleSave}
+      >
+        <Save size={16} />
+      </Button>
     </div>
   );
 };

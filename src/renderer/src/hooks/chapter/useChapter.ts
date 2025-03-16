@@ -2,7 +2,9 @@ import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import { database, deserialize } from "@renderer/db";
 import { chaptersTable } from "../../../../db/schema";
 import { eq } from "drizzle-orm";
-export const useChapter = (id: number): UseQueryResult => {
+export const useChapter = (
+  id: number,
+): UseQueryResult<typeof chaptersTable.$inferInsert> => {
   return useQuery({
     queryKey: ["chapter", id],
     queryFn: async () => {

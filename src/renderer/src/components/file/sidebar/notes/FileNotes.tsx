@@ -13,7 +13,20 @@ export const FileNotes: FC<{ file: typeof chaptersTable.$inferSelect }> = ({
 }) => {
   const [addingNote, setAddingNote] = useState(false);
   const [animate] = useAutoAnimate();
-  const { data: notes } = useChapterNotes(file.id);
+  const { data: notes, isLoading } = useChapterNotes(file?.id);
+
+  if (isLoading) {
+    return (
+      <div className="w-full flex flex-col gap-2 items-center text-text p-2 grow overflow-y-auto group/todo-menu relative">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <div
+            key={i}
+            className="w-full flex items-center gap-2 text-sm border rounded-md bg-background/10 text-secondary-sidebar-foreground border-secondary-sidebar-border h-24"
+          />
+        ))}
+      </div>
+    );
+  }
 
   if ((!notes || notes.length === 0) && !addingNote) {
     return (
