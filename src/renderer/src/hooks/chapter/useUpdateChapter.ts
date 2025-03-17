@@ -22,7 +22,7 @@ export const useUpdateChapter = (
 
       return chapter;
     },
-    mutationKey: ["updateProject"],
+    mutationKey: ["updateChapter"],
     onSuccess: (data) => {
       queryClient.setQueryData(
         ["chapter", data.id],

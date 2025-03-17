@@ -5,17 +5,19 @@ import "@blocknote/core/fonts/inter.css";
 import "@blocknote/mantine/style.css";
 
 import { useUpdateChapter } from "@renderer/hooks/chapter/useUpdateChapter";
+import { useCreateVersion } from "@renderer/hooks/chapter/useCreateVersion";
 import { Infobar } from "@renderer/components/chapter/InfoBar";
 import { FileSidebar } from "@renderer/components/file/FileSidebar";
 import { BasicEditor } from "@renderer/components/editor/BasicEditor";
 import { useCreateEditor } from "@renderer/components/editor/use-create-editor";
-import { useRef, useState } from "react";
+import { useRef, useState, useCallback } from "react";
 import { atomWithStorage } from "jotai/utils";
 import { Open, TOpen } from "../__root";
 import clsx from "clsx";
 import { useAtom } from "jotai";
 import { SidebarExtender } from "@renderer/components/sidebar/SidebarExtender";
 import { getWordCountFromRichContent } from "@renderer/lib/utils";
+import { chaptersTable } from "../../../../db/schema";
 
 export const Route = createFileRoute("/chapters/$chapterId")({
   component: RouteComponent,
@@ -44,19 +46,47 @@ function RouteComponent(): JSX.Element {
   const editor = useCreateEditor({ value: chapter?.description });
 
   const [content, setContent] = useState(chapter?.description);
-
-  const { mutate: updateChapter } = useUpdateChapter(chapter?.parent);
+  const [lastSavedContent, setLastSavedContent] = useState(
+    chapter?.description,
+  );
+  const { mutate: updateChapter } = useUpdateChapter(
+    chapter?.parent || undefined,
+  );
+  const { mutate: createVersion } = useCreateVersion();
   const [sidebarState, setSidebarState] = useAtom(chapterSidebarStateAtom);
 
-  const debouncedFunc = useDebounce(
-    (value) =>
-      updateChapter({
-        ...chapter,
-        description: value,
-        word_count: getWordCountFromRichContent(value),
-      }),
-    2000,
+  type EditorContent = { text?: string; children?: EditorContent[] }[];
+
+  const handleContentUpdate = useCallback(
+    (value: EditorContent) => {
+      if (!chapter) return;
+
+      console.log("triggered  ");
+
+      // Only update if content has actually changed
+      if (JSON.stringify(value) !== JSON.stringify(lastSavedContent)) {
+        const updatedChapter = {
+          ...chapter,
+          description: value,
+          word_count: getWordCountFromRichContent(value),
+        } satisfies typeof chaptersTable.$inferInsert;
+
+        // Update chapter
+        updateChapter(updatedChapter);
+
+        // Create version
+        createVersion({
+          chapterId: chapter.id,
+          description: JSON.stringify(value),
+        });
+
+        setLastSavedContent(value);
+      }
+    },
+    [chapter, createVersion, lastSavedContent, updateChapter],
   );
+
+  const debouncedUpdate = useDebounce(handleContentUpdate, 2000);
 
   return (
     <div className="flex grow overflow-y-auto relative" key={chapterId}>
@@ -110,6 +140,15 @@ function RouteComponent(): JSX.Element {
           updatedContent={content || ""}
           setSidebarState={setSidebarState}
           sidebarState={sidebarState}
+          // onSaveMajorVersion={() => {
+          //   if (chapter && content) {
+          //     createVersion({
+          //       chapterId: chapter.id,
+          //       description: content,
+          //       isMajorVersion: true,
+          //     });
+          //   }
+          // }}
         />
         <div
           className="relative flex h-full w-full flex-col overflow-y-auto px-16"
@@ -119,13 +158,22 @@ function RouteComponent(): JSX.Element {
             <h1
               className="text-editorText mt-4 min-h-fit font-serif-thick text-4xl font-semibold ring-0 outline-none"
               contentEditable={true}
-              onBlur={(e) =>
-                chapter &&
-                updateChapter({
-                  ...chapter,
-                  name: e.currentTarget.innerText.trim(),
-                })
-              }
+              // onBlur={(e) => {
+              //   if (!chapter) return;
+              //   const newName = e.currentTarget.innerText.trim();
+              //   if (newName !== chapter.name) {
+              //     updateChapter({
+              //       ...chapter,
+              //       name: newName,
+              //     });
+              //     // Create a version when chapter name changes
+              //     createVersion({
+              //       chapterId: chapter.id,
+              //       description: chapter.description || "",
+              //       isMajorVersion: true,
+              //     });
+              //   }
+              // }}
               dangerouslySetInnerHTML={{
                 __html: chapter?.name || "",
               }}
@@ -134,7 +182,7 @@ function RouteComponent(): JSX.Element {
               editor={editor}
               setContent={(value) => {
                 setContent(value);
-                debouncedFunc(value);
+                debouncedUpdate(value);
               }}
               className="mt-4"
             />

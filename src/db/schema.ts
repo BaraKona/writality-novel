@@ -60,6 +60,20 @@ export const chaptersTable = sqliteTable("chapters", {
     .default(sql`(unixepoch())`),
 });
 
+// Versions Table
+export const versionsTable = sqliteTable("versions", {
+  id: int().primaryKey({ autoIncrement: true }),
+  chapter_id: int()
+    .notNull()
+    .references(() => chaptersTable.id, { onDelete: "cascade" }), // Foreign key to chapters
+  description: text().notNull(), // The content of this version
+  word_count: int().notNull(), // Word count at this version
+  is_major_version: int().default(0), // Boolean flag for major versions (0 or 1)
+  created_at: int("created_at", { mode: "timestamp" })
+    .notNull()
+    .default(sql`(unixepoch())`),
+});
+
 // Chapter Parents Table (For polymorphic parent relationships)
 export const chapterParentsTable = sqliteTable("chapter_parents", {
   chapter_id: int()

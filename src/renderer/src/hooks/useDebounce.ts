@@ -1,56 +1,43 @@
-import { useEffect } from 'react'
-import { useLocation } from '@tanstack/react-router'
+import { useCallback, useRef } from "react";
 
-export const useDebounce = (mainFunction, delay) => {
-  let timer
-  let canceled = false
-  const location = useLocation() // Hook to get the current route location
+export const useDebounce = <T extends (...args: any[]) => any>(
+  callback: T,
+  delay: number,
+) => {
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  const debouncedFunction = function (...args) {
-    clearTimeout(timer)
-    canceled = false
-
-    timer = setTimeout(() => {
-      if (!canceled) {
-        mainFunction(...args)
+  return useCallback(
+    (...args: Parameters<T>) => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
       }
-    }, delay)
-  }
 
-  debouncedFunction.cancel = () => {
-    canceled = true
-    clearTimeout(timer)
-  }
+      timerRef.current = setTimeout(() => {
+        callback(...args);
+      }, delay);
+    },
+    [callback, delay],
+  );
+};
 
-  // Automatically cancel the debounced function when the route changes
-  useEffect(() => {
-    return () => {
-      debouncedFunction.cancel()
+export const debounce = (mainFunction: Function, delay: number) => {
+  let timer: NodeJS.Timeout | null = null;
+
+  const debouncedFunction = function (...args: any[]) {
+    if (timer) {
+      clearTimeout(timer);
     }
-  }, [location]) // Re-run effect when the route changes
-
-  return debouncedFunction
-}
-
-export const debounce = (mainFunction, delay) => {
-  let timer
-  let canceled = false
-
-  const debouncedFunction = function (...args) {
-    clearTimeout(timer)
-    canceled = false
 
     timer = setTimeout(() => {
-      if (!canceled) {
-        mainFunction(...args)
-      }
-    }, delay)
-  }
+      mainFunction(...args);
+    }, delay);
+  };
 
   debouncedFunction.cancel = () => {
-    canceled = true
-    clearTimeout(timer)
-  }
+    if (timer) {
+      clearTimeout(timer);
+    }
+  };
 
-  return debouncedFunction
-}
+  return debouncedFunction;
+};
