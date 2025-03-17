@@ -1,9 +1,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { database, serialize } from "@renderer/db";
-import { chaptersTable } from "../../../../db/schema";
+import { chaptersTable, chapterParentsTable } from "../../../../db/schema";
 import { eq } from "drizzle-orm";
 
-export const useUpdateChapter = (): ReturnType<typeof useMutation> => {
+export const useUpdateChapter = (
+  chapterParent: typeof chapterParentsTable.$inferSelect,
+): ReturnType<typeof useMutation> => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -28,6 +30,27 @@ export const useUpdateChapter = (): ReturnType<typeof useMutation> => {
           return { ...prevData, name: data.name };
         },
       );
+      if (chapterParent.parent_type === "project") {
+        queryClient.setQueryData(
+          ["projects", "files", chapterParent.parent_id],
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (prevData: any) => {
+            return {
+              ...prevData,
+              chapters: prevData.chapters.map((chapter) => {
+                if (chapter.id === data.id) {
+                  return { ...chapter, name: data.name };
+                }
+                return chapter;
+              }),
+            };
+          },
+        );
+      } else {
+        queryClient.invalidateQueries({
+          queryKey: ["folder", "tree", chapterParent.parent_id],
+        });
+      }
     },
   });
 };

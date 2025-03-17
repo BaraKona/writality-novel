@@ -9,7 +9,12 @@ import { eq, and, isNull } from "drizzle-orm";
 
 export const useFolderTree = (id: number) => {
   type FolderTreeResult = {
-    chapters: { id: number; name: string }[];
+    chapters: {
+      id: number;
+      name: string;
+      parent_id: number;
+      parent_type: string;
+    }[];
     folders: (typeof foldersTable.$inferSelect & { type: "folder" })[];
   };
 
@@ -43,10 +48,12 @@ export const useFolderTree = (id: number) => {
         .where(eq(foldersTable.parent_folder_id, id))
         .orderBy(foldersTable.position);
 
-      // Return both types of children
-      console.log({ chapters, folders });
       return {
-        chapters,
+        chapters: chapters.map((chapter) => ({
+          ...chapter,
+          parent_id: id,
+          parent_type: "folder",
+        })),
         folders: folders.map((folder) => ({
           ...folder,
           type: "folder",

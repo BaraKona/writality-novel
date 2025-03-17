@@ -40,6 +40,10 @@ export const useCreateChapter = (
         queryClient.invalidateQueries({
           queryKey: ["projects", "files", parentId],
         });
+      } else {
+        queryClient.invalidateQueries({
+          queryKey: ["folder", "tree", parentId],
+        });
       }
       if (navigate) {
         navigateTo({

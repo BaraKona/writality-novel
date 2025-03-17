@@ -79,7 +79,7 @@ export const useTabs = (): {
     const newTabs = tabs.map((tab) => {
       const activeTab = tabs.find((t) => t.active);
       const url = location.pathname;
-      const name = location.pathname === "/" ? "Library" : formatTabName(tab);
+      const name = location.pathname === "/" ? "World" : formatTabName(tab);
       const query = location.search.query;
 
       return {

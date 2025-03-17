@@ -40,9 +40,9 @@ function RouteComponent(): JSX.Element {
   const [isDragging, setDragging] = useState(false);
   const { chapterId } = Route.useParams();
   const { data: chapter } = useChapter(Number(chapterId));
-  const { mutate: updateChapter } = useUpdateChapter();
   const editor = useCreateEditor({ value: chapter?.description });
 
+  const { mutate: updateChapter } = useUpdateChapter(chapter?.parent);
   const [sidebarState, setSidebarState] = useAtom(chapterSidebarStateAtom);
 
   const debouncedFunc = useDebounce(

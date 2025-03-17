@@ -14,8 +14,6 @@ import {
 import { Link } from "@tanstack/react-router";
 import { chaptersTable } from "@db/schema";
 import { useDeleteChapter } from "@renderer/hooks/chapter/useDeleteChapter";
-import { useAtomValue } from "jotai";
-import { currentProjectIdAtom } from "@renderer/routes/__root";
 
 export const FileListItem = ({
   chapter,
@@ -26,11 +24,7 @@ export const FileListItem = ({
   level: number;
   spacing?: number;
 }): JSX.Element => {
-  const currentProjectId = useAtomValue(currentProjectIdAtom);
-
-  const { mutate: deleteChapter } = useDeleteChapter(
-    currentProjectId as number,
-  );
+  const { mutate: deleteChapter } = useDeleteChapter();
 
   return (
     <SidebarMenuItem
@@ -74,7 +68,7 @@ export const FileListItem = ({
             <span>Share Project</span>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => deleteChapter(chapter.id)}>
+          <DropdownMenuItem onClick={() => deleteChapter(chapter)}>
             <Trash2 className="text-muted-foreground" />
             <span>Delete Chapter</span>
           </DropdownMenuItem>

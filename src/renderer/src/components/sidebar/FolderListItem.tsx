@@ -28,6 +28,7 @@ import { useCreateFolder } from "@renderer/hooks/folder/useCreateFolder";
 import { FileListItem } from "./FileListItem";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { useFolderTree } from "@renderer/hooks/folder/useFolderTree";
+import { chaptersTable } from "@db/schema";
 
 export const FolderListItem = ({
   folder,
@@ -131,7 +132,7 @@ export const FolderListItem = ({
         </DropdownMenuContent>
       </DropdownMenu>
       {openFolders[folder.id] && (
-        <div className="">
+        <div className="" ref={animate}>
           {folderFiles?.folders?.map((item) => (
             <FolderListItem
               key={item.id}
@@ -144,7 +145,12 @@ export const FolderListItem = ({
           {folderFiles?.chapters?.map((chapter) => (
             <FileListItem
               key={chapter.id}
-              chapter={chapter}
+              chapter={
+                chapter as typeof chaptersTable.$inferSelect & {
+                  parent_id: number;
+                  parent_type: string;
+                }
+              }
               level={level + 1}
             />
           ))}
