@@ -1,0 +1,1 @@
+ALTER TABLE `chapters` ADD `word_count` integer;

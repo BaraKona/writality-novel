@@ -1,9 +1,8 @@
-import { FileText, Forward, MoreHorizontal, Trash2 } from "lucide-react";
+import { FileText, MoreHorizontal, Trash2 } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@renderer/components/ui/dropdown-menu";
 import {
@@ -29,11 +28,11 @@ export const FileListItem = ({
   return (
     <SidebarMenuItem
       key={chapter.name}
-      className={`relative ${level > 0 ? "mt-0.5" : ""}`}
+      className={`relative group/file-menu-button ${level > 0 ? "mt-0.5" : ""}`}
     >
       <SidebarMenuButton
         asChild
-        className="hover:bg-sidebar-accent/10 active:bg-sidebar-accent/20"
+        className="group-hover/file-menu-button:bg-sidebar-accent/10 hover:bg-sidebar-accent/10 active:bg-sidebar-accent/20"
       >
         <Link
           to={`/chapters/$chapterId`}
@@ -52,8 +51,11 @@ export const FileListItem = ({
         </Link>
       </SidebarMenuButton>
       <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <SidebarMenuAction showOnHover>
+        <DropdownMenuTrigger
+          asChild
+          className="bg-transparent hover:bg-transparent"
+        >
+          <SidebarMenuAction className="group-hover/file-menu-button:visible group-focus-within/file-menu-button:visible invisible">
             <MoreHorizontal />
             <span className="sr-only">More</span>
           </SidebarMenuAction>
@@ -63,11 +65,6 @@ export const FileListItem = ({
           side={"right"}
           align="start"
         >
-          <DropdownMenuItem>
-            <Forward className="text-muted-foreground" />
-            <span>Share Project</span>
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => deleteChapter(chapter)}>
             <Trash2 className="text-muted-foreground" />
             <span>Delete Chapter</span>

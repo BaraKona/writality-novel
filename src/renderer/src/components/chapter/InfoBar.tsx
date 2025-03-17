@@ -1,5 +1,8 @@
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList } from "../ui/breadcrumb";
-import { getTimeFromNow } from "@renderer/lib/utils";
+import {
+  getTimeFromNow,
+  getWordCountFromRichContent,
+} from "@renderer/lib/utils";
 import {
   BookOpenTextIcon,
   ChevronsLeftIcon,
@@ -17,10 +20,10 @@ import { chaptersTable } from "@db/schema";
 
 export const Infobar: FC<{
   chapter: typeof chaptersTable.$inferSelect;
-  word: number;
+  updatedContent: string;
   setSidebarState: (ChapterSidebarState) => void;
   sidebarState: ChapterSidebarState;
-}> = ({ chapter, word, setSidebarState, sidebarState }) => {
+}> = ({ chapter, updatedContent, setSidebarState, sidebarState }) => {
   return (
     <div className="flex h-[2.25rem] w-full flex-shrink-0 items-center border-b justify-between gap-2 overflow-x-auto px-2">
       <div className="flex items-center gap-0.5">
@@ -75,7 +78,9 @@ export const Infobar: FC<{
       <div className="flex items-center gap-0.5 pr-1">
         <div className="text-secondaryText flex items-center gap-1 text-xs">
           <span className="text-xs font-medium text-text">Words:</span>
-          {word}
+          {getWordCountFromRichContent(
+            updatedContent || chapter?.description,
+          ) || 0}
         </div>
         <Separator orientation="vertical" className="mx-2 h-4 shrink-0" />
 

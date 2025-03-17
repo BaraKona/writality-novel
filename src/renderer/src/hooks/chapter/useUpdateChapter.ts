@@ -4,7 +4,7 @@ import { chaptersTable, chapterParentsTable } from "../../../../db/schema";
 import { eq } from "drizzle-orm";
 
 export const useUpdateChapter = (
-  chapterParent: typeof chapterParentsTable.$inferSelect,
+  chapterParent?: typeof chapterParentsTable.$inferSelect,
 ): ReturnType<typeof useMutation> => {
   const queryClient = useQueryClient();
 

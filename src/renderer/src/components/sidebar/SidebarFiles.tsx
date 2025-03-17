@@ -1,4 +1,4 @@
-import { FilePlus2, FolderPlus, Forward, Plus, Trash2 } from "lucide-react";
+import { FilePlus2, FolderPlus, Plus, Trash2 } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,7 +21,7 @@ import { FileListItem } from "./FileListItem";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { Button } from "../ui/button";
 
-export function SidebarFiles({ project }: { project: Project }) {
+export function SidebarFiles({ project }: { project: Project }): JSX.Element {
   const { data: projectFiles } = useProjectFiles(project?.id);
   const { mutate: createProjectFolder } = useCreateFolder(project?.id);
   const { mutate: createChapter } = useCreateChapter(project?.id, "project");
@@ -45,7 +45,7 @@ export function SidebarFiles({ project }: { project: Project }) {
             side={"right"}
             align="start"
           >
-            <DropdownMenuItem onClick={() => createChapter()}>
+            <DropdownMenuItem onClick={createChapter}>
               <FilePlus2 className="text-muted-foreground" />
               <span>Create file</span>
             </DropdownMenuItem>
@@ -53,10 +53,7 @@ export function SidebarFiles({ project }: { project: Project }) {
               <FolderPlus className="text-muted-foreground" />
               <span>Create Folder</span>
             </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Forward className="text-muted-foreground" />
-              <span>Share Project</span>
-            </DropdownMenuItem>
+
             <DropdownMenuSeparator />
             <DropdownMenuItem>
               <Trash2 className="text-muted-foreground" />
@@ -81,7 +78,7 @@ export function SidebarFiles({ project }: { project: Project }) {
               className="w-full rounded-none"
               size="md"
               variant="ghost"
-              onClick={() => createChapter()}
+              onClick={createChapter}
             >
               Create a file
             </Button>
@@ -111,12 +108,6 @@ export function SidebarFiles({ project }: { project: Project }) {
             ))}
           </>
         )}
-        {/* <SidebarMenuItem>
-          <SidebarMenuButton className="text-sidebar-foreground/70">
-            <MoreHorizontal className="text-sidebar-foreground/70" />
-            <span>More</span>
-          </SidebarMenuButton>
-        </SidebarMenuItem> */}
       </SidebarMenu>
     </SidebarGroup>
   );

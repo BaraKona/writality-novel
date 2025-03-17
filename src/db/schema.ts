@@ -49,6 +49,7 @@ export const chaptersTable = sqliteTable("chapters", {
   id: int().primaryKey({ autoIncrement: true }),
   name: text().notNull(),
   description: text(),
+  word_count: int(),
   position: int(),
   deleted_at: int("deleted_at", { mode: "timestamp" }), // Soft delete timestamp
   created_at: int("created_at", { mode: "timestamp" })

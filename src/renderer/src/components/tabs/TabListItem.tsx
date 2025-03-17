@@ -29,7 +29,7 @@ export const TabListItem: FC<{
       onClick={changeTab}
       variant="outline"
       size="sm"
-      className={`${tab.active && "bg-accent"} hover:bg-accent rounded-md flex gap-1 h-auto py-1 cursor-default items-center text-left justify-start text-xs group w-48 capitalize shrink-0`}
+      className={`${tab.active && "bg-accent"} hover:bg-accent rounded-md flex gap-1 h-auto py-1 cursor-default items-center text-left pr-1.5 justify-start text-xs group w-48 capitalize shrink-0`}
     >
       <span className="shrink-0 stroke-muted-foreground">
         {iconList(tab.url)}
@@ -37,17 +37,15 @@ export const TabListItem: FC<{
       <span className="grow w-full truncate text-muted-foreground">
         {tab.name}
       </span>
-      <Button
+      <div
         onClick={(e) => {
           e.stopPropagation();
           removeTab(tab);
         }}
-        variant="ghost"
-        size="sm"
         className={`group-hover:visible ml-auto flex px-0 items-center ${tab.active ? "" : "invisible "}`}
       >
-        <X size={12} strokeWidth={1.5} />
-      </Button>
+        <X size={14} strokeWidth={1.5} />
+      </div>
     </Button>
   );
 };

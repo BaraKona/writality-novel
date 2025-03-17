@@ -3,7 +3,6 @@ import { clsx, type ClassValue } from "clsx";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { PointerEvent as ReactPointerEvent } from "react";
-import { ChapterSidebarState } from "@renderer/routes/chapters/$chapterId";
 import { Open } from "@renderer/routes/__root";
 
 dayjs.extend(relativeTime);
@@ -34,7 +33,11 @@ export function getMonthAndYearFromTime(date: string | Date | number): string {
   return dayjs(date).format("MMMM YYYY");
 }
 
-export const clamp = (number, boundOne, boundTwo) => {
+export const clamp = (
+  number: number,
+  boundOne: number,
+  boundTwo: number,
+): number => {
   if (!boundTwo) {
     return Math.max(number, boundOne) === boundOne ? number : boundOne;
   } else if (Math.min(number, boundOne) === number) {
@@ -73,10 +76,11 @@ export function onPointerDown({
   originalClientX: React.MutableRefObject<number>;
   setDragging: (dragging: boolean) => void;
   setWidth: (width: number) => void;
-  setState: SetAtom<[SetStateActionWithReset<Open | ChapterSidebarState>]>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  setState: (state: any) => void;
   width: number;
   sidebarPosition: "left" | "right";
-}) {
+}): void {
   // this prevents dragging from selecting
   e.preventDefault();
 
@@ -85,7 +89,7 @@ export function onPointerDown({
   originalClientX.current = e.clientX;
   setDragging(true);
 
-  function onPointerMove(e: PointerEvent) {
+  function onPointerMove(e: PointerEvent): void {
     console.log({
       sidebarPosition,
       windowWidth: window.innerWidth,
@@ -132,7 +136,7 @@ export function onPointerDown({
     }
   }
 
-  function onPointerUp() {
+  function onPointerUp(): void {
     ownerDocument.removeEventListener("pointermove", onPointerMove);
     setDragging(false);
   }
@@ -142,3 +146,43 @@ export function onPointerDown({
     once: true,
   });
 }
+
+export const getTextContentFromRichContent = (
+  content: Array<{ text?: string; children?: Array<string> }>,
+): string => {
+  const getText = (node: {
+    text?: string;
+    children?: Array<string>;
+  }): string => {
+    // @ts-ignore because children is an array of strings
+    if (node === "\n") {
+      return "";
+    }
+    if (node.text) {
+      return node.text;
+    }
+    if (node.children) {
+      // @ts-ignore because children is an array of strings
+      return node.children.map(getText).join(" ");
+    }
+    return "";
+  };
+  return content
+    .map(getText)
+    .join(" ")
+    .replace(/\s{2,}/g, " ")
+    .trim(); // Trim leading and trailing spaces
+};
+
+export const getWordCountFromRichContent = (
+  content?: Array<{ text?: string; children?: Array<string> }>,
+): number => {
+  if (!content) {
+    return 0;
+  }
+
+  const text = getTextContentFromRichContent(content);
+  // Remove punctuation before counting words
+  const words = text.trim().split(/\s+/);
+  return words.length;
+};

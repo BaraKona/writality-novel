@@ -15,6 +15,7 @@ import { Open, TOpen } from "../__root";
 import clsx from "clsx";
 import { useAtom } from "jotai";
 import { SidebarExtender } from "@renderer/components/sidebar/SidebarExtender";
+import { getWordCountFromRichContent } from "@renderer/lib/utils";
 
 export const Route = createFileRoute("/chapters/$chapterId")({
   component: RouteComponent,
@@ -42,16 +43,23 @@ function RouteComponent(): JSX.Element {
   const { data: chapter } = useChapter(Number(chapterId));
   const editor = useCreateEditor({ value: chapter?.description });
 
+  const [content, setContent] = useState(chapter?.description);
+
   const { mutate: updateChapter } = useUpdateChapter(chapter?.parent);
   const [sidebarState, setSidebarState] = useAtom(chapterSidebarStateAtom);
 
   const debouncedFunc = useDebounce(
-    (value) => updateChapter({ ...chapter, description: value }),
+    (value) =>
+      updateChapter({
+        ...chapter,
+        description: value,
+        word_count: getWordCountFromRichContent(value),
+      }),
     2000,
   );
 
   return (
-    <div className="flex grow overflow-y-auto relative">
+    <div className="flex grow overflow-y-auto relative" key={chapterId}>
       <div
         className={clsx(
           "fixed top-0 bottom-0 z-[100] flex h-full pt-11.25 pb-4 pointer-events-none bg-transparent max-h-screen flex-shrink-0 flex-col space-y-2 transition-transform duration-300 ease-sidebar",
@@ -99,7 +107,7 @@ function RouteComponent(): JSX.Element {
       >
         <Infobar
           chapter={chapter!}
-          word={1000}
+          updatedContent={content || ""}
           setSidebarState={setSidebarState}
           sidebarState={sidebarState}
         />
@@ -107,7 +115,7 @@ function RouteComponent(): JSX.Element {
           className="relative flex h-full w-full flex-col overflow-y-auto px-16"
           key={chapterId}
         >
-          <div className="mx-auto w-full max-w-screen-lg px-2 pt-14">
+          <div className="mx-auto w-full max-w-screen-md px-2 pt-14">
             <h1
               className="text-editorText mt-4 min-h-fit font-serif-thick text-4xl font-semibold ring-0 outline-none"
               contentEditable={true}
@@ -124,7 +132,10 @@ function RouteComponent(): JSX.Element {
             />
             <BasicEditor
               editor={editor}
-              setContent={(value) => debouncedFunc(value)}
+              setContent={(value) => {
+                setContent(value);
+                debouncedFunc(value);
+              }}
               className="mt-4"
             />
           </div>

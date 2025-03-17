@@ -4,7 +4,6 @@ import {
   FolderIcon,
   FolderOpenIcon,
   FolderPlus,
-  Forward,
   MoreHorizontal,
   Trash2,
 } from "lucide-react";
@@ -22,7 +21,6 @@ import {
   SidebarMenuItem,
 } from "@renderer/components/ui/sidebar";
 import { Link } from "@tanstack/react-router";
-import { Button } from "../ui/button";
 import { useCreateChapter } from "@renderer/hooks/chapter/useCreateChapter";
 import { useCreateFolder } from "@renderer/hooks/folder/useCreateFolder";
 import { FileListItem } from "./FileListItem";
@@ -48,7 +46,7 @@ export const FolderListItem = ({
   const spacing = 15;
 
   return (
-    <SidebarMenuItem className={`${level > 0 ? "mt-0.5" : ""}`} ref={animate}>
+    <div className={`relative ${level > 0 ? "mt-0.5" : ""}`} ref={animate}>
       <div
         className="absolute bottom-0 z-10 bg-foreground/20"
         style={{
@@ -57,80 +55,77 @@ export const FolderListItem = ({
           height: "calc(100% - 2.1rem)",
         }}
       ></div>
-      <SidebarMenuButton
-        key={folder.name}
-        className="flex w-full relative hover:bg-sidebar-accent/10 active:bg-sidebar-accent/20"
-        asChild
-      >
-        <Link
-          to={"/folders/$folderId"}
-          params={{ folderId: folder.id.toString() }}
-          activeProps={{ className: "bg-sidebar-accent/10" }}
-          className={`group group/folder peer relative flex w-full cursor-default items-center gap-2 rounded-md px-2 py-1 text-sm ring-0 outline-none hover:bg-accent ${level === 0 ? "pl-3.5" : ""}`}
+      <SidebarMenuItem className="group/folder-menu-button ">
+        <SidebarMenuButton
+          key={folder.name}
+          className="peer/folder-menu-button flex w-full relative group-hover/folder-menu-button:bg-sidebar-accent/10 active:bg-sidebar-accent/20 hover:bg-sidebar-accent/10"
+          asChild
         >
-          <div
-            className="flex"
-            style={{
-              paddingLeft: `${level * spacing + (level === 0 ? 0 : 7)}px`,
-            }}
+          <Link
+            to={"/folders/$folderId"}
+            params={{ folderId: folder.id.toString() }}
+            activeProps={{ className: "bg-sidebar-accent/10" }}
+            className={`group group/folder relative flex w-full cursor-default items-center gap-2 rounded-md px-2 py-1 text-sm ring-0 outline-none hover:bg-accent ${level === 0 ? "pl-3.5" : ""}`}
           >
-            <Button
-              className="p-0"
-              variant="invisible"
-              size="icon"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                setOpenFolders({
-                  ...openFolders,
-                  [folder.id]: !openFolders[folder.id],
-                });
+            <div
+              className="flex"
+              style={{
+                paddingLeft: `${level * spacing + (level === 0 ? 0 : 7)}px`,
               }}
             >
-              {openFolders[folder.id] ? (
-                <FolderOpenIcon
-                  size={18}
-                  className="fill-muted-foreground stroke-foreground"
-                />
-              ) : (
-                <FolderIcon className="fill-muted-foreground stroke-foreground" />
-              )}
-            </Button>
-          </div>
-          <span className="text-sidebar-foreground">{folder.name}</span>
-        </Link>
-      </SidebarMenuButton>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <SidebarMenuAction showOnHover className="hover:bg-transparent">
-            <MoreHorizontal />
-            <span className="sr-only">More</span>
-          </SidebarMenuAction>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent
-          className="w-48 rounded-lg"
-          side={"right"}
-          align="start"
-        >
-          <DropdownMenuItem onClick={createChapter}>
-            <FilePlus className="text-muted-foreground" />
-            <span>New File</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => createProjectFolder(folder.id)}>
-            <FolderPlus className="text-muted-foreground" />
-            <span>New folder</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            <Forward className="text-muted-foreground" />
-            <span>Share Project</span>
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem>
-            <Trash2 className="text-muted-foreground" />
-            <span>Delete Folder</span>
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+              <div
+                className="p-0"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setOpenFolders({
+                    ...openFolders,
+                    [folder.id]: !openFolders[folder.id],
+                  });
+                }}
+              >
+                {openFolders[folder.id] ? (
+                  <FolderOpenIcon
+                    size={18}
+                    className="fill-muted-foreground stroke-foreground"
+                  />
+                ) : (
+                  <FolderIcon className="fill-muted-foreground stroke-foreground" />
+                )}
+              </div>
+            </div>
+            <span className="text-sidebar-foreground">{folder.name}</span>
+          </Link>
+        </SidebarMenuButton>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild className="hover:bg-transparent">
+            <SidebarMenuAction className="group-hover/folder-menu-button:visible invisible group-hover/folder-menu-button:bg-transparent group-focus-within/folder-menu-button:visible">
+              <MoreHorizontal />
+              <span className="sr-only">More</span>
+            </SidebarMenuAction>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            className="w-48 rounded-lg"
+            side={"right"}
+            align="start"
+          >
+            <DropdownMenuItem onClick={createChapter}>
+              <FilePlus className="text-muted-foreground" />
+              <span>New File</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => createProjectFolder(folder.id)}>
+              <FolderPlus className="text-muted-foreground" />
+              <span>New folder</span>
+            </DropdownMenuItem>
+
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>
+              <Trash2 className="text-muted-foreground" />
+              <span>Delete Folder</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </SidebarMenuItem>
       {openFolders[folder.id] && (
         <div className="" ref={animate}>
           {folderFiles?.folders?.map((item) => (
@@ -156,6 +151,6 @@ export const FolderListItem = ({
           ))}
         </div>
       )}
-    </SidebarMenuItem>
+    </div>
   );
 };
