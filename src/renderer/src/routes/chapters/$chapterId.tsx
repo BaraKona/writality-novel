@@ -5,7 +5,7 @@ import "@blocknote/core/fonts/inter.css";
 import "@blocknote/mantine/style.css";
 
 import { useUpdateChapter } from "@renderer/hooks/chapter/useUpdateChapter";
-import { useCreateVersion } from "@renderer/hooks/chapter/useCreateVersion";
+import { useCreateVersion } from "@renderer/hooks/chapter/version/useCreateVersion";
 import { Infobar } from "@renderer/components/chapter/InfoBar";
 import { FileSidebar } from "@renderer/components/file/FileSidebar";
 import { BasicEditor } from "@renderer/components/editor/BasicEditor";
@@ -77,7 +77,7 @@ function RouteComponent(): JSX.Element {
         // Create version
         createVersion({
           chapterId: chapter.id,
-          description: JSON.stringify(value),
+          description: value,
         });
 
         setLastSavedContent(value);

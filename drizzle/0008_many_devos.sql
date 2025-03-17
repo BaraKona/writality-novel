@@ -1,0 +1,1 @@
+ALTER TABLE `versions` ADD `name` text DEFAULT 'untitled' NOT NULL;

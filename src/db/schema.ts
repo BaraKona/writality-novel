@@ -63,6 +63,7 @@ export const chaptersTable = sqliteTable("chapters", {
 // Versions Table
 export const versionsTable = sqliteTable("versions", {
   id: int().primaryKey({ autoIncrement: true }),
+  name: text().notNull().default("untitled"),
   chapter_id: int()
     .notNull()
     .references(() => chaptersTable.id, { onDelete: "cascade" }), // Foreign key to chapters

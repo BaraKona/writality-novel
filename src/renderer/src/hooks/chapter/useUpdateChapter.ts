@@ -51,6 +51,9 @@ export const useUpdateChapter = (
           queryKey: ["folder", "tree", chapterParent.parent_id],
         });
       }
+      queryClient.invalidateQueries({
+        queryKey: ["chapter", data.id, "versions"],
+      });
     },
   });
 };

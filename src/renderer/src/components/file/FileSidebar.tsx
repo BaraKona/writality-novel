@@ -8,6 +8,7 @@ import {
 import { FileNotes } from "./sidebar/notes/FileNotes";
 import { ChapterSidebarState } from "@renderer/routes/chapters/$chapterId";
 import { chaptersTable } from "@db/schema";
+import { FileVersions } from "./sidebar/FileVersions";
 
 type FileSidebarListItemProps = {
   name: string;
@@ -71,6 +72,7 @@ export const FileSidebar: FC<{
       </div>
       <div className="flex grow flex-col overflow-y-auto relative">
         {sidebarState.category === "notes" && <FileNotes file={file} />}
+        {sidebarState.category === "versions" && <FileVersions file={file} />}
       </div>
     </div>
   );

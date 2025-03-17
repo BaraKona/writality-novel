@@ -1,8 +1,9 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { database } from "@renderer/db";
-import { chaptersTable, versionsTable } from "../../../../db/schema";
+import { database, deserialize, serialize } from "@renderer/db";
+import { chaptersTable, versionsTable } from "../../../../../db/schema";
 import { and, eq, gt } from "drizzle-orm";
 import { sql } from "drizzle-orm";
+import { getWordCountFromRichContent } from "@renderer/lib/utils";
 
 const VERSIONING_CONFIG = {
   MIN_TIME_BETWEEN_VERSIONS: 30 * 60, // 30 minutes in seconds
@@ -45,13 +46,16 @@ export const useCreateVersion = () => {
         .get();
 
       // Check if we should create a new version
+
+      console.log("dsg");
+
       const shouldCreateVersion =
         isMajorVersion ||
-        !lastVersion ||
-        shouldCreateNewVersion(lastVersion, chapter);
+        !lastVersion?.chapter_id ||
+        shouldCreateNewVersion(lastVersion, description);
 
       if (!shouldCreateVersion) {
-        console.log("not creating version");
+        console.log("No new version created");
         return null;
       }
 
@@ -59,8 +63,9 @@ export const useCreateVersion = () => {
       const newVersion = await database
         .insert(versionsTable)
         .values({
+          name: chapter.name,
           chapter_id: chapterId,
-          description,
+          description: serialize(description),
           word_count: chapter.word_count || 0,
           is_major_version: isMajorVersion ? 1 : 0,
         })
@@ -87,18 +92,26 @@ export const useCreateVersion = () => {
 // Helper function to determine if we should create a new version
 const shouldCreateNewVersion = (
   lastVersion: typeof versionsTable.$inferSelect,
-  currentChapter: typeof chaptersTable.$inferSelect,
-) => {
+  newContent: string,
+): boolean => {
   const timeSinceLastVersion =
     Math.floor(Date.now() / 1000) - lastVersion.created_at;
-  const wordCountChange = Math.abs(
-    (currentChapter.word_count || 0) - lastVersion.word_count,
-  );
 
-  return (
-    timeSinceLastVersion >= VERSIONING_CONFIG.MIN_TIME_BETWEEN_VERSIONS ||
-    wordCountChange >= VERSIONING_CONFIG.MIN_WORD_COUNT_CHANGE
-  );
+  // Always create a version if enough time has passed
+  if (timeSinceLastVersion >= VERSIONING_CONFIG.MIN_TIME_BETWEEN_VERSIONS) {
+    return true;
+  }
+
+  // Compare content directly
+  if (deserialize(lastVersion.description) !== newContent) {
+    const oldWordCount = lastVersion.word_count;
+    const newWordCount = getWordCountFromRichContent(newContent);
+    const wordCountChange = Math.abs(newWordCount - oldWordCount);
+
+    return wordCountChange >= VERSIONING_CONFIG.MIN_WORD_COUNT_CHANGE;
+  }
+
+  return false;
 };
 
 // Helper function to clean up old versions

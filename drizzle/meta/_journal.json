@@ -57,6 +57,13 @@
       "when": 1742235132101,
       "tag": "0007_polite_sunfire",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "6",
+      "when": 1742239191690,
+      "tag": "0008_many_devos",
+      "breakpoints": true
     }
   ]
 }

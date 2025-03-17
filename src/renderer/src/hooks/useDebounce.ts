@@ -1,9 +1,10 @@
 import { useCallback, useRef } from "react";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const useDebounce = <T extends (...args: any[]) => any>(
   callback: T,
   delay: number,
-) => {
+): ((...args: Parameters<T>) => void) => {
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   return useCallback(
@@ -20,10 +21,11 @@ export const useDebounce = <T extends (...args: any[]) => any>(
   );
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const debounce = (mainFunction: Function, delay: number) => {
   let timer: NodeJS.Timeout | null = null;
 
-  const debouncedFunction = function (...args: any[]) {
+  const debouncedFunction = function (...args: any[]): void {
     if (timer) {
       clearTimeout(timer);
     }
@@ -33,7 +35,7 @@ export const debounce = (mainFunction: Function, delay: number) => {
     }, delay);
   };
 
-  debouncedFunction.cancel = () => {
+  debouncedFunction.cancel = (): void => {
     if (timer) {
       clearTimeout(timer);
     }
