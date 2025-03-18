@@ -8,22 +8,25 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@renderer/components/ui/dialogue";
+import { cn } from "@renderer/lib/utils";
 
 export const Dialogue = ({
   trigger,
   children,
   title,
   description,
+  className,
 }: {
   trigger: JSX.Element;
   children: React.ReactNode;
   title: string;
   description: string;
+  className?: string;
 }): JSX.Element => {
   return (
     <Dialog>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className={cn("", className)}>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>

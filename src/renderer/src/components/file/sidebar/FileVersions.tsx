@@ -42,9 +42,10 @@ export const FileVersions: FC<{ file: typeof chaptersTable.$inferSelect }> = ({
           <Dialogue
             key={index}
             title={`Compare versions`}
+            className="w-full max-w-[800px] h-[1000px]"
             description={`Compare the content of this version with the previous version.`}
             trigger={
-              <div className="p-4 rounded-md relative shadow border bg-secondary-sidebar-primary border-secondary-sidebar-border text-sm hover:border-secondary-sidebar-foreground/20 ">
+              <div className="p-4 rounded-md cursor-default relative shadow border bg-secondary-sidebar-primary border-secondary-sidebar-border text-sm hover:border-secondary-sidebar-foreground/20 ">
                 <div className=" flex gap-1 items-center">
                   <FileText size={16} />
                   {defaultDateTimeFormat(version.created_at)}
