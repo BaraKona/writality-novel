@@ -4,7 +4,8 @@ import { useChapterVersions } from "@renderer/hooks/chapter/version/useChapterVe
 import { defaultDateTimeFormat } from "@shared/functions";
 import { chaptersTable } from "@db/schema";
 import { Dialogue } from "@renderer/components/Dialogue";
-import { CompareVersions } from "./versions/CompareVersions";
+import VersionHistory from "@renderer/components/plate-ui/plate-components/history";
+import { deserialize } from "@renderer/db";
 
 export const FileVersions: FC<{ file: typeof chaptersTable.$inferSelect }> = ({
   file,
@@ -41,19 +42,22 @@ export const FileVersions: FC<{ file: typeof chaptersTable.$inferSelect }> = ({
         versions.map((version, index) => (
           <Dialogue
             key={index}
-            title={`Compare versions`}
-            className="w-full max-w-[800px] h-[1000px]"
-            description={`Compare the content of this version with the previous version.`}
+            title="Compare versions"
+            className="w-full max-w-screen-xl min-h-96 max-h-[800px]"
+            description="Compare the content of this version with the previous version."
             trigger={
               <div className="p-4 rounded-md cursor-default relative shadow border bg-secondary-sidebar-primary border-secondary-sidebar-border text-sm hover:border-secondary-sidebar-foreground/20 ">
-                <div className=" flex gap-1 items-center">
+                <div className="flex gap-1 items-center">
                   <FileText size={16} />
                   {defaultDateTimeFormat(version.created_at)}
                 </div>
               </div>
             }
           >
-            <CompareVersions />
+            <VersionHistory
+              version={deserialize(version.description)}
+              chapterVersion={file.description}
+            />
           </Dialogue>
         ))
       )}

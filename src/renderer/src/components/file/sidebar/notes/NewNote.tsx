@@ -13,7 +13,7 @@ export const NewNote: FC<{
   setAddingNote: () => void;
 }> = ({ file, setAddingNote }) => {
   const currentProjectId = useAtomValue(currentProjectIdAtom);
-  const [name, setName] = useState("New note");
+  const [name, setName] = useState("");
   const [content, setContent] = useState([]);
 
   const editor = useCreateEditor({});
@@ -43,9 +43,9 @@ export const NewNote: FC<{
             className="ring-0 outline-none text-sm font-semibold pr-3"
             onInput={(e) => setName((e.target as HTMLElement).innerText)}
             dangerouslySetInnerHTML={{
-              __html: name,
+              __html: "New note",
             }}
-          ></h2>
+          />
         </div>
         <div className="mt-3">
           <BasicEditor

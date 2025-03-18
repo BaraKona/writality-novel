@@ -9,6 +9,7 @@
     "src/main/db/*",
     "src/db/*"
   ],
+  "moduleResolution": "bundler",
   "compilerOptions": {
     "composite": true,
     "esModuleInterop": true,

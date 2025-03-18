@@ -55,6 +55,8 @@
     "@udecode/plate": "^45.0.9",
     "@udecode/plate-basic-elements": "^44.0.0",
     "@udecode/plate-basic-marks": "^45.0.0",
+    "@udecode/plate-break": "^44.0.0",
+    "@udecode/plate-diff": "^44.0.2",
     "ai": "^4.1.16",
     "better-sqlite3": "^11.8.1",
     "class-variance-authority": "^0.7.1",

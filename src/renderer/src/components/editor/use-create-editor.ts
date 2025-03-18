@@ -12,10 +12,14 @@ import {
   PlateElement,
   PlateLeaf,
   usePlateEditor,
+  type PlatePlugin,
 } from "@udecode/plate/react";
 import { FC } from "react";
 
-export const useCreateEditor: FC<{ value?: unknown }> = ({ value }) => {
+export const useCreateEditor: FC<{
+  value?: unknown;
+  plugins?: PlatePlugin[];
+}> = ({ value, plugins = [] }) => {
   return usePlateEditor(
     {
       override: {
@@ -47,9 +51,9 @@ export const useCreateEditor: FC<{ value?: unknown }> = ({ value }) => {
           [UnderlinePlugin.key]: withProps(PlateLeaf, { as: "u" }),
         },
       },
-      plugins: [BasicElementsPlugin, BasicMarksPlugin],
+      plugins: [BasicElementsPlugin, BasicMarksPlugin, ...plugins],
       value: value || [],
     },
-    [value],
+    [value, plugins],
   );
 };

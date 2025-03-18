@@ -4,6 +4,7 @@
     { "path": "./tsconfig.node.json" },
     { "path": "./tsconfig.web.json" }
   ],
+  "moduleResolution": "bundler",
   "compilerOptions": {
     "jsx": "react-jsx",
     "baseUrl": ".",

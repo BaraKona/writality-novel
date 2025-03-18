@@ -11,6 +11,16 @@
     "src/db/**/*.ts",
     "src/db/**/*"
   ],
+  "moduleResolution": "bundler",
+  "@udecode/plate/react": [
+    "./node_modules/@udecode/plate/dist/react/index.d.ts"
+  ],
+  "@udecode/plate-core/react": [
+    "./node_modules/@udecode/plate-core/dist/react/index.d.ts"
+  ],
+  "@udecode/plate-list/react": [
+    "./node_modules/@udecode/plate-list/dist/react/index.d.ts"
+  ],
   "compilerOptions": {
     "composite": true,
     "jsx": "react-jsx",
