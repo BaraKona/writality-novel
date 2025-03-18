@@ -34,7 +34,7 @@ export const Note: FC<{
   return (
     <DropdownMenu>
       <div
-        className="group/note p-4 rounded-md relative shadow border bg-secondary-sidebar-primary border-secondary-sidebar-border"
+        className="group/note p-4 rounded-md relative shadow border bg-secondary-sidebar-primary border-secondary-sidebar-border hover:border-secondary-sidebar-foreground/20"
         onBlur={() => updateNote({ ...note, content, title })}
       >
         <div className="flex flex-col">

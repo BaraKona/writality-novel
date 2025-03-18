@@ -42,9 +42,10 @@ export const NewNote: FC<{
             contentEditable={true}
             className="ring-0 outline-none text-sm font-semibold pr-3"
             onInput={(e) => setName((e.target as HTMLElement).innerText)}
-          >
-            New Note
-          </h2>
+            dangerouslySetInnerHTML={{
+              __html: name,
+            }}
+          ></h2>
         </div>
         <div className="mt-3">
           <BasicEditor

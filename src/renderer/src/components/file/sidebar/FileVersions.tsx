@@ -3,6 +3,8 @@ import { FileStackIcon, FileText } from "lucide-react";
 import { useChapterVersions } from "@renderer/hooks/chapter/version/useChapterVersions";
 import { defaultDateTimeFormat } from "@shared/functions";
 import { chaptersTable } from "@db/schema";
+import { Dialogue } from "@renderer/components/Dialogue";
+import { CompareVersions } from "./versions/CompareVersions";
 
 export const FileVersions: FC<{ file: typeof chaptersTable.$inferSelect }> = ({
   file,
@@ -15,7 +17,7 @@ export const FileVersions: FC<{ file: typeof chaptersTable.$inferSelect }> = ({
         {Array.from({ length: 5 }).map((_, index) => (
           <div
             key={index}
-            className="flex bg-border h-6 rounded-md items-center gap-2 py-1 px-2 text-xs"
+            className="flex bg-secondary-sidebar-primary h-12 rounded-md items-center gap-2 py-1 px-2 text-xs"
           />
         ))}
       </div>
@@ -23,7 +25,7 @@ export const FileVersions: FC<{ file: typeof chaptersTable.$inferSelect }> = ({
   }
 
   return (
-    <div className="h-full flex flex-col gap-0.5 grow px-2 text-secondary-sidebar-foreground">
+    <div className="h-full flex py-2 flex-col gap-1 grow px-2 text-secondary-sidebar-foreground">
       {versions?.length === 0 || !versions ? (
         <div className="w-full flex flex-col gap-0.5 items-center">
           <div className="flex items-center mt-8 gap-2 text-sm">
@@ -37,15 +39,21 @@ export const FileVersions: FC<{ file: typeof chaptersTable.$inferSelect }> = ({
         </div>
       ) : (
         versions.map((version, index) => (
-          <div
+          <Dialogue
             key={index}
-            className="flex items-center gap-2 py-1 px-2 text-[0.8rem] rounded-md cursor-default hover:bg-hover"
+            title={`Compare versions`}
+            description={`Compare the content of this version with the previous version.`}
+            trigger={
+              <div className="p-4 rounded-md relative shadow border bg-secondary-sidebar-primary border-secondary-sidebar-border text-sm hover:border-secondary-sidebar-foreground/20 ">
+                <div className=" flex gap-1 items-center">
+                  <FileText size={16} />
+                  {defaultDateTimeFormat(version.created_at)}
+                </div>
+              </div>
+            }
           >
-            <div className=" flex gap-1 items-center">
-              <FileText size={16} />
-              {defaultDateTimeFormat(version.created_at)}
-            </div>
-          </div>
+            <CompareVersions />
+          </Dialogue>
         ))
       )}
     </div>
