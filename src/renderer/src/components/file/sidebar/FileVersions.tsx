@@ -4,7 +4,7 @@ import { useChapterVersions } from "@renderer/hooks/chapter/version/useChapterVe
 import { defaultDateTimeFormat } from "@shared/functions";
 import { chaptersTable } from "@db/schema";
 import { Dialogue } from "@renderer/components/Dialogue";
-import VersionHistory from "@renderer/components/plate-ui/plate-components/history";
+import { VersionHistory } from "@renderer/components/plate-ui/plate-components/history";
 import { deserialize } from "@renderer/db";
 
 export const FileVersions: FC<{ file: typeof chaptersTable.$inferSelect }> = ({

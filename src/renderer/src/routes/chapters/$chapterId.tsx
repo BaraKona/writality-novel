@@ -105,7 +105,6 @@ function RouteComponent(): JSX.Element {
         )}
         aria-labelledby="nav-heading"
         style={{ width }}
-        key={chapterId}
       >
         <SidebarExtender
           width={width}
@@ -150,10 +149,7 @@ function RouteComponent(): JSX.Element {
           //   }
           // }}
         />
-        <div
-          className="relative flex h-full w-full flex-col overflow-y-auto px-16"
-          key={chapterId}
-        >
+        <div className="relative flex h-full w-full flex-col overflow-y-auto px-16">
           <div className="mx-auto w-full max-w-screen-md px-2 pt-14">
             <h1
               className="text-editorText mt-4 min-h-fit font-serif-thick text-4xl font-semibold ring-0 outline-none"

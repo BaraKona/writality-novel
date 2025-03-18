@@ -54,6 +54,6 @@ export const useCreateEditor: FC<{
       plugins: [BasicElementsPlugin, BasicMarksPlugin, ...plugins],
       value: value || [],
     },
-    [value, plugins],
+    [value],
   );
 };

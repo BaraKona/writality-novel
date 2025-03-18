@@ -247,13 +247,13 @@ function Diff({
   );
 }
 
-export default function VersionHistory({
+export const VersionHistory = ({
   version,
   chapterVersion,
 }: {
   version: TElement[];
   chapterVersion: TElement[];
-}): JSX.Element {
+}): JSX.Element => {
   const editorRevision = useCreateEditor(
     {
       plugins,
@@ -261,6 +261,8 @@ export default function VersionHistory({
     },
     [version],
   );
+
+  console.log("revision", editorRevision);
 
   return (
     <div className="flex flex-col gap-3 overflow-y-auto h-full">
@@ -280,4 +282,4 @@ export default function VersionHistory({
       </Button>
     </div>
   );
-}
+};
