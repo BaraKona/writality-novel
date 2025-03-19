@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 
 import { cn } from "@udecode/cn";
 import { TElement, type Value, createSlatePlugin } from "@udecode/plate";
@@ -89,38 +89,38 @@ const describeUpdate = ({ newProperties, properties }: DiffUpdate): string => {
   return descriptionParts.join("\n");
 };
 
-const InlineElement = ({
-  children,
-  ...props
-}: PlateElementProps): JSX.Element => {
-  return (
-    <PlateElement {...props} as="span" className="rounded-sm p-1">
-      {children}
-    </PlateElement>
-  );
-};
+const InlineElement = memo(
+  ({ children, ...props }: PlateElementProps): JSX.Element => {
+    return (
+      <PlateElement {...props} as="span" className="rounded-sm p-1">
+        {children}
+      </PlateElement>
+    );
+  },
+);
+InlineElement.displayName = "InlineElement";
 
-const InlineVoidElement = ({
-  children,
-  ...props
-}: PlateElementProps): JSX.Element => {
-  const selected = useSelected();
+const InlineVoidElement = memo(
+  ({ children, ...props }: PlateElementProps): JSX.Element => {
+    const selected = useSelected();
 
-  return (
-    <PlateElement {...props} as="span">
-      <span
-        className={cn(
-          "rounded-sm bg-slate-200/50 p-1",
-          selected && "bg-blue-500 text-white",
-        )}
-        contentEditable={false}
-      >
-        Inline void
-      </span>
-      {children}
-    </PlateElement>
-  );
-};
+    return (
+      <PlateElement {...props} as="span">
+        <span
+          className={cn(
+            "rounded-sm bg-slate-200/50 p-1",
+            selected && "bg-blue-500 text-white",
+          )}
+          contentEditable={false}
+        >
+          Inline void
+        </span>
+        {children}
+      </PlateElement>
+    );
+  },
+);
+InlineVoidElement.displayName = "InlineVoidElement";
 
 const DiffPlugin = toPlatePlugin(
   createSlatePlugin({
@@ -182,6 +182,7 @@ function DiffLeaf({ children, ...props }: PlateLeafProps): JSX.Element {
   return (
     <PlateLeaf {...props} asChild>
       <Component
+        key={Date.now()}
         className={cn(diffOperationColors[diffOperation.type], "rounded-sm")}
         title={
           diffOperation.type === "update"
@@ -238,48 +239,44 @@ function Diff({
     [diffValue],
   );
 
-  return (
-    <VersionHistoryPlate
-      key={JSON.stringify(diffValue)}
-      readOnly
-      editor={editor}
-    />
-  );
+  return <VersionHistoryPlate readOnly editor={editor} />;
 }
 
-export const VersionHistory = ({
-  version,
-  chapterVersion,
-}: {
-  version: TElement[];
-  chapterVersion: TElement[];
-}): JSX.Element => {
-  const editorRevision = useCreateEditor(
-    {
-      plugins,
-      value: version,
-    },
-    [version],
-  );
+export const VersionHistory = memo(
+  ({
+    version,
+    chapterVersion,
+  }: {
+    version: TElement[];
+    chapterVersion: TElement[];
+  }): JSX.Element => {
+    const editorRevision = useCreateEditor(
+      {
+        plugins,
+        value: version,
+      },
+      [version],
+    );
 
-  console.log("revision", editorRevision);
+    return (
+      <div className="flex flex-col gap-3 overflow-y-auto h-full">
+        <div className="grid gap-3 md:grid-cols-2 overflow-y-auto h-full">
+          <div>
+            <h2>Version </h2>
+            <VersionHistoryPlate readOnly editor={editorRevision} />
+          </div>
 
-  return (
-    <div className="flex flex-col gap-3 overflow-y-auto h-full">
-      <div className="grid gap-3 md:grid-cols-2 overflow-y-auto h-full">
-        <div>
-          <h2>Version </h2>
-          <VersionHistoryPlate readOnly editor={editorRevision} />
+          <div>
+            <h2>Chapter</h2>
+            <Diff current={chapterVersion || []} previous={version || []} />
+          </div>
         </div>
-
-        <div>
-          <h2>Chapter</h2>
-          <Diff current={chapterVersion || []} previous={version || []} />
-        </div>
+        <Button className="ml-auto" onClick={() => {}}>
+          Save revision
+        </Button>
       </div>
-      <Button className="ml-auto" onClick={() => {}}>
-        Save revision
-      </Button>
-    </div>
-  );
-};
+    );
+  },
+);
+
+VersionHistory.displayName = "VersionHistory";

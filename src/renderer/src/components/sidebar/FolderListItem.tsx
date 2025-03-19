@@ -90,7 +90,10 @@ export const FolderListItem = ({
                     className="fill-muted-foreground stroke-foreground"
                   />
                 ) : (
-                  <FolderIcon className="fill-muted-foreground stroke-foreground" />
+                  <FolderIcon
+                    size={18}
+                    className="fill-muted-foreground stroke-foreground"
+                  />
                 )}
               </div>
             </div>

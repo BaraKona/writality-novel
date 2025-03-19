@@ -1,13 +1,13 @@
-import { FC } from 'react'
-import { useLocation, useNavigate } from '@tanstack/react-router'
-import { PencilRulerIcon, PlusIcon, ScissorsIcon } from 'lucide-react'
-import { Button } from '@renderer/components/ui/button'
+import { FC } from "react";
+import { useLocation, useNavigate } from "@tanstack/react-router";
+import { PencilRulerIcon, PlusIcon, ScissorsIcon } from "lucide-react";
+import { Button } from "@renderer/components/ui/button";
 
 export const FileDrafts: FC<{}> = ({}) => {
-  const location = useLocation()
-  const drafts = [] as any
-  const isLoading = false
-  const navigate = useNavigate()
+  const location = useLocation();
+  const drafts = [] as any;
+  const isLoading = false;
+  const navigate = useNavigate();
 
   if (isLoading) {
     return (
@@ -19,7 +19,7 @@ export const FileDrafts: FC<{}> = ({}) => {
           />
         ))}
       </div>
-    )
+    );
   }
   return (
     <div className="h-full flex flex-col gap-0.5 grow">
@@ -30,8 +30,9 @@ export const FileDrafts: FC<{}> = ({}) => {
             No drafts yet.
           </div>
           <p className="text-xs mt-2 max-w-[250px] text-center mx-auto">
-            You are editing your first draft. When you feel to refine your story, you can create aa
-            new draft. You can also create multiple drafts and switch between them.
+            You are editing your first draft. When you feel to refine your
+            story, you can create aa new draft. You can also create multiple
+            drafts and switch between them.
             {/* Polish your story and create a multiple revisions. */}
           </p>
           <Button className="mt-4 text-xs flex items-center gap-2 px-2">
@@ -44,7 +45,11 @@ export const FileDrafts: FC<{}> = ({}) => {
           <div
             key={index}
             className="flex items-center gap-2 py-1 px-2 text-xs  hover:text-accent rounded-md cursor-default"
-            onClick={() => navigate({ search: { ...location.search, version: version.name } })}
+            onClick={() =>
+              navigate({
+                search: { ...location.search, version: version.name },
+              })
+            }
           >
             <div className=" flex gap-1 py-1">
               <ScissorsIcon size={16} />
@@ -54,5 +59,5 @@ export const FileDrafts: FC<{}> = ({}) => {
         ))
       )}
     </div>
-  )
-}
+  );
+};

@@ -7,9 +7,10 @@ import { Dialogue } from "@renderer/components/Dialogue";
 import { VersionHistory } from "@renderer/components/plate-ui/plate-components/history";
 import { deserialize } from "@renderer/db";
 
-export const FileVersions: FC<{ file: typeof chaptersTable.$inferSelect }> = ({
-  file,
-}) => {
+export const FileVersions: FC<{
+  file: typeof chaptersTable.$inferSelect;
+  content: string;
+}> = ({ file, content }) => {
   const { data: versions, isLoading } = useChapterVersions(file?.id);
 
   if (isLoading) {
@@ -56,7 +57,7 @@ export const FileVersions: FC<{ file: typeof chaptersTable.$inferSelect }> = ({
           >
             <VersionHistory
               version={deserialize(version.description)}
-              chapterVersion={file.description}
+              chapterVersion={content}
             />
           </Dialogue>
         ))

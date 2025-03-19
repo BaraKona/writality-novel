@@ -120,6 +120,7 @@ function RouteComponent(): JSX.Element {
           setSidebarState={setSidebarState}
           sidebarState={sidebarState}
           file={chapter!}
+          content={content}
         />
       </div>
       <div

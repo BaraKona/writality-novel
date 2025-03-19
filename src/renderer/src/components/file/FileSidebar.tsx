@@ -21,7 +21,8 @@ export const FileSidebar: FC<{
   sidebarState: ChapterSidebarState;
   setSidebarState: (state) => void;
   file: typeof chaptersTable.$inferSelect;
-}> = ({ sidebarState, setSidebarState, file }) => {
+  content: string;
+}> = ({ sidebarState, setSidebarState, file, content }) => {
   return (
     <div className="grow flex flex-col rounded-l-xl border border-secondary-sidebar-border shadow-md pointer-events-auto shadow-md bg-secondary-sidebar border-r-0 overflow-y-auto">
       <div className="flex w-full gap-4 border-b border-secondary-sidebar-border px-2 py-1 text-xs font-medium">
@@ -72,7 +73,9 @@ export const FileSidebar: FC<{
       </div>
       <div className="flex grow flex-col overflow-y-auto relative">
         {sidebarState.category === "notes" && <FileNotes file={file} />}
-        {sidebarState.category === "versions" && <FileVersions file={file} />}
+        {sidebarState.category === "versions" && (
+          <FileVersions file={file} content={content} />
+        )}
       </div>
     </div>
   );

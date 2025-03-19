@@ -470,3 +470,91 @@
     @apply bg-background text-foreground;
   }
 }
+
+@keyframes sketchIn {
+  from {
+    stroke-dashoffset: 778;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes sketchOut {
+  from {
+    stroke-dashoffset: 0;
+  }
+  to {
+    stroke-dashoffset: 778;
+  }
+}
+
+@layer utilities {
+  .animate-sketchIn {
+    animation: sketchIn 0.8s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+  }
+
+  .animate-sketchOut {
+    animation: sketchOut 0.8s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+  }
+}
+
+@keyframes unfoldIn {
+  0% {
+    transform: scaleY(0.005) scaleX(0);
+  }
+  50% {
+    transform: scaleY(0.005) scaleX(1);
+  }
+  100% {
+    transform: scaleY(1) scaleX(1);
+  }
+}
+
+@keyframes unfoldOut {
+  0% {
+    transform: scaleY(1) scaleX(1);
+  }
+  50% {
+    transform: scaleY(0.005) scaleX(1);
+  }
+  100% {
+    transform: scaleY(0.005) scaleX(0);
+  }
+}
+
+@keyframes zoomIn {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes zoomOut {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0);
+  }
+}
+
+@layer utilities {
+  .animate-unfoldIn {
+    animation: unfoldIn 1s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+  }
+
+  .animate-unfoldOut {
+    animation: unfoldOut 1s 0.3s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+  }
+
+  .animate-zoomIn {
+    animation: zoomIn 0.5s 0.8s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+  }
+
+  .animate-zoomOut {
+    animation: zoomOut 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+  }
+}
