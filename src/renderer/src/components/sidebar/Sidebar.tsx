@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import { FC, useRef, useState } from "react";
 import { ProjectImage } from "../ProjectImage";
-import defaultBannerImage from "@renderer/assets/images/fantasy-endless-hole-landscape.jpg";
+import defaultBannerImage from "@renderer/assets/images/banner-3.webp";
 import { ReactNode } from "@tanstack/react-router";
 import { useAtom, useAtomValue } from "jotai";
 import {

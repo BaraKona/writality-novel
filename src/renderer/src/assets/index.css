@@ -17,6 +17,10 @@
 
   --background-image-8: url("@renderer/assets/images/writality-8.jpeg");
 
+  --background-image-banner-1: url("@renderer/assets/images/banner-1.webp");
+  --background-image-banner-2: url("@renderer/assets/images/banner-2.webp");
+  --background-image-banner-3: url("@renderer/assets/images/banner-3.webp");
+
   --color-border: hsl(var(--border));
   --color-input: hsl(var(--input));
   --color-ring: hsl(var(--ring));

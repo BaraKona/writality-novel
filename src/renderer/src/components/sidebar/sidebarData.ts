@@ -1,7 +1,6 @@
 import { projectsTable } from "@db/schema";
 import {
   Frame,
-  GalleryVerticalEnd,
   Map,
   PieChart,
   Image,
@@ -14,18 +13,6 @@ export const data = (currentProject?: typeof projectsTable) => {
     openProject: {
       name: currentProject?.name || "Untitled",
     },
-    projects: [
-      {
-        name: "All Projects",
-        logo: GalleryVerticalEnd,
-        url: "/overview",
-      },
-      {
-        name: "Global Analytics",
-        logo: PieChart,
-        url: "/analytics",
-      },
-    ],
     navMain: [
       {
         title: "World",
@@ -40,10 +27,6 @@ export const data = (currentProject?: typeof projectsTable) => {
           {
             title: "History",
             url: "/world/history",
-          },
-          {
-            title: "Analytics",
-            url: "/world/analytics",
           },
         ],
       },

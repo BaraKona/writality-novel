@@ -41,7 +41,7 @@ function RouteComponent(): JSX.Element {
 
   return (
     <div className="w-full">
-      <div className="relative h-[35vh] w-full bg-2 bg-cover bg-center bg-no-repeat"></div>
+      <div className="relative h-[35vh] w-full bg-banner-3 bg-cover bg-center bg-no-repeat"></div>
       <div className="relative mx-auto h-full max-w-5xl px-16">
         <Popover>
           <PopoverTrigger className="absolute -top-18 z-10 text-[6em]">

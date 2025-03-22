@@ -67,7 +67,7 @@ export function NavMain({
                     ? React.createElement(item.icon as React.ElementType)
                     : null}
                 <span
-                  className={`font-medium ${location.pathname === item.url ? "text-sidebar-accent-foreground" : "text-sidebar-foreground"}`}
+                  className={`font-medium ${location.pathname === item.url ? "text-accent-foreground" : "text-sidebar-foreground"}`}
                 >
                   {item.title}
                 </span>
@@ -84,15 +84,19 @@ export function NavMain({
                 <SidebarMenuSub>
                   {item.items?.map((subItem) => (
                     <SidebarMenuSubItem key={subItem.title}>
-                      <SidebarMenuSubButton asChild>
+                      <SidebarMenuSubButton
+                        asChild
+                        className="hover:bg-sidebar-accent/10"
+                      >
                         <Link
                           to={subItem.url}
+                          className="hover:bg-sidebar-accent/10"
                           activeProps={{
                             className:
-                              "bg-sidebar-accent/50 text-sidebar-accent-foreground",
+                              "bg-sidebar-accent/10 !text-accent-foreground",
                           }}
                         >
-                          <span>{subItem.title}</span>
+                          {subItem.title}
                         </Link>
                       </SidebarMenuSubButton>
                     </SidebarMenuSubItem>

@@ -27,7 +27,7 @@ const teams = [
     url: "/overview",
   },
   {
-    name: "Global Analytics",
+    name: "Analytics",
     logo: PieChart,
     url: "/analytics",
   },

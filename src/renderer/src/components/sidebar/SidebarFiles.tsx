@@ -11,7 +11,6 @@ import {
   SidebarGroupLabel,
   SidebarMenu,
 } from "@renderer/components/ui/sidebar";
-import { Emoji } from "@shared/models";
 import { useCreateFolder } from "@renderer/hooks/folder/useCreateFolder";
 import { useCreateChapter } from "@renderer/hooks/chapter/useCreateChapter";
 import { FolderListItem } from "./FolderListItem";
@@ -26,11 +25,8 @@ import { Value } from "@udecode/plate";
 export function SidebarFiles({
   project,
 }: {
-  project:
-    | (typeof projectsTable.$inferSelect & {
-        description: Value;
-        emoji: Emoji;
-      })
+  project?:
+    | (typeof projectsTable.$inferSelect & { description: Value })
     | undefined;
 }): JSX.Element {
   const { data: projectFiles } = useProjectFiles(project?.id);

@@ -7,7 +7,7 @@ import { greetingTime } from "@renderer/lib/utils";
 import { createLazyFileRoute } from "@tanstack/react-router";
 import { PlusIcon } from "lucide-react";
 import { currentProjectIdAtom } from "./__root";
-import { useAtom } from "jotai";
+import { useSetAtom } from "jotai";
 
 export const Route = createLazyFileRoute("/overview")({
   component: RouteComponent,
@@ -23,9 +23,8 @@ function RouteComponent(): JSX.Element {
   const { data: projects, isLoading } = useAllProjects();
   const { data } = useCurrentDir();
   const { mutate: createProject } = useCreateProject();
-  const [currentProjectId, setCurrentProjectId] = useAtom(currentProjectIdAtom);
+  const setCurrentProjectId = useSetAtom(currentProjectIdAtom);
 
-  console.log({ currentProjectId });
   const updatedToday: typeof projects = [];
   const updatedThisWeek: typeof projects = [];
   const updatedThisMonth: typeof projects = [];

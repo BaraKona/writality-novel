@@ -20,6 +20,7 @@ import { Route as ChaptersChapterIdImport } from './routes/chapters/$chapterId'
 
 const OverviewLazyImport = createFileRoute('/overview')()
 const NewPageLazyImport = createFileRoute('/new-page')()
+const AnalyticsLazyImport = createFileRoute('/analytics')()
 const IndexLazyImport = createFileRoute('/')()
 const WorldIndexLazyImport = createFileRoute('/world/')()
 const GalleryIndexLazyImport = createFileRoute('/gallery/')()
@@ -47,6 +48,12 @@ const NewPageLazyRoute = NewPageLazyImport.update({
   path: '/new-page',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/new-page.lazy').then((d) => d.Route))
+
+const AnalyticsLazyRoute = AnalyticsLazyImport.update({
+  id: '/analytics',
+  path: '/analytics',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() => import('./routes/analytics.lazy').then((d) => d.Route))
 
 const IndexLazyRoute = IndexLazyImport.update({
   id: '/',
@@ -145,6 +152,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexLazyImport
+      parentRoute: typeof rootRoute
+    }
+    '/analytics': {
+      id: '/analytics'
+      path: '/analytics'
+      fullPath: '/analytics'
+      preLoaderRoute: typeof AnalyticsLazyImport
       parentRoute: typeof rootRoute
     }
     '/new-page': {
@@ -252,6 +266,7 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexLazyRoute
+  '/analytics': typeof AnalyticsLazyRoute
   '/new-page': typeof NewPageLazyRoute
   '/overview': typeof OverviewLazyRoute
   '/chapters/$chapterId': typeof ChaptersChapterIdRoute
@@ -270,6 +285,7 @@ export interface FileRoutesByFullPath {
 
 export interface FileRoutesByTo {
   '/': typeof IndexLazyRoute
+  '/analytics': typeof AnalyticsLazyRoute
   '/new-page': typeof NewPageLazyRoute
   '/overview': typeof OverviewLazyRoute
   '/chapters/$chapterId': typeof ChaptersChapterIdRoute
@@ -289,6 +305,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexLazyRoute
+  '/analytics': typeof AnalyticsLazyRoute
   '/new-page': typeof NewPageLazyRoute
   '/overview': typeof OverviewLazyRoute
   '/chapters/$chapterId': typeof ChaptersChapterIdRoute
@@ -309,6 +326,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/analytics'
     | '/new-page'
     | '/overview'
     | '/chapters/$chapterId'
@@ -326,6 +344,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/analytics'
     | '/new-page'
     | '/overview'
     | '/chapters/$chapterId'
@@ -343,6 +362,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/analytics'
     | '/new-page'
     | '/overview'
     | '/chapters/$chapterId'
@@ -362,6 +382,7 @@ export interface FileRouteTypes {
 
 export interface RootRouteChildren {
   IndexLazyRoute: typeof IndexLazyRoute
+  AnalyticsLazyRoute: typeof AnalyticsLazyRoute
   NewPageLazyRoute: typeof NewPageLazyRoute
   OverviewLazyRoute: typeof OverviewLazyRoute
   ChaptersChapterIdRoute: typeof ChaptersChapterIdRoute
@@ -380,6 +401,7 @@ export interface RootRouteChildren {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexLazyRoute: IndexLazyRoute,
+  AnalyticsLazyRoute: AnalyticsLazyRoute,
   NewPageLazyRoute: NewPageLazyRoute,
   OverviewLazyRoute: OverviewLazyRoute,
   ChaptersChapterIdRoute: ChaptersChapterIdRoute,
@@ -407,6 +429,7 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/analytics",
         "/new-page",
         "/overview",
         "/chapters/$chapterId",
@@ -425,6 +448,9 @@ export const routeTree = rootRoute
     },
     "/": {
       "filePath": "index.lazy.tsx"
+    },
+    "/analytics": {
+      "filePath": "analytics.lazy.tsx"
     },
     "/new-page": {
       "filePath": "new-page.lazy.tsx"
