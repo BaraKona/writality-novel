@@ -1,3 +1,4 @@
+import { RichTextEditorDemo } from "@renderer/components/tiptap/rich-text-editor";
 import { createLazyFileRoute } from "@tanstack/react-router";
 
 export const Route = createLazyFileRoute("/world/notes")({
@@ -5,5 +6,5 @@ export const Route = createLazyFileRoute("/world/notes")({
 });
 
 function RouteComponent() {
-  return <div>Hello "/world/notes/lazt"!</div>;
+  return <RichTextEditorDemo className="w-full rounded-xl" />;
 }
