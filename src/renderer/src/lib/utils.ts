@@ -4,6 +4,7 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { PointerEvent as ReactPointerEvent } from "react";
 import { Open } from "@renderer/routes/__root";
+import { Value } from "@udecode/plate";
 
 dayjs.extend(relativeTime);
 
@@ -147,9 +148,7 @@ export function onPointerDown({
   });
 }
 
-export const getTextContentFromRichContent = (
-  content: Array<{ text?: string; children?: Array<string> }>,
-): string => {
+export const getTextContentFromRichContent = (content: Value): string => {
   const getText = (node: {
     text?: string;
     children?: Array<string>;
@@ -168,15 +167,18 @@ export const getTextContentFromRichContent = (
     return "";
   };
   return content
-    .map(getText)
+    .map((node) => {
+      if (typeof node === "string") {
+        return node;
+      }
+      return getText(node);
+    })
     .join(" ")
     .replace(/\s{2,}/g, " ")
     .trim(); // Trim leading and trailing spaces
 };
 
-export const getWordCountFromRichContent = (
-  content?: Array<{ text?: string; children?: Array<string> }>,
-): number => {
+export const getWordCountFromRichContent = (content?: Value): number => {
   if (!content) {
     return 0;
   }

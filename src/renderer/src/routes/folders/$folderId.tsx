@@ -9,9 +9,9 @@ import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
 import { Clock3, FileClock } from "lucide-react";
 import { getTimeFromNow } from "@renderer/lib/utils";
+import { custom_emojis } from "@renderer/lib/custom_emoji";
 
 import { defaultDateTimeFormat } from "@shared/functions";
-import { custom_emojis } from "@renderer/lib/custom_emoji";
 import { useUpdateFolder } from "@renderer/hooks/folder/useUpdateFolder";
 import { ChapterListItem } from "@renderer/components/sidebar/ChapterListItem";
 import { Button } from "@renderer/components/ui/button";
@@ -41,7 +41,7 @@ function RouteComponent(): JSX.Element {
 
   return (
     <div className="w-full">
-      <div className="relative h-[35vh] w-full bg-3 bg-cover bg-center bg-no-repeat"></div>
+      <div className="relative h-[35vh] bg-blend-lighten w-full bg-8 bg-cover bg-center bg-no-repeat"></div>
       <div className="relative mx-auto h-full max-w-5xl px-16">
         <Popover>
           <PopoverTrigger className="absolute -top-18 z-10 text-[6em]">

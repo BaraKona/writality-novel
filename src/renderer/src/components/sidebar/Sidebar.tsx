@@ -40,7 +40,7 @@ export const Sidebar: FC<{ children: ReactNode }> = ({ children }) => {
     <div className="flex h-full h-screen w-screen justify-start">
       <nav
         className={clsx(
-          "fixed top-0 bottom-0 left-0 z-20 flex h-screen max-h-screen flex-shrink-0 grainy bg-sidebar flex-col space-y-2 transition-transform duration-300 ease-sidebar",
+          "fixed top-0 bottom-0 left-0 z-10 flex h-screen max-h-screen flex-shrink-0 grainy bg-sidebar flex-col space-y-2 transition-transform duration-300 ease-sidebar",
           {
             ["cursor-col-resize"]: isDragging,
           },
@@ -68,7 +68,7 @@ export const Sidebar: FC<{ children: ReactNode }> = ({ children }) => {
           <section className="mt-auto">
             <NavUser
               user={{
-                name: projectDir?.name,
+                name: projectDir?.name || "",
                 position: "Writer",
                 avatar: "/avatars/shadcn.jpg",
               }}

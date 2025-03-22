@@ -1,9 +1,19 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import { database, deserialize } from "@renderer/db";
 import { projectsTable } from "../../../../db/schema";
 import { eq } from "drizzle-orm";
+import { Value } from "@udecode/plate";
+import { Emoji } from "@emoji-mart/data";
 
-export const useProject = (id: number) => {
+export const useProject = (
+  id: number,
+): UseQueryResult<
+  typeof projectsTable.$inferSelect & {
+    description: Value;
+    emoji: Emoji;
+  },
+  Error
+> => {
   return useQuery({
     queryKey: ["projects", id],
     queryFn: async () => {

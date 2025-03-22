@@ -6,10 +6,19 @@ import {
   chapterParentsTable,
 } from "../../../../db/schema";
 import { eq, isNull, and } from "drizzle-orm";
+import { Value } from "@udecode/plate";
+import { Emoji } from "@shared/models";
 
 export const useFolderById = (
   id: number,
-): UseQueryResult<typeof foldersTable.$inferSelect, Error> => {
+): UseQueryResult<
+  | typeof foldersTable.$inferSelect
+  | {
+      description: Value;
+      emoji: Emoji;
+    },
+  Error
+> => {
   return useQuery({
     queryKey: ["folder", "single", id],
     queryFn: async () => {

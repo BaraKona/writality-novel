@@ -9,6 +9,7 @@ import { FileNotes } from "./sidebar/notes/FileNotes";
 import { ChapterSidebarState } from "@renderer/routes/chapters/$chapterId";
 import { chaptersTable } from "@db/schema";
 import { FileVersions } from "./sidebar/FileVersions";
+import { Value } from "@udecode/plate";
 
 type FileSidebarListItemProps = {
   name: string;
@@ -21,7 +22,7 @@ export const FileSidebar: FC<{
   sidebarState: ChapterSidebarState;
   setSidebarState: (state) => void;
   file: typeof chaptersTable.$inferSelect;
-  content: string;
+  content: Value;
 }> = ({ sidebarState, setSidebarState, file, content }) => {
   return (
     <div className="grow flex flex-col rounded-l-xl border border-secondary-sidebar-border shadow-md pointer-events-auto shadow-md bg-secondary-sidebar border-r-0 overflow-y-auto">

@@ -17,6 +17,14 @@ import { Button } from "../ui/button";
 import { ChapterSidebarState } from "@renderer/routes/chapters/$chapterId";
 import { Open } from "@renderer/routes/__root";
 import { chaptersTable } from "@db/schema";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@radix-ui/react-popover";
+import data from "@emoji-mart/data";
+import Picker from "@emoji-mart/react";
+import { custom_emojis } from "@renderer/lib/custom_emoji";
 
 export const Infobar: FC<{
   chapter: typeof chaptersTable.$inferSelect;
@@ -67,8 +75,39 @@ export const Infobar: FC<{
             </BreadcrumbList>
           ))} */}
           <BreadcrumbList className="shrink-0 text-xs font-medium">
-            <BreadcrumbItem className="flex max-w-48 shrink-0 gap-1 pl-1 text-text">
-              <FileTextIcon size={16} strokeWidth={1.5} className="shrink-0" />
+            <BreadcrumbItem className="flex max-w-48 shrink-0 gap-1 pl-1 text-text z-10">
+              <Popover>
+                <PopoverTrigger className="text-[1.75em]">
+                  {chapter?.emoji?.src ? (
+                    <img
+                      src={chapter?.emoji?.src}
+                      alt="emoji"
+                      className="h-28 w-28"
+                    />
+                  ) : (
+                    chapter?.emoji?.native || (
+                      <FileTextIcon
+                        size={16}
+                        strokeWidth={1.5}
+                        className="shrink-0"
+                      />
+                    )
+                  )}
+                </PopoverTrigger>
+
+                <PopoverContent className="border-0 p-0">
+                  <Picker
+                    data={data}
+                    custom={custom_emojis}
+                    // onEmojiSelect={(e) =>
+                    //   chapter && updateChapter({ ...chapter, emoji: e })
+                    // }
+                    theme="light"
+                    skinTonePosition="search"
+                  />
+                </PopoverContent>
+              </Popover>
+
               <span className="truncate">{chapter?.name}</span>
             </BreadcrumbItem>
           </BreadcrumbList>

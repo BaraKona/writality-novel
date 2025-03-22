@@ -11,7 +11,7 @@ import {
   SidebarGroupLabel,
   SidebarMenu,
 } from "@renderer/components/ui/sidebar";
-import { Project } from "@shared/models";
+import { Emoji } from "@shared/models";
 import { useCreateFolder } from "@renderer/hooks/folder/useCreateFolder";
 import { useCreateChapter } from "@renderer/hooks/chapter/useCreateChapter";
 import { FolderListItem } from "./FolderListItem";
@@ -20,8 +20,19 @@ import { useProjectFiles } from "@renderer/hooks/project/useProjectFiles";
 import { FileListItem } from "./FileListItem";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { Button } from "../ui/button";
+import { projectsTable } from "@db/schema";
+import { Value } from "@udecode/plate";
 
-export function SidebarFiles({ project }: { project: Project }): JSX.Element {
+export function SidebarFiles({
+  project,
+}: {
+  project:
+    | (typeof projectsTable.$inferSelect & {
+        description: Value;
+        emoji: Emoji;
+      })
+    | undefined;
+}): JSX.Element {
   const { data: projectFiles } = useProjectFiles(project?.id);
   const { mutate: createProjectFolder } = useCreateFolder(project?.id);
   const { mutate: createChapter } = useCreateChapter(project?.id, "project");

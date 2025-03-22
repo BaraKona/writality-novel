@@ -13,6 +13,9 @@
   --background-image-3: url("@renderer/assets/images/writality-3.png");
   --background-image-4: url("@renderer/assets/images/writality-4.png");
   --background-image-5: url("@renderer/assets/images/writality-5.png");
+  --background-image-6: url("@renderer/assets/images/writality-7.jpeg");
+
+  --background-image-8: url("@renderer/assets/images/writality-8.jpeg");
 
   --color-border: hsl(var(--border));
   --color-input: hsl(var(--input));

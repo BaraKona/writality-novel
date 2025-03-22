@@ -20,27 +20,28 @@ import { BasicEditor } from "@renderer/components/editor/BasicEditor";
 import { useCreateEditor } from "@renderer/components/editor/use-create-editor";
 import { useAtomValue } from "jotai";
 import { currentProjectIdAtom } from "../__root";
+import { Value } from "@udecode/plate";
 
 export const Route = createLazyFileRoute("/world/")({
   component: RouteComponent,
 });
 
-function RouteComponent() {
+function RouteComponent(): JSX.Element {
   const projectId = useAtomValue(currentProjectIdAtom);
 
-  const { data: project } = useProject(projectId);
+  const { data: project } = useProject(projectId as number);
   const { mutate: updateProject } = useUpdateProject();
 
   const editor = useCreateEditor({ value: project?.description });
 
   const debouncedFunc = useDebounce(
-    (value) => updateProject({ ...project, description: value }),
+    (value: Value) => updateProject({ ...project, description: value }),
     2000,
   );
 
   return (
     <div className="w-full">
-      <div className="relative h-[35vh] w-full bg-default bg-cover bg-center bg-no-repeat"></div>
+      <div className="relative h-[35vh] w-full bg-2 bg-cover bg-center bg-no-repeat"></div>
       <div className="relative mx-auto h-full max-w-5xl px-16">
         <Popover>
           <PopoverTrigger className="absolute -top-18 z-10 text-[6em]">

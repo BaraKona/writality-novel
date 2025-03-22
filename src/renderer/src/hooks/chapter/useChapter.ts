@@ -2,11 +2,14 @@ import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import { database, deserialize } from "@renderer/db";
 import { chaptersTable, chapterParentsTable } from "../../../../db/schema";
 import { eq } from "drizzle-orm";
+import { Value } from "@udecode/plate";
+
 export const useChapter = (
   id: number,
 ): UseQueryResult<
   typeof chaptersTable.$inferSelect & {
     parent: typeof chapterParentsTable.$inferSelect | null;
+    description: Value;
   },
   Error
 > => {

@@ -4,8 +4,8 @@ import { database } from "@renderer/db";
 import { useNavigate } from "@tanstack/react-router";
 
 export const useCreateChapter = (
-  parentId: number,
-  parentType: "project" | "folder",
+  parentId?: number,
+  parentType: "project" | "folder" = "project",
   navigate = false,
 ): ReturnType<typeof useMutation> => {
   const queryClient = useQueryClient();

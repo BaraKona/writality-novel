@@ -4,6 +4,7 @@ import { chaptersTable, versionsTable } from "../../../../../db/schema";
 import { and, eq, gt } from "drizzle-orm";
 import { sql } from "drizzle-orm";
 import { getWordCountFromRichContent } from "@renderer/lib/utils";
+import { Value } from "@udecode/plate";
 
 const VERSIONING_CONFIG = {
   MIN_TIME_BETWEEN_VERSIONS: 30 * 60, // 30 minutes in seconds
@@ -22,7 +23,7 @@ export const useCreateVersion = () => {
       isMajorVersion = false,
     }: {
       chapterId: number;
-      description: string;
+      description: Value;
       isMajorVersion?: boolean;
     }) => {
       // Get the current chapter
@@ -92,10 +93,11 @@ export const useCreateVersion = () => {
 // Helper function to determine if we should create a new version
 const shouldCreateNewVersion = (
   lastVersion: typeof versionsTable.$inferSelect,
-  newContent: string,
+  newContent: Value,
 ): boolean => {
   const timeSinceLastVersion =
-    Math.floor(Date.now() / 1000) - lastVersion.created_at;
+    Math.floor(Date.now() / 1000) -
+    Math.floor(new Date(lastVersion.created_at).getTime() / 1000);
 
   // Always create a version if enough time has passed
   if (timeSinceLastVersion >= VERSIONING_CONFIG.MIN_TIME_BETWEEN_VERSIONS) {
@@ -115,7 +117,7 @@ const shouldCreateNewVersion = (
 };
 
 // Helper function to clean up old versions
-const cleanupOldVersions = async (chapterId: number) => {
+const cleanupOldVersions = async (chapterId: number): Promise<void> => {
   // Get all minor versions ordered by creation date
   const minorVersions = await database
     .select()

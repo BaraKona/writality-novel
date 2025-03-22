@@ -48,6 +48,7 @@ export const foldersTable = sqliteTable("folders", {
 export const chaptersTable = sqliteTable("chapters", {
   id: int().primaryKey({ autoIncrement: true }),
   name: text().notNull(),
+  emoji: text(),
   description: text(),
   word_count: int(),
   position: int(),

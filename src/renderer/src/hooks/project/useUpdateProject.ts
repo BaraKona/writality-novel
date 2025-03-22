@@ -2,12 +2,14 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { database, serialize } from "@renderer/db";
 import { projectsTable } from "../../../../db/schema";
 import { eq } from "drizzle-orm";
-
+import { Value } from "@udecode/plate";
 export const useUpdateProject = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (project: typeof projectsTable) => {
+    mutationFn: async (
+      project: typeof projectsTable.$inferInsert | { description: Value },
+    ) => {
       try {
         await database
           .update(projectsTable)

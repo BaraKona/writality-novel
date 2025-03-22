@@ -5,11 +5,11 @@ import { defaultDateTimeFormat } from "@shared/functions";
 import { chaptersTable } from "@db/schema";
 import { Dialogue } from "@renderer/components/Dialogue";
 import { VersionHistory } from "@renderer/components/plate-ui/plate-components/history";
-import { deserialize } from "@renderer/db";
+import { Value } from "@udecode/plate";
 
 export const FileVersions: FC<{
   file: typeof chaptersTable.$inferSelect;
-  content: string;
+  content: Value;
 }> = ({ file, content }) => {
   const { data: versions, isLoading } = useChapterVersions(file?.id);
 
@@ -56,7 +56,7 @@ export const FileVersions: FC<{
             }
           >
             <VersionHistory
-              version={deserialize(version.description)}
+              version={version.description}
               chapterVersion={content}
             />
           </Dialogue>

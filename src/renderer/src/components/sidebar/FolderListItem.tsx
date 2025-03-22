@@ -1,4 +1,3 @@
-import { Folder } from "@shared/models";
 import {
   FilePlus,
   FolderIcon,
@@ -26,7 +25,7 @@ import { useCreateFolder } from "@renderer/hooks/folder/useCreateFolder";
 import { FileListItem } from "./FileListItem";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { useFolderTree } from "@renderer/hooks/folder/useFolderTree";
-import { chaptersTable } from "@db/schema";
+import { chaptersTable, foldersTable } from "@db/schema";
 
 export const FolderListItem = ({
   folder,
@@ -34,7 +33,7 @@ export const FolderListItem = ({
   openFolders,
   setOpenFolders,
 }: {
-  folder: Folder;
+  folder: typeof foldersTable.$inferSelect;
   level: number;
   openFolders: { [key: string]: boolean };
   setOpenFolders: (value: { [key: string]: boolean }) => void;

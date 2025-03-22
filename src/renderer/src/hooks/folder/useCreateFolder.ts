@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { foldersTable } from "../../../../db/schema";
 import { database } from "@renderer/db";
 
-export const useCreateFolder = (projectId: number) => {
+export const useCreateFolder = (projectId?: number) => {
   const queryClient = useQueryClient();
 
   return useMutation({

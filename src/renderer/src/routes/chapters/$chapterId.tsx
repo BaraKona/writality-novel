@@ -17,7 +17,7 @@ import clsx from "clsx";
 import { useAtom } from "jotai";
 import { SidebarExtender } from "@renderer/components/sidebar/SidebarExtender";
 import { getWordCountFromRichContent } from "@renderer/lib/utils";
-import { chaptersTable } from "../../../../db/schema";
+import { Value } from "@udecode/plate";
 
 export const Route = createFileRoute("/chapters/$chapterId")({
   component: RouteComponent,
@@ -55,24 +55,18 @@ function RouteComponent(): JSX.Element {
   const { mutate: createVersion } = useCreateVersion();
   const [sidebarState, setSidebarState] = useAtom(chapterSidebarStateAtom);
 
-  type EditorContent = { text?: string; children?: EditorContent[] }[];
-
   const handleContentUpdate = useCallback(
-    (value: EditorContent) => {
+    (value: Value) => {
       if (!chapter) return;
-
-      console.log("triggered  ");
 
       // Only update if content has actually changed
       if (JSON.stringify(value) !== JSON.stringify(lastSavedContent)) {
-        const updatedChapter = {
+        // Update chapter
+        updateChapter({
           ...chapter,
           description: value,
           word_count: getWordCountFromRichContent(value),
-        } satisfies typeof chaptersTable.$inferInsert;
-
-        // Update chapter
-        updateChapter(updatedChapter);
+        });
 
         // Create version
         createVersion({
@@ -120,7 +114,7 @@ function RouteComponent(): JSX.Element {
           setSidebarState={setSidebarState}
           sidebarState={sidebarState}
           file={chapter!}
-          content={content}
+          content={content as Value}
         />
       </div>
       <div
@@ -140,37 +134,22 @@ function RouteComponent(): JSX.Element {
           updatedContent={content || ""}
           setSidebarState={setSidebarState}
           sidebarState={sidebarState}
-          // onSaveMajorVersion={() => {
-          //   if (chapter && content) {
-          //     createVersion({
-          //       chapterId: chapter.id,
-          //       description: content,
-          //       isMajorVersion: true,
-          //     });
-          //   }
-          // }}
         />
         <div className="relative flex h-full w-full flex-col overflow-y-auto px-16">
           <div className="mx-auto w-full max-w-screen-md px-2 pt-14">
             <h1
               className="text-editorText mt-4 min-h-fit font-serif-thick text-4xl font-semibold ring-0 outline-none"
               contentEditable={true}
-              // onBlur={(e) => {
-              //   if (!chapter) return;
-              //   const newName = e.currentTarget.innerText.trim();
-              //   if (newName !== chapter.name) {
-              //     updateChapter({
-              //       ...chapter,
-              //       name: newName,
-              //     });
-              //     // Create a version when chapter name changes
-              //     createVersion({
-              //       chapterId: chapter.id,
-              //       description: chapter.description || "",
-              //       isMajorVersion: true,
-              //     });
-              //   }
-              // }}
+              onBlur={(e) => {
+                if (!chapter) return;
+                const newName = e.currentTarget.innerText.trim();
+                if (newName !== chapter.name) {
+                  updateChapter({
+                    ...chapter,
+                    name: newName,
+                  });
+                }
+              }}
               dangerouslySetInnerHTML={{
                 __html: chapter?.name || "",
               }}

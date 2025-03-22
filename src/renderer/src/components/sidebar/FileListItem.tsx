@@ -11,15 +11,18 @@ import {
   SidebarMenuItem,
 } from "@renderer/components/ui/sidebar";
 import { Link } from "@tanstack/react-router";
-import { chaptersTable } from "@db/schema";
 import { useDeleteChapter } from "@renderer/hooks/chapter/useDeleteChapter";
+import { chaptersTable } from "@db/schema";
 
 export const FileListItem = ({
   chapter,
   level,
   spacing = 15,
 }: {
-  chapter: typeof chaptersTable.$inferSelect;
+  chapter: {
+    name: string;
+    id: number;
+  };
   level: number;
   spacing?: number;
 }): JSX.Element => {
@@ -65,7 +68,11 @@ export const FileListItem = ({
           side={"right"}
           align="start"
         >
-          <DropdownMenuItem onClick={() => deleteChapter(chapter)}>
+          <DropdownMenuItem
+            onClick={() =>
+              deleteChapter(chapter as typeof chaptersTable.$inferSelect)
+            }
+          >
             <Trash2 className="text-muted-foreground" />
             <span>Delete Chapter</span>
           </DropdownMenuItem>

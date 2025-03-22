@@ -17,7 +17,8 @@ import {
 import { useCreateProject } from "@renderer/hooks/project/useCreateProject";
 import { useNavigate } from "@tanstack/react-router";
 import { EmojiDisplay } from "./EmojiDisplay";
-import { Project } from "@shared/models";
+import { projectsTable } from "@db/schema";
+import { Value } from "@udecode/plate";
 
 const teams = [
   {
@@ -35,7 +36,9 @@ const teams = [
 export function ProjectSwitcher({
   currentProject,
 }: {
-  currentProject?: Project;
+  currentProject?:
+    | (typeof projectsTable.$inferSelect & { description: Value })
+    | undefined;
 }): JSX.Element {
   const { mutate: createProject } = useCreateProject();
   const navigate = useNavigate();
@@ -87,10 +90,7 @@ export function ProjectSwitcher({
               </DropdownMenuItem>
             ))}
             <DropdownMenuSeparator />
-            <DropdownMenuItem
-              className="gap-2 p-2"
-              onClick={() => createProject()}
-            >
+            <DropdownMenuItem className="gap-2 p-2" onClick={createProject}>
               <div className="flex size-6 items-center justify-center rounded-md border bg-background">
                 <Plus className="size-4" />
               </div>
