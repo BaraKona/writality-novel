@@ -61,6 +61,19 @@ export const chaptersTable = sqliteTable("chapters", {
     .default(sql`(unixepoch())`),
 });
 
+// Daily Word Counts Table - This is used to store the word count for each day
+export const dailyWordCountsTable = sqliteTable("daily_word_counts", {
+  id: int().primaryKey({ autoIncrement: true }),
+  chapter_id: int()
+    .notNull()
+    .references(() => chaptersTable.id, { onDelete: "cascade" }), // Foreign key to chapters
+  date: text().notNull(), // Date in YYYY-MM-DD format
+  word_count: int().notNull(), // Word count for the day
+  created_at: int("created_at", { mode: "timestamp" })
+    .notNull()
+    .default(sql`(unixepoch())`),
+});
+
 // Versions Table
 export const versionsTable = sqliteTable("versions", {
   id: int().primaryKey({ autoIncrement: true }),

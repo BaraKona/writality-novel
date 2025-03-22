@@ -3,10 +3,6 @@ import { currentProjectIdAtom } from "./__root";
 import { useAtomValue } from "jotai";
 import { useProject } from "@renderer/hooks/project/useProject";
 
-export const Route = createLazyFileRoute("/analytics")({
-  component: RouteComponent,
-});
-
 import { useState } from "react";
 import {
   BarChart,
@@ -42,56 +38,64 @@ import {
   YAxis,
 } from "recharts";
 
-// Sample data - in a real app, this would come from your API
-const dailyWordCount = [
-  { date: "Mon", count: 1200 },
-  { date: "Tue", count: 800 },
-  { date: "Wed", count: 1500 },
-  { date: "Thu", count: 2000 },
-  { date: "Fri", count: 1100 },
-  { date: "Sat", count: 1800 },
-  { date: "Sun", count: 2200 },
-];
+import {
+  useChapterWordCounts,
+  useCurrentStreak,
+  useDailyWordCounts,
+  useFolderCount,
+  useMonthlyWordCounts,
+} from "@renderer/hooks/useAnalytics";
 
-const monthlyWordCount = [
-  { month: "Jan", count: 25000 },
-  { month: "Feb", count: 32000 },
-  { month: "Mar", count: 18000 },
-  { month: "Apr", count: 40000 },
-  { month: "May", count: 35000 },
-  { month: "Jun", count: 28000 },
-];
-
-const chapterWordCounts = [
-  { name: "Chapter 1", wordCount: 2500 },
-  { name: "Chapter 2", wordCount: 3200 },
-  { name: "Chapter 3", wordCount: 2800 },
-  { name: "Chapter 4", wordCount: 3500 },
-  { name: "Chapter 5", wordCount: 2900 },
-  { name: "Chapter 6", wordCount: 3100 },
-];
+export const Route = createLazyFileRoute("/analytics")({
+  component: RouteComponent,
+});
 
 function RouteComponent(): JSX.Element {
   const currentProjectId = useAtomValue(currentProjectIdAtom);
   const { data: project, isLoading } = useProject(currentProjectId!);
+  const { data: chapterWordCounts, isLoading: chapterLoading } =
+    useChapterWordCounts(currentProjectId!);
+  const { data: dailyWordCounts, isLoading: dailyLoading } = useDailyWordCounts(
+    currentProjectId!,
+  );
+  const { data: monthlyWordCounts, isLoading: monthlyLoading } =
+    useMonthlyWordCounts(currentProjectId!);
+  const { data: folderCount, isLoading: folderLoading } = useFolderCount(
+    currentProjectId!,
+  );
+
+  const { data: currentStreak, isLoading: streakLoading } = useCurrentStreak(
+    currentProjectId!,
+  );
+
   const [timeframe, setTimeframe] = useState("week");
 
-  // Summary statistics
-  const totalWordCount = 85000;
-  const totalChapters = 24;
-  const totalFolders = 6;
-  const avgWordsPerChapter = Math.round(totalWordCount / totalChapters);
-  const avgWordsPerDay = 1657;
-  const currentStreak = 12;
-  const estimatedReadingTime = Math.round(totalWordCount / 250); // Assuming 250 words per minute reading speed
-
-  if (isLoading) {
+  if (
+    isLoading ||
+    chapterLoading ||
+    dailyLoading ||
+    monthlyLoading ||
+    folderLoading ||
+    streakLoading
+  ) {
     return (
       <div className="flex h-full w-full items-center justify-center">
         <div className="h-10 w-10 animate-spin rounded-full border-t-2 border-b-2 border-sidebar-primary" />
       </div>
     );
   }
+
+  // Summary statistics
+  const totalWordCount =
+    chapterWordCounts?.reduce((acc, chapter) => acc + chapter.wordCount, 0) ||
+    0;
+
+  const totalChapters = chapterWordCounts?.length ?? 0;
+  const avgWordsPerChapter = Math.round(totalWordCount / totalChapters);
+  const avgWordsPerDay = Math.round(
+    (totalWordCount ?? 0) / (dailyWordCounts?.length ?? 0),
+  );
+  const estimatedReadingTime = Math.round((totalWordCount ?? 0) / 250); // Assuming 250 words per minute reading speed
 
   return (
     <div className="container mx-auto py-8 px-4">
@@ -115,7 +119,7 @@ function RouteComponent(): JSX.Element {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                {totalWordCount.toLocaleString()}
+                {totalWordCount?.toLocaleString()}
               </div>
               <p className="text-xs text-muted-foreground">words written</p>
             </CardContent>
@@ -138,7 +142,7 @@ function RouteComponent(): JSX.Element {
               <Folder className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{totalFolders}</div>
+              <div className="text-2xl font-bold">{folderCount}</div>
               <p className="text-xs text-muted-foreground">project folders</p>
             </CardContent>
           </Card>
@@ -180,7 +184,7 @@ function RouteComponent(): JSX.Element {
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart
                     data={
-                      timeframe === "week" ? dailyWordCount : monthlyWordCount
+                      timeframe === "week" ? dailyWordCounts : monthlyWordCounts
                     }
                     margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
                   >
@@ -264,7 +268,7 @@ function RouteComponent(): JSX.Element {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="col-span-2 lg:col-span-1">
             <CardHeader>
               <CardTitle>Chapter Word Counts</CardTitle>
               <CardDescription>Words per chapter</CardDescription>
@@ -330,7 +334,7 @@ function RouteComponent(): JSX.Element {
                     <Line
                       type="monotone"
                       dataKey="wordCount"
-                      stroke="hsl(var(--sidebar-primary-foreground))"
+                      stroke="hsl(var(--accent-foreground))"
                       strokeWidth={2}
                       dot={{ r: 4, strokeWidth: 2 }}
                     />
@@ -365,7 +369,10 @@ function RouteComponent(): JSX.Element {
               <Calendar className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{currentStreak} days</div>
+              <div className="text-2xl font-bold">
+                {currentStreak?.currentStreak} days
+              </div>{" "}
+              {/* Placeholder for now */}
               <p className="text-xs text-muted-foreground">
                 consecutive writing days
               </p>
@@ -397,7 +404,8 @@ function RouteComponent(): JSX.Element {
               <Star className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">Good</div>
+              <div className="text-2xl font-bold">Good</div>{" "}
+              {/* Placeholder for now */}
               <p className="text-xs text-muted-foreground">readability score</p>
             </CardContent>
           </Card>
