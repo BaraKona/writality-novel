@@ -1,17 +1,20 @@
-import { projectsTable } from "@db/schema";
-import {
-  Frame,
-  Map,
-  PieChart,
-  Image,
-  Globe2Icon,
-  SquareUser,
-} from "lucide-react";
+import { Image, Globe2Icon, SquareUser, LucideIcon } from "lucide-react";
+import { useCurrentDir } from "@renderer/hooks/useProjectDir";
 
-export const data = (currentProject?: typeof projectsTable) => {
+export const data = (): {
+  openProject: { name: string };
+  navMain: {
+    title: string;
+    url: string;
+    icon: React.ReactNode | LucideIcon;
+    items: { title: string; url: string }[];
+  }[];
+} => {
+  const { data: projectDir } = useCurrentDir();
+
   return {
     openProject: {
-      name: currentProject?.name || "Untitled",
+      name: projectDir?.name || "Untitled",
     },
     navMain: [
       {
@@ -27,6 +30,10 @@ export const data = (currentProject?: typeof projectsTable) => {
           {
             title: "History",
             url: "/world/history",
+          },
+          {
+            title: "Notes",
+            url: "/world/notes",
           },
         ],
       },
@@ -75,23 +82,6 @@ export const data = (currentProject?: typeof projectsTable) => {
             url: "#",
           },
         ],
-      },
-    ],
-    files: [
-      {
-        name: "Design Engineering",
-        url: "#",
-        icon: Frame,
-      },
-      {
-        name: "Sales & Marketing",
-        url: "#",
-        icon: PieChart,
-      },
-      {
-        name: "Travel",
-        url: "#",
-        icon: Map,
       },
     ],
   };

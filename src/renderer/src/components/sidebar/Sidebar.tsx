@@ -32,9 +32,9 @@ export const Sidebar: FC<{ children: ReactNode }> = ({ children }) => {
 
   const { data: projectDir } = useCurrentDir();
 
-  const { data: currentProject } = useProject(currentProjectId);
+  const { data: currentProject } = useProject(currentProjectId!);
 
-  const sidebarData = data(currentProject);
+  const sidebarData = data();
 
   return (
     <div className="flex h-full h-screen w-screen justify-start">
