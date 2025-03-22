@@ -6,7 +6,7 @@ import {
   chapterParentsTable,
   foldersTable,
 } from "../../../db/schema";
-import { eq, and, count, sum } from "drizzle-orm";
+import { eq, and, count, sum, isNull, inArray, or, sql } from "drizzle-orm";
 
 // Hook to fetch chapter word counts
 export const useChapterWordCounts = (
@@ -15,6 +15,7 @@ export const useChapterWordCounts = (
   return useQuery({
     queryKey: ["chapterWordCounts", projectId],
     queryFn: async () => {
+      // Get all chapters that belong to this project (including nested ones)
       const chapters = await database
         .select()
         .from(chaptersTable)
@@ -24,14 +25,29 @@ export const useChapterWordCounts = (
         )
         .where(
           and(
-            eq(chapterParentsTable.parent_type, "project"),
-            eq(chapterParentsTable.parent_id, projectId),
+            or(
+              and(
+                eq(chapterParentsTable.parent_type, "project"),
+                eq(chapterParentsTable.parent_id, projectId),
+              ),
+              and(
+                eq(chapterParentsTable.parent_type, "folder"),
+                inArray(
+                  chapterParentsTable.parent_id,
+                  database
+                    .select({ id: foldersTable.id })
+                    .from(foldersTable)
+                    .where(eq(foldersTable.project_id, projectId)),
+                ),
+              ),
+            ),
+            isNull(chaptersTable.deleted_at),
           ),
         );
 
       return chapters.map((chapter) => ({
-        name: chapter?.chapters?.name,
-        wordCount: chapter?.chapters?.word_count,
+        name: chapter.chapters.name,
+        wordCount: chapter.chapters.word_count,
       }));
     },
   });
@@ -60,8 +76,23 @@ export const useDailyWordCounts = (
         )
         .where(
           and(
-            eq(chapterParentsTable.parent_type, "project"),
-            eq(chapterParentsTable.parent_id, projectId),
+            or(
+              and(
+                eq(chapterParentsTable.parent_type, "project"),
+                eq(chapterParentsTable.parent_id, projectId),
+              ),
+              and(
+                eq(chapterParentsTable.parent_type, "folder"),
+                inArray(
+                  chapterParentsTable.parent_id,
+                  database
+                    .select({ id: foldersTable.id })
+                    .from(foldersTable)
+                    .where(eq(foldersTable.project_id, projectId)),
+                ),
+              ),
+            ),
+            isNull(chaptersTable.deleted_at),
           ),
         )
         .groupBy(dailyWordCountsTable.date);
@@ -83,7 +114,7 @@ export const useMonthlyWordCounts = (
     queryFn: async () => {
       const wordCounts = await database
         .select({
-          month: dailyWordCountsTable.date,
+          date: dailyWordCountsTable.date,
           count: sum(dailyWordCountsTable.word_count).mapWith(
             (val) => Number(val) || 0,
           ),
@@ -99,8 +130,23 @@ export const useMonthlyWordCounts = (
         )
         .where(
           and(
-            eq(chapterParentsTable.parent_type, "project"),
-            eq(chapterParentsTable.parent_id, projectId),
+            or(
+              and(
+                eq(chapterParentsTable.parent_type, "project"),
+                eq(chapterParentsTable.parent_id, projectId),
+              ),
+              and(
+                eq(chapterParentsTable.parent_type, "folder"),
+                inArray(
+                  chapterParentsTable.parent_id,
+                  database
+                    .select({ id: foldersTable.id })
+                    .from(foldersTable)
+                    .where(eq(foldersTable.project_id, projectId)),
+                ),
+              ),
+            ),
+            isNull(chaptersTable.deleted_at),
           ),
         )
         .groupBy(dailyWordCountsTable.date);
@@ -108,7 +154,7 @@ export const useMonthlyWordCounts = (
       // Group by month and year
       const monthlyCounts = wordCounts.reduce(
         (acc, curr) => {
-          const date = new Date(curr.month);
+          const date = new Date(curr.date);
           const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
 
           if (!acc[monthKey]) {
@@ -235,6 +281,68 @@ export const useCurrentStreak = (
         currentStreak,
         lastEditDate,
       };
+    },
+  });
+};
+
+export const useMostProductiveWeekday = (
+  projectId: number,
+): UseQueryResult<string, Error> => {
+  return useQuery({
+    queryKey: ["mostProductiveWeekday", projectId],
+    queryFn: async () => {
+      const wordCounts = await database
+        .select({
+          weekday: sql<string>`strftime('%w', ${dailyWordCountsTable.date})`,
+          count: sum(dailyWordCountsTable.word_count),
+        })
+        .from(dailyWordCountsTable)
+        .innerJoin(
+          chaptersTable,
+          eq(dailyWordCountsTable.chapter_id, chaptersTable.id),
+        )
+        .innerJoin(
+          chapterParentsTable,
+          eq(chaptersTable.id, chapterParentsTable.chapter_id),
+        )
+        .where(
+          and(
+            eq(chapterParentsTable.parent_type, "project"),
+            eq(chapterParentsTable.parent_id, projectId),
+          ),
+        )
+        .groupBy(sql`strftime('%w', ${dailyWordCountsTable.date})`);
+
+      const weekdayMap: Record<string, string> = {
+        "0": "Sunday",
+        "1": "Monday",
+        "2": "Tuesday",
+        "3": "Wednesday",
+        "4": "Thursday",
+        "5": "Friday",
+        "6": "Saturday",
+      };
+
+      const mostProductiveWeekday = wordCounts.reduce(
+        (acc, curr) => {
+          const weekday = curr.weekday;
+          const count = curr.count;
+
+          if (!acc[weekday]) {
+            acc[weekday] = { weekday, count: 0 };
+          }
+
+          acc[weekday].count += Number(count) || 0;
+          return acc;
+        },
+        {} as Record<string, { weekday: string; count: number }>,
+      );
+
+      const sortedWeekdays = Object.values(mostProductiveWeekday).sort(
+        (a, b) => b.count - a.count,
+      );
+
+      return weekdayMap[sortedWeekdays[0].weekday];
     },
   });
 };

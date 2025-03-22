@@ -44,6 +44,7 @@ import {
   useDailyWordCounts,
   useFolderCount,
   useMonthlyWordCounts,
+  useMostProductiveWeekday,
 } from "@renderer/hooks/useAnalytics";
 
 export const Route = createLazyFileRoute("/analytics")({
@@ -67,6 +68,10 @@ function RouteComponent(): JSX.Element {
   const { data: currentStreak, isLoading: streakLoading } = useCurrentStreak(
     currentProjectId!,
   );
+  const {
+    data: mostProductiveWeekday,
+    isLoading: mostProductiveWeekdayLoading,
+  } = useMostProductiveWeekday(currentProjectId!);
 
   const [timeframe, setTimeframe] = useState("week");
 
@@ -76,7 +81,8 @@ function RouteComponent(): JSX.Element {
     dailyLoading ||
     monthlyLoading ||
     folderLoading ||
-    streakLoading
+    streakLoading ||
+    mostProductiveWeekdayLoading
   ) {
     return (
       <div className="flex h-full w-full items-center justify-center">
@@ -90,7 +96,7 @@ function RouteComponent(): JSX.Element {
     chapterWordCounts?.reduce((acc, chapter) => acc + chapter.wordCount, 0) ||
     0;
 
-  const totalChapters = chapterWordCounts?.length ?? 0;
+  const totalChapters = chapterWordCounts?.length || 0;
   const avgWordsPerChapter = Math.round(totalWordCount / totalChapters);
   const avgWordsPerDay = Math.round(
     (totalWordCount ?? 0) / (dailyWordCounts?.length ?? 0),
@@ -101,9 +107,7 @@ function RouteComponent(): JSX.Element {
     <div className="container mx-auto py-8 px-4">
       <div className="flex flex-col space-y-6">
         <div className="flex flex-col space-y-2">
-          <h1 className="text-3xl font-bold tracking-tight">
-            {project?.name} Analytics
-          </h1>
+          <h1 className="text-3xl font-bold tracking-tight">{project?.name}</h1>
           <p className="text-muted-foreground">
             Track your writing progress and productivity metrics
           </p>
@@ -425,10 +429,11 @@ function RouteComponent(): JSX.Element {
                   <PenTool className="h-4 w-4 text-primary" />
                 </div>
                 <div>
-                  <h4 className="text-sm font-medium">Most Productive Time</h4>
+                  <h4 className="text-sm font-medium">
+                    Most Productive Weekday
+                  </h4>
                   <p className="text-sm text-muted-foreground">
-                    You write most effectively in the morning. Consider
-                    scheduling dedicated writing time between 8-11 AM.
+                    You write most effectively on {mostProductiveWeekday}.
                   </p>
                 </div>
               </div>
@@ -442,8 +447,7 @@ function RouteComponent(): JSX.Element {
                     Consistency Improvement
                   </h4>
                   <p className="text-sm text-muted-foreground">
-                    Your daily word count has increased by 23% compared to last
-                    month. Keep up the good work!
+                    <ConsistencyMessage monthlyWordCounts={monthlyWordCounts} />
                   </p>
                 </div>
               </div>
@@ -455,8 +459,9 @@ function RouteComponent(): JSX.Element {
                 <div>
                   <h4 className="text-sm font-medium">Chapter Length</h4>
                   <p className="text-sm text-muted-foreground">
-                    Your chapters are consistently between 2,500-3,500 words,
-                    which is ideal for your genre.
+                    <ChapterLengthMessage
+                      chapterWordCounts={chapterWordCounts}
+                    />
                   </p>
                 </div>
               </div>
@@ -465,5 +470,55 @@ function RouteComponent(): JSX.Element {
         </Card>
       </div>
     </div>
+  );
+}
+
+function ConsistencyMessage({
+  monthlyWordCounts,
+}: {
+  monthlyWordCounts: Array<{ month: string; count: number }> | undefined;
+}): JSX.Element {
+  if (!monthlyWordCounts || monthlyWordCounts.length < 2) {
+    return <span>Keep writing to see your progress!</span>;
+  }
+  const currentMonth = monthlyWordCounts[monthlyWordCounts.length - 1];
+  const previousMonth = monthlyWordCounts[monthlyWordCounts.length - 2];
+  const percentageChange =
+    ((currentMonth.count - previousMonth.count) / previousMonth.count) * 100;
+  const direction = percentageChange >= 0 ? "increased" : "decreased";
+  const absPercentage = Math.abs(Math.round(percentageChange));
+  return (
+    <span>
+      Your daily word count has {direction} by {absPercentage}% compared to last
+      month.{" "}
+      {percentageChange >= 0
+        ? "Keep up the good work!"
+        : "Try to write more consistently!"}
+    </span>
+  );
+}
+
+function ChapterLengthMessage({
+  chapterWordCounts,
+}: {
+  chapterWordCounts: Array<{ name: string; wordCount: number }> | undefined;
+}): JSX.Element {
+  if (!chapterWordCounts || chapterWordCounts.length === 0) {
+    return <span>Start writing chapters to see length statistics.</span>;
+  }
+
+  const averageWords = Math.round(
+    chapterWordCounts.reduce((acc, chapter) => acc + chapter.wordCount, 0) /
+      chapterWordCounts.length,
+  );
+  const minWords = Math.min(...chapterWordCounts.map((c) => c.wordCount));
+  const maxWords = Math.max(...chapterWordCounts.map((c) => c.wordCount));
+
+  return (
+    <span>
+      Your chapters average {averageWords.toLocaleString()} words, with lengths
+      ranging from {minWords.toLocaleString()} to {maxWords.toLocaleString()}{" "}
+      words.
+    </span>
   );
 }
