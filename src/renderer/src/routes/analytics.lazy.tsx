@@ -220,6 +220,7 @@ function RouteComponent(): JSX.Element {
                     <YAxis
                       stroke="hsl(var(--muted-foreground))"
                       fontSize={12}
+                      scale="linear"
                     />
                     <CartesianGrid
                       strokeDasharray="3 3"
@@ -300,6 +301,8 @@ function RouteComponent(): JSX.Element {
                     <YAxis
                       stroke="hsl(var(--muted-foreground))"
                       fontSize={12}
+                      domain={["dataMin", "dataMax"]}
+                      scale="linear"
                     />
                     <Tooltip
                       content={({ active, payload }) => {
