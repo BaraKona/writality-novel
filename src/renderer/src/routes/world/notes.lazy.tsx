@@ -221,14 +221,14 @@ function RouteComponent(): JSX.Element {
     [reactFlowInstance, setNodes],
   );
 
-  const editor = useCreateEditor([]);
+  const editor = useCreateEditor({ value: "" });
 
   return (
     <div className="flex h-screen">
       {/* Sidebar */}
       <div className="w-64 border-r bg-background flex flex-col">
         <div className="p-4 py-4.5 border-b">
-          <h2 className="text-lg font-bold flex items-center gap-2">
+          <h2 className="text-xl font-bold flex items-center gap-2">
             <Users className="h-5 w-5" />
             Story Elements
           </h2>

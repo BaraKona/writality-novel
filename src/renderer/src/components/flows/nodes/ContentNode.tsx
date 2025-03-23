@@ -1,7 +1,7 @@
-import { memo, useState, useEffect, useRef } from "react";
+import { memo, useState, useRef } from "react";
 import type { NodeProps } from "reactflow";
 import { Card, CardContent, CardHeader } from "@renderer/components/ui/card";
-import { FileText, Plus, List } from "lucide-react";
+import { FileText, Plus, List, Ellipsis } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,6 +18,7 @@ import { BasicEditor } from "@renderer/components/editor/BasicEditor";
 import { useCreateEditor } from "@renderer/components/editor/use-create-editor";
 import { useUpdateNote } from "@renderer/hooks/note/useUpdateNote";
 import { deserialize } from "@renderer/db";
+import { Button } from "@renderer/components/ui/button";
 
 interface ContentNodeData {
   title: string;
@@ -36,13 +37,8 @@ function ContentNode({ data }: NodeProps<ContentNodeData>): JSX.Element {
     null,
   );
   const { mutate: updateNote } = useUpdateNote();
-  const editor = useCreateEditor({ value: content });
 
-  useEffect(() => {
-    if (titleRef.current) {
-      titleRef.current.textContent = title;
-    }
-  }, [title]);
+  const editor = useCreateEditor({ value: content });
 
   const handleNewNote = (): void => {
     createNote({
@@ -83,10 +79,63 @@ function ContentNode({ data }: NodeProps<ContentNodeData>): JSX.Element {
     }
   };
 
+  if (data.noteId) {
+    return (
+      <div className="w-64 bg-card cursor-grab rounded-xl flex flex-col gap-2 border-2 p-2 hover:border-foreground/20 transition-colors cursor-pointer">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild className="ml-auto">
+            <Button variant="ghost" size="icon">
+              <Ellipsis size={16} />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" className="w-48">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <DropdownMenuItem>
+                  <List className="h-4 w-4 mr-2" />
+                  Change Note
+                </DropdownMenuItem>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent side="right" className="w-48">
+                {notes?.map((note) => (
+                  <DropdownMenuItem
+                    key={note.id}
+                    onClick={() => handleSelectNote(note)}
+                  >
+                    {note.title}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <div
+          className="flex flex-col gap-2 nodrag rounded-xl cursor-default"
+          id="editor-wrapper"
+        >
+          <h2
+            ref={titleRef}
+            contentEditable={true}
+            className="ring-0 outline-none text-md font-semibold text-foreground/80 pr-4 w-full"
+            onInput={(e) =>
+              handleTitleUpdate(e.currentTarget.textContent || "")
+            }
+          />
+          <BasicEditor
+            editor={editor}
+            setContent={handleContentUpdate}
+            editorClassName="text-sm text-foreground min-h-[100px]"
+            placeholder="Start writing..."
+          />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Card className="w-64 shadow-md border-2 border-dashed hover:border-muted-foreground transition-colors bg-muted/30">
+      <DropdownMenuTrigger asChild className="nodrag">
+        <Card className="w-64 shadow-md border-2 hover:border-muted-foreground transition-colors bg-muted/30 border-dashed">
           <CardHeader className="p-3 pb-0">
             <div className="flex items-center justify-center">
               <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center">
@@ -95,31 +144,12 @@ function ContentNode({ data }: NodeProps<ContentNodeData>): JSX.Element {
             </div>
           </CardHeader>
           <CardContent className="p-3">
-            {data.noteId ? (
-              <div className="flex flex-col gap-2">
-                <div
-                  ref={titleRef}
-                  contentEditable={true}
-                  className="ring-0 outline-none text-sm font-semibold text-foreground/80 pr-4 w-full"
-                  onInput={(e) =>
-                    handleTitleUpdate(e.currentTarget.textContent || "")
-                  }
-                />
-                <BasicEditor
-                  editor={editor}
-                  setContent={handleContentUpdate}
-                  editorClassName="text-sm text-foreground min-h-[100px]"
-                  placeholder="Start writing..."
-                />
-              </div>
-            ) : (
-              <div className="text-center">
-                <h3 className="font-bold text-sm truncate">Content</h3>
-                <p className="text-xs text-muted-foreground line-clamp-4 mt-1">
-                  Click to add content
-                </p>
-              </div>
-            )}
+            <div className="text-center">
+              <h3 className="font-bold text-sm truncate">Content</h3>
+              <p className="text-xs text-muted-foreground line-clamp-4 mt-1">
+                Click to add content
+              </p>
+            </div>
           </CardContent>
         </Card>
       </DropdownMenuTrigger>
