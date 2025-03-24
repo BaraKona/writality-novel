@@ -3,7 +3,8 @@ import { database } from "@renderer/db";
 import {
   foldersTable,
   chaptersTable,
-  chapterParentsTable,
+  parentRelationshipsTable,
+  fractalsTable,
 } from "../../../../db/schema";
 import { eq, isNull, and } from "drizzle-orm";
 
@@ -34,16 +35,36 @@ export const useProjectFiles = (id) => {
         })
         .from(chaptersTable)
         .innerJoin(
-          chapterParentsTable,
-          eq(chaptersTable.id, chapterParentsTable.chapter_id),
+          parentRelationshipsTable,
+          and(
+            eq(chaptersTable.id, parentRelationshipsTable.child_id),
+            eq(parentRelationshipsTable.child_type, "chapter"),
+          ),
         )
         .where(
           and(
-            eq(chapterParentsTable.parent_type, "project"),
-            eq(chapterParentsTable.parent_id, id),
+            eq(parentRelationshipsTable.parent_type, "project"),
+            eq(parentRelationshipsTable.parent_id, id),
             isNull(chaptersTable.deleted_at),
           ),
         );
+
+      const topLevelFractals = await database
+        .select({
+          id: fractalsTable.id,
+          name: fractalsTable.name,
+        })
+        .from(fractalsTable)
+        .innerJoin(
+          parentRelationshipsTable,
+          and(
+            eq(fractalsTable.id, parentRelationshipsTable.child_id),
+            eq(parentRelationshipsTable.child_type, "fractal"),
+            eq(parentRelationshipsTable.parent_type, "project"),
+            eq(parentRelationshipsTable.parent_id, id),
+          ),
+        )
+        .all();
 
       // Fetch top-level children for each folder
       const result = await Promise.all(
@@ -65,6 +86,7 @@ export const useProjectFiles = (id) => {
       return {
         folders: result,
         chapters: topLevelChapters,
+        fractals: topLevelFractals,
       };
     },
     enabled: !!id,

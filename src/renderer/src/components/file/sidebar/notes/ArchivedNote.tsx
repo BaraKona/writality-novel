@@ -19,7 +19,7 @@ export const ArchivedNote: FC<{
 }> = ({ note, chapterId }) => {
   const editor = useCreateEditor({ value: note.content });
 
-  const { mutate: deleteNote } = useDeleteNote(chapterId);
+  const { mutate: deleteNote } = useDeleteNote();
   const { mutate: updateNote } = useUpdateNote();
 
   return (

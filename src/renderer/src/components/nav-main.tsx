@@ -16,6 +16,8 @@ import {
 } from "@renderer/components/ui/sidebar";
 import React from "react";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
+import { useAtom } from "jotai";
+import { menuItemStatesAtom } from "@renderer/routes/__root";
 
 export function NavMain({
   items,
@@ -33,7 +35,7 @@ export function NavMain({
 }): JSX.Element {
   const navigate = useNavigate();
   const location = useLocation();
-
+  const [menuItemStates, setMenuItemStates] = useAtom(menuItemStatesAtom);
   const [animate] = useAutoAnimate();
 
   return (
@@ -43,12 +45,18 @@ export function NavMain({
           <Collapsible
             key={item.title}
             asChild
-            defaultOpen={item.isActive}
+            open={menuItemStates[item.title] ?? item.isActive}
             className="group/collapsible"
             ref={(el) => {
               if (el) {
                 animate;
               }
+            }}
+            onOpenChange={(open) => {
+              setMenuItemStates((prev) => ({
+                ...prev,
+                [item.title]: open,
+              }));
             }}
           >
             <SidebarMenuItem>
@@ -80,7 +88,7 @@ export function NavMain({
                   <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                 </CollapsibleTrigger>
               </SidebarMenuButton>
-              <CollapsibleContent>
+              <CollapsibleContent ref={animate}>
                 <SidebarMenuSub>
                   {item.items?.map((subItem) => (
                     <SidebarMenuSubItem key={subItem.title}>

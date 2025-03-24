@@ -6,7 +6,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { eq } from "drizzle-orm";
 import { toast } from "sonner";
 
-export const useDeleteNote = (chapterId: number) => {
+export const useDeleteNote = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -15,9 +15,9 @@ export const useDeleteNote = (chapterId: number) => {
       database.delete(notesTable).where(eq(notesTable.id, id)).limit(1).run(),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["notes", chapterId, "archived"],
+        queryKey: ["notes"],
       }),
-        toast.success("Note delete");
+        toast.success("Note deleted");
     },
   });
 };

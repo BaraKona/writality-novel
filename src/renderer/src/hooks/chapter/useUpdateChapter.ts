@@ -2,14 +2,14 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { database, serialize } from "@renderer/db";
 import {
   chaptersTable,
-  chapterParentsTable,
+  parentRelationshipsTable,
   dailyWordCountsTable,
 } from "../../../../db/schema";
 import { eq, and } from "drizzle-orm";
 import { Value } from "@udecode/plate";
 
 export const useUpdateChapter = (
-  chapterParent?: typeof chapterParentsTable.$inferSelect,
+  chapterParent?: typeof parentRelationshipsTable.$inferSelect,
 ): ReturnType<typeof useMutation> => {
   const queryClient = useQueryClient();
 

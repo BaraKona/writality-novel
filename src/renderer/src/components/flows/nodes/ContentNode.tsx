@@ -81,7 +81,7 @@ function ContentNode({ data }: NodeProps<ContentNodeData>): JSX.Element {
 
   if (data.noteId) {
     return (
-      <div className="w-64 bg-card cursor-grab rounded-xl flex flex-col gap-2 border-2 p-2 hover:border-foreground/20 transition-colors cursor-pointer">
+      <div className="w-64 bg-card cursor-grab rounded-xl flex flex-col gap-2 border-2 p-2 hover:border-foreground/25 transition-colors cursor-pointer">
         <DropdownMenu>
           <DropdownMenuTrigger asChild className="ml-auto">
             <Button variant="ghost" size="icon">

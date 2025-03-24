@@ -18,7 +18,7 @@ export default function NodeList(): JSX.Element {
   return (
     <div className="flex flex-col gap-1">
       <Card
-        className="cursor-grab hover:border-foreground/20"
+        className="cursor-grab hover:border-foreground/25"
         draggable
         onDragStart={(event) => onDragStart(event, "characterNode")}
       >
@@ -40,7 +40,7 @@ export default function NodeList(): JSX.Element {
 
       <div className="">
         <Card
-          className="cursor-grab hover:border-foreground/20 bg-muted/50"
+          className="cursor-grab hover:border-foreground/25 bg-muted/50"
           draggable
           onDragStart={(event) => onDragStart(event, "contentNode")}
         >

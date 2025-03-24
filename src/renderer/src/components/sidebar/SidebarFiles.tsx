@@ -21,6 +21,7 @@ import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { Button } from "../ui/button";
 import { projectsTable } from "@db/schema";
 import { Value } from "@udecode/plate";
+import { useCreateFractal } from "@renderer/hooks/fractal/useCreateFractal";
 
 export function SidebarFiles({
   project,
@@ -32,7 +33,7 @@ export function SidebarFiles({
   const { data: projectFiles } = useProjectFiles(project?.id);
   const { mutate: createProjectFolder } = useCreateFolder(project?.id);
   const { mutate: createChapter } = useCreateChapter(project?.id, "project");
-
+  const { mutate: createFractal } = useCreateFractal(project?.id, "project");
   const [animate] = useAutoAnimate();
 
   const [openFolders, setOpenFolders] = useLocalStorage<{
@@ -60,7 +61,7 @@ export function SidebarFiles({
               <FolderPlus className="text-muted-foreground" />
               <span>Create Folder</span>
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => createProjectFolder(null)}>
+            <DropdownMenuItem onClick={() => createFractal(project?.id)}>
               <Waypoints className="text-muted-foreground" />
               <span>Create Fractal</span>
             </DropdownMenuItem>
@@ -75,7 +76,7 @@ export function SidebarFiles({
       <SidebarMenu ref={animate}>
         {projectFiles?.chapters?.length === 0 &&
         projectFiles?.folders?.length === 0 ? (
-          <div className="text-sidebar-foreground/70 border overflow-hidden hover:border-foreground/20 flex flex-col divide-y divide-border rounded-xl bg-primary-foreground">
+          <div className="text-sidebar-foreground/70 border overflow-hidden hover:border-foreground/25 flex flex-col divide-y divide-border rounded-xl bg-primary-foreground">
             <div className="p-2 text-sm">
               <h2 className="font-medium">No files or folders?</h2>
               <div className="text-muted-foreground">

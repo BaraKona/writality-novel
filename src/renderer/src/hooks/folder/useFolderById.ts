@@ -3,7 +3,7 @@ import { database, deserialize } from "@renderer/db";
 import {
   foldersTable,
   chaptersTable,
-  chapterParentsTable,
+  parentRelationshipsTable,
 } from "../../../../db/schema";
 import { eq, isNull, and } from "drizzle-orm";
 import { Value } from "@udecode/plate";
@@ -35,13 +35,16 @@ export const useFolderById = (
         })
         .from(chaptersTable)
         .innerJoin(
-          chapterParentsTable,
-          eq(chaptersTable.id, chapterParentsTable.chapter_id),
+          parentRelationshipsTable,
+          and(
+            eq(chaptersTable.id, parentRelationshipsTable.child_id),
+            eq(parentRelationshipsTable.child_type, "chapter"),
+          ),
         )
         .where(
           and(
-            eq(chapterParentsTable.parent_type, "folder"),
-            eq(chapterParentsTable.parent_id, id),
+            eq(parentRelationshipsTable.parent_type, "folder"),
+            eq(parentRelationshipsTable.parent_id, id),
             isNull(chaptersTable.deleted_at),
           ),
         )

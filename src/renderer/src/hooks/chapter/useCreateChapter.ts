@@ -1,10 +1,10 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { chaptersTable, chapterParentsTable } from "../../../../db/schema";
+import { chaptersTable, parentRelationshipsTable } from "../../../../db/schema";
 import { database } from "@renderer/db";
 import { useNavigate } from "@tanstack/react-router";
 
 export const useCreateChapter = (
-  parentId?: number,
+  parentId: number,
   parentType: "project" | "folder" = "project",
   navigate = false,
 ): ReturnType<typeof useMutation> => {
@@ -24,11 +24,12 @@ export const useCreateChapter = (
           .get();
 
         await tx
-          .insert(chapterParentsTable)
+          .insert(parentRelationshipsTable)
           .values({
-            chapter_id: chapterResult.id,
-            parent_type: parentType,
             parent_id: parentId,
+            parent_type: parentType,
+            child_id: chapterResult.id,
+            child_type: "chapter",
           })
           .run();
 

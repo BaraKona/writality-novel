@@ -52,7 +52,7 @@ export function ProjectSwitcher({
       <SidebarMenuItem>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <SidebarMenuButton className="border bg-primary-foreground text-sidebar-accent-foreground border hover:border-foreground/20 hover:bg-primary-background">
+            <SidebarMenuButton className="border bg-primary-foreground text-sidebar-accent-foreground border hover:border-foreground/25 hover:bg-primary-background">
               <div className="rounded bg-background/20 backdrop-blur-sm">
                 <EmojiDisplay emoji={currentProject.emoji} type="project" />
               </div>

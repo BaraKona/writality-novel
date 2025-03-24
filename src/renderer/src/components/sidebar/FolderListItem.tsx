@@ -27,6 +27,8 @@ import { FileListItem } from "./FileListItem";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { useFolderTree } from "@renderer/hooks/folder/useFolderTree";
 import { chaptersTable, foldersTable } from "@db/schema";
+import { FractalListItem } from "./FractalListItem";
+import { useCreateFractal } from "@renderer/hooks/fractal/useCreateFractal";
 
 export const FolderListItem = ({
   folder,
@@ -42,6 +44,7 @@ export const FolderListItem = ({
   const { mutate: createChapter } = useCreateChapter(folder.id, "folder");
   const { mutate: createProjectFolder } = useCreateFolder(folder.project_id);
   const { data: folderFiles } = useFolderTree(folder.id);
+  const { mutate: createFractal } = useCreateFractal(folder.id, "folder");
   const [animate] = useAutoAnimate();
   const spacing = 15;
 
@@ -120,7 +123,7 @@ export const FolderListItem = ({
               <FolderPlus className="text-muted-foreground" />
               <span>New folder</span>
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => createProjectFolder(folder.id)}>
+            <DropdownMenuItem onClick={() => createFractal(folder.id)}>
               <Waypoints className="text-muted-foreground" />
               <span>New Fractal</span>
             </DropdownMenuItem>
@@ -153,6 +156,13 @@ export const FolderListItem = ({
                   parent_type: string;
                 }
               }
+              level={level + 1}
+            />
+          ))}
+          {folderFiles?.fractals?.map((fractal) => (
+            <FractalListItem
+              key={fractal.id}
+              fractal={fractal}
               level={level + 1}
             />
           ))}

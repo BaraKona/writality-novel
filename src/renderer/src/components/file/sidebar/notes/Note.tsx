@@ -8,34 +8,29 @@ import {
   DropdownMenuTrigger,
 } from "@renderer/components/ui/dropdown-menu";
 import { useUpdateNote } from "@renderer/hooks/note/useUpdateNote";
-import {
-  getTimeFromNow,
-  getWordCountFromRichContent,
-} from "@renderer/lib/utils";
+import { getTimeFromNow } from "@renderer/lib/utils";
 import { Archive, Ellipsis } from "lucide-react";
-import { FC, useEffect, useRef, useState } from "react";
+import { FC, useRef, useState } from "react";
 
 export const Note: FC<{
   note: typeof notesTable.$inferSelect;
 }> = ({ note }) => {
   const editor = useCreateEditor({ value: note.content });
   const [content, setContent] = useState(note.content);
-  const [title, setTitle] = useState(note.title);
   const titleRef = useRef<HTMLDivElement>(null);
   const { mutate: updateNote } = useUpdateNote();
-
-  // Update the contentEditable div's content when title state changes
-  useEffect(() => {
-    if (titleRef.current) {
-      titleRef.current.textContent = title;
-    }
-  }, [title]);
 
   return (
     <DropdownMenu>
       <div
         className="group/note p-4 rounded-md relative shadow border bg-secondary-sidebar-primary border-secondary-sidebar-border hover:border-secondary-sidebar-foreground/20"
-        onBlur={() => updateNote({ ...note, content, title })}
+        onBlur={() =>
+          updateNote({
+            ...note,
+            content,
+            title: titleRef.current?.textContent || "no title",
+          })
+        }
       >
         <div className="flex flex-col">
           <div className="">
@@ -44,7 +39,7 @@ export const Note: FC<{
                 ref={titleRef}
                 contentEditable={true}
                 className="ring-0 outline-none text-sm font-semibold text-secondary-sidebar-primary-foreground/80 pr-4 w-full"
-                onInput={(e) => setTitle(e.currentTarget.textContent || "")}
+                dangerouslySetInnerHTML={{ __html: note.title }}
               />
             </div>
           </div>
@@ -53,7 +48,6 @@ export const Note: FC<{
               editor={editor}
               setContent={(value) => {
                 setContent(value);
-                console.log(getWordCountFromRichContent(value));
               }}
               editorClassName="text-sm text-secondary-sidebar-foreground"
               placeholder="Start writing..."

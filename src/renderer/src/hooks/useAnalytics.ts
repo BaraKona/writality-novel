@@ -3,7 +3,7 @@ import { database } from "@renderer/db";
 import {
   chaptersTable,
   dailyWordCountsTable,
-  chapterParentsTable,
+  parentRelationshipsTable,
   foldersTable,
 } from "../../../db/schema";
 import { eq, and, count, sum, isNull, inArray, or, sql } from "drizzle-orm";
@@ -20,20 +20,23 @@ export const useChapterWordCounts = (
         .select()
         .from(chaptersTable)
         .innerJoin(
-          chapterParentsTable,
-          eq(chaptersTable.id, chapterParentsTable.chapter_id),
+          parentRelationshipsTable,
+          and(
+            eq(chaptersTable.id, parentRelationshipsTable.child_id),
+            eq(parentRelationshipsTable.child_type, "chapter"),
+          ),
         )
         .where(
           and(
             or(
               and(
-                eq(chapterParentsTable.parent_type, "project"),
-                eq(chapterParentsTable.parent_id, projectId),
+                eq(parentRelationshipsTable.parent_type, "project"),
+                eq(parentRelationshipsTable.parent_id, projectId),
               ),
               and(
-                eq(chapterParentsTable.parent_type, "folder"),
+                eq(parentRelationshipsTable.parent_type, "folder"),
                 inArray(
-                  chapterParentsTable.parent_id,
+                  parentRelationshipsTable.parent_id,
                   database
                     .select({ id: foldersTable.id })
                     .from(foldersTable)
@@ -71,20 +74,23 @@ export const useDailyWordCounts = (
           eq(dailyWordCountsTable.chapter_id, chaptersTable.id),
         )
         .innerJoin(
-          chapterParentsTable,
-          eq(chaptersTable.id, chapterParentsTable.chapter_id),
+          parentRelationshipsTable,
+          and(
+            eq(chaptersTable.id, parentRelationshipsTable.child_id),
+            eq(parentRelationshipsTable.child_type, "chapter"),
+          ),
         )
         .where(
           and(
             or(
               and(
-                eq(chapterParentsTable.parent_type, "project"),
-                eq(chapterParentsTable.parent_id, projectId),
+                eq(parentRelationshipsTable.parent_type, "project"),
+                eq(parentRelationshipsTable.parent_id, projectId),
               ),
               and(
-                eq(chapterParentsTable.parent_type, "folder"),
+                eq(parentRelationshipsTable.parent_type, "folder"),
                 inArray(
-                  chapterParentsTable.parent_id,
+                  parentRelationshipsTable.parent_id,
                   database
                     .select({ id: foldersTable.id })
                     .from(foldersTable)
@@ -125,20 +131,23 @@ export const useMonthlyWordCounts = (
           eq(dailyWordCountsTable.chapter_id, chaptersTable.id),
         )
         .innerJoin(
-          chapterParentsTable,
-          eq(chaptersTable.id, chapterParentsTable.chapter_id),
+          parentRelationshipsTable,
+          and(
+            eq(chaptersTable.id, parentRelationshipsTable.child_id),
+            eq(parentRelationshipsTable.child_type, "chapter"),
+          ),
         )
         .where(
           and(
             or(
               and(
-                eq(chapterParentsTable.parent_type, "project"),
-                eq(chapterParentsTable.parent_id, projectId),
+                eq(parentRelationshipsTable.parent_type, "project"),
+                eq(parentRelationshipsTable.parent_id, projectId),
               ),
               and(
-                eq(chapterParentsTable.parent_type, "folder"),
+                eq(parentRelationshipsTable.parent_type, "folder"),
                 inArray(
-                  chapterParentsTable.parent_id,
+                  parentRelationshipsTable.parent_id,
                   database
                     .select({ id: foldersTable.id })
                     .from(foldersTable)
@@ -222,13 +231,16 @@ export const useCurrentStreak = (
           eq(dailyWordCountsTable.chapter_id, chaptersTable.id),
         )
         .innerJoin(
-          chapterParentsTable,
-          eq(chaptersTable.id, chapterParentsTable.chapter_id),
+          parentRelationshipsTable,
+          and(
+            eq(chaptersTable.id, parentRelationshipsTable.child_id),
+            eq(parentRelationshipsTable.child_type, "chapter"),
+          ),
         )
         .where(
           and(
-            eq(chapterParentsTable.parent_type, "project"),
-            eq(chapterParentsTable.parent_id, projectId),
+            eq(parentRelationshipsTable.parent_type, "project"),
+            eq(parentRelationshipsTable.parent_id, projectId),
           ),
         )
         .groupBy(dailyWordCountsTable.date)
@@ -302,13 +314,16 @@ export const useMostProductiveWeekday = (
           eq(dailyWordCountsTable.chapter_id, chaptersTable.id),
         )
         .innerJoin(
-          chapterParentsTable,
-          eq(chaptersTable.id, chapterParentsTable.chapter_id),
+          parentRelationshipsTable,
+          and(
+            eq(chaptersTable.id, parentRelationshipsTable.child_id),
+            eq(parentRelationshipsTable.child_type, "chapter"),
+          ),
         )
         .where(
           and(
-            eq(chapterParentsTable.parent_type, "project"),
-            eq(chapterParentsTable.parent_id, projectId),
+            eq(parentRelationshipsTable.parent_type, "project"),
+            eq(parentRelationshipsTable.parent_id, projectId),
           ),
         )
         .groupBy(sql`strftime('%w', ${dailyWordCountsTable.date})`);

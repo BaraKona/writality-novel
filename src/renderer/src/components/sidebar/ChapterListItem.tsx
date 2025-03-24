@@ -18,7 +18,7 @@ export const ChapterListItem = ({
 }): JSX.Element => {
   return (
     <div className="grid w-full grid-cols-2 gap-4 lg:grid-cols-3">
-      <div className="col-span-1 hover:border-foreground/20 grid cursor-pointer place-items-center gap-1 rounded-xl p-4 text-center border">
+      <div className="col-span-1 hover:border-foreground/25 grid cursor-pointer place-items-center gap-1 rounded-xl p-4 text-center border">
         <div>
           <Plus size={24} className="mx-auto stroke-muted-foreground" />
           <div className="text-sm font-medium">Add new chapter to story</div>
@@ -30,7 +30,7 @@ export const ChapterListItem = ({
           to="/chapters/$chapterId"
           params={{ chapterId: chapter.id.toString() }}
           key={chapter.id}
-          className="group hover:border-foreground/20 relative col-span-1 flex cursor-pointer flex-col rounded-xl border"
+          className="group hover:border-foreground/25 relative col-span-1 flex cursor-pointer flex-col rounded-xl border"
         >
           <FileText
             size={20}

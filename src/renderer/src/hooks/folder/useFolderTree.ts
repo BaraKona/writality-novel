@@ -2,14 +2,21 @@ import { useQuery } from "@tanstack/react-query";
 import { database } from "@renderer/db";
 import {
   foldersTable,
-  chapterParentsTable,
+  parentRelationshipsTable,
   chaptersTable,
+  fractalsTable,
 } from "../../../../db/schema";
 import { eq, and, isNull } from "drizzle-orm";
 
 export const useFolderTree = (id: number) => {
   type FolderTreeResult = {
     chapters: {
+      id: number;
+      name: string;
+      parent_id: number;
+      parent_type: string;
+    }[];
+    fractals: {
       id: number;
       name: string;
       parent_id: number;
@@ -29,17 +36,42 @@ export const useFolderTree = (id: number) => {
         })
         .from(chaptersTable)
         .innerJoin(
-          chapterParentsTable,
-          eq(chaptersTable.id, chapterParentsTable.chapter_id),
+          parentRelationshipsTable,
+          and(
+            eq(chaptersTable.id, parentRelationshipsTable.child_id),
+            eq(parentRelationshipsTable.child_type, "chapter"),
+          ),
         )
         .where(
           and(
-            eq(chapterParentsTable.parent_type, "folder"),
-            eq(chapterParentsTable.parent_id, id),
+            eq(parentRelationshipsTable.parent_type, "folder"),
+            eq(parentRelationshipsTable.parent_id, id),
             isNull(chaptersTable.deleted_at),
           ),
         )
         .orderBy(chaptersTable.position);
+
+      // Get top-level fractals in this folder
+      const fractals = await database
+        .select({
+          id: fractalsTable.id,
+          name: fractalsTable.name,
+        })
+        .from(fractalsTable)
+        .innerJoin(
+          parentRelationshipsTable,
+          and(
+            eq(fractalsTable.id, parentRelationshipsTable.child_id),
+            eq(parentRelationshipsTable.child_type, "fractal"),
+          ),
+        )
+        .where(
+          and(
+            eq(parentRelationshipsTable.parent_type, "folder"),
+            eq(parentRelationshipsTable.parent_id, id),
+          ),
+        )
+        .orderBy(fractalsTable.order);
 
       // Get subfolders within this folder
       const folders = await database
@@ -57,6 +89,11 @@ export const useFolderTree = (id: number) => {
         folders: folders.map((folder) => ({
           ...folder,
           type: "folder",
+        })),
+        fractals: fractals.map((fractal) => ({
+          ...fractal,
+          parent_id: id,
+          parent_type: "folder",
         })),
       };
     },

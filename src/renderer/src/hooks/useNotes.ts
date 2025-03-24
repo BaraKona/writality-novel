@@ -1,12 +1,11 @@
-
-import { useQuery } from '@tanstack/react-query';
-import { useNoteStorage } from '../../../api/notes';
+import { useQuery } from "@tanstack/react-query";
+import { useNoteStorage } from "../../../api/notes";
 
 export function useNotes() {
   const { handleGetNotesByProject } = useNoteStorage();
-  console.log('useNotes')
+  console.log("useNotes");
   return useQuery({
-    queryKey: ['notes'],
+    queryKey: ["notes"],
     queryFn: () => handleGetNotesByProject(1),
-  })
+  });
 }

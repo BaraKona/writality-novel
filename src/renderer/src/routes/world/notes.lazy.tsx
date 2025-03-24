@@ -1,328 +1,223 @@
 import { createLazyFileRoute } from "@tanstack/react-router";
-
-import type React from "react";
-
-import { useState, useCallback, useRef } from "react";
-import ReactFlow, {
-  MiniMap,
-  Controls,
-  Background,
-  useNodesState,
-  useEdgesState,
-  addEdge,
-  type Connection,
-  type Edge,
-  type Node,
-  type NodeTypes,
-  type EdgeTypes,
-  type OnConnectStartParams,
-} from "reactflow";
-import "reactflow/dist/style.css";
+import { useProjectNotes } from "@renderer/hooks/useProjectNotes";
+import { currentProjectIdAtom } from "@renderer/routes/__root";
+import { useAtomValue } from "jotai";
+import { Input } from "@renderer/components/ui/input";
 import { Button } from "@renderer/components/ui/button";
-import { Label } from "@renderer/components/ui/label";
+import { Plus, Search, DoorClosed, Save } from "lucide-react";
+import { useCreateNote } from "@renderer/hooks/note/useCreateNote";
+import { useDeleteNote } from "@renderer/hooks/note/useDeleteNote";
+import { useState, useRef } from "react";
+import { useUpdateNote } from "@renderer/hooks/note/useUpdateNote";
+import { notesTable } from "@db/schema";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
 } from "@renderer/components/ui/dialogue";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@renderer/components/ui/select";
-import { Users } from "lucide-react";
-import CharacterNode from "@renderer/components/flows/nodes/CharacterNode";
-import ContentNode from "@renderer/components/flows/nodes/ContentNode";
-import RelationshipEdge from "@renderer/components/flows/edges/relationshipEdge";
 import { BasicEditor } from "@renderer/components/editor/BasicEditor";
 import { useCreateEditor } from "@renderer/components/editor/use-create-editor";
-import NodeList from "@renderer/components/flows/NodeList";
+import { deserialize } from "@renderer/db";
+import { Value } from "@udecode/plate";
+import { NoteCard } from "@renderer/components/notes/NoteCard";
 
-const initialNodes: Node[] = [];
-const initialEdges: Edge[] = [];
-
-const nodeTypes: NodeTypes = {
-  characterNode: CharacterNode,
-  contentNode: ContentNode,
-};
-
-const edgeTypes: EdgeTypes = {
-  relationshipEdge: RelationshipEdge,
-};
+import "reactflow/dist/style.css";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 export const Route = createLazyFileRoute("/world/notes")({
   component: RouteComponent,
 });
 
 function RouteComponent(): JSX.Element {
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-  const [characterName, setCharacterName] = useState("");
-  const [characterDescription, setCharacterDescription] = useState("");
-  const [contentTitle, setContentTitle] = useState("");
-  const [contentText, setContentText] = useState("");
-  const [relationshipType, setRelationshipType] = useState("friend");
-  const [relationshipDescription, setRelationshipDescription] = useState("");
-  const [isRelationshipDialogOpen, setIsRelationshipDialogOpen] =
-    useState(false);
-  const [connectionParams, setConnectionParams] = useState<Connection | null>(
+  const currentProjectId = useAtomValue(currentProjectIdAtom);
+  const { data: notes, isLoading } = useProjectNotes(
+    currentProjectId as number,
+  );
+  const { mutate: createNote } = useCreateNote(
+    currentProjectId as number,
     null,
   );
-  const reactFlowWrapper = useRef<HTMLDivElement>(null);
-  const [reactFlowInstance, setReactFlowInstance] = useState<any>(null);
-  const [characters, setCharacters] = useState<
-    Array<{ id: string; name: string; description: string }>
-  >([]);
+  const { mutate: deleteNote } = useDeleteNote();
+  const { mutate: updateNote } = useUpdateNote();
+  const [content, setContent] = useState<Value | null>(null);
+  const titleRef = useRef<HTMLDivElement>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [noteToDelete, setNoteToDelete] = useState<number | null>(null);
+  const [selectedNote, setSelectedNote] = useState<
+    typeof notesTable.$inferSelect | null
+  >(null);
+  const editor = useCreateEditor({
+    value: selectedNote ? (deserialize(selectedNote.content) as Value) : null,
+  });
 
-  // Add a character to the sidebar list
-  const addCharacterToList = useCallback(() => {
-    if (!characterName.trim()) return;
+  const [animate] = useAutoAnimate();
 
-    const newCharacter = {
-      id: `character-${Date.now()}`,
-      name: characterName,
-      description: characterDescription,
-    };
-
-    setCharacters((prev) => [...prev, newCharacter]);
-    setCharacterName("");
-    setCharacterDescription("");
-  }, [characterName, characterDescription]);
-
-  // Add a content node to the canvas
-  const addContentNode = useCallback(() => {
-    if (!contentTitle.trim()) return;
-
-    const position = reactFlowInstance?.project({
-      x: 100 + Math.random() * 200,
-      y: 100 + Math.random() * 200,
-    }) || { x: 100, y: 100 };
-
-    const newNode = {
-      id: `content-${Date.now()}`,
-      type: "contentNode",
-      position,
-      data: {
-        title: contentTitle,
-        content: contentText,
-      },
-    };
-
-    setNodes((nds) => nds.concat(newNode));
-    setContentTitle("");
-    setContentText("");
-  }, [contentTitle, contentText, reactFlowInstance, setNodes]);
-
-  // Handle connection start
-  const onConnectStart = useCallback(
-    (_: React.MouseEvent, { nodeId, handleType }: OnConnectStartParams) => {
-      // Check if the source node is a content node (these shouldn't have connections)
-      const node = nodes.find((n) => n.id === nodeId);
-      if (node?.type === "contentNode") {
-        return false;
-      }
-    },
-    [nodes],
+  const filteredNotes = notes?.filter(
+    (note) =>
+      note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (note.content &&
+        typeof note.content === "string" &&
+        note.content.toLowerCase().includes(searchQuery.toLowerCase())),
   );
 
-  // Handle connection
-  const onConnect = useCallback(
-    (params: Connection) => {
-      // Check if either source or target is a content node
-      const sourceNode = nodes.find((n) => n.id === params.source);
-      const targetNode = nodes.find((n) => n.id === params.target);
+  const handleCreateNote = (): void => {
+    createNote({
+      title: "New Note",
+      content: "",
+    });
+  };
 
-      if (
-        sourceNode?.type === "contentNode" ||
-        targetNode?.type === "contentNode"
-      ) {
-        return; // Don't allow connections to/from content nodes
-      }
+  const handleSaveNote = (): void => {
+    if (!selectedNote) return;
 
-      // Store connection params and open the relationship dialog
-      setConnectionParams(params);
-      setIsRelationshipDialogOpen(true);
-    },
-    [nodes],
-  );
+    updateNote({
+      ...selectedNote,
+      title: titleRef.current?.textContent || "New Note",
+      content: content as Value,
+    });
+  };
 
-  // Create the relationship edge after dialog confirmation
-  const createRelationship = useCallback(() => {
-    if (connectionParams?.source && connectionParams?.target) {
-      const newEdge = {
-        id: `e${connectionParams.source}-${connectionParams.target}`,
-        source: connectionParams.source,
-        target: connectionParams.target,
-        type: "relationshipEdge",
-        data: {
-          type: relationshipType,
-          description: relationshipDescription,
-        },
-        animated: true,
-      };
+  const handleDeleteNote = (noteId: number): void => {
+    deleteNote(noteId);
+    setNoteToDelete(null);
+  };
 
-      setEdges((eds) => addEdge(newEdge, eds));
-      setRelationshipType("friend");
-      setRelationshipDescription("");
-      setConnectionParams(null);
-      setIsRelationshipDialogOpen(false);
-    }
-  }, [connectionParams, relationshipType, relationshipDescription, setEdges]);
-
-  // Handle dropping a node from the sidebar
-  const onDragOver = useCallback((event: React.DragEvent) => {
-    event.preventDefault();
-    event.dataTransfer.dropEffect = "move";
-  }, []);
-
-  const onDrop = useCallback(
-    (event: React.DragEvent) => {
-      event.preventDefault();
-
-      const type = event.dataTransfer.getData("application/reactflow/type");
-      const characterData = event.dataTransfer.getData(
-        "application/reactflow/character",
-      );
-
-      if (typeof type === "undefined" || !type || !reactFlowInstance) {
-        return;
-      }
-
-      const position = reactFlowInstance.screenToFlowPosition({
-        x: event.clientX,
-        y: event.clientY,
-      });
-
-      let newNode: Node = {
-        id: `${type}-${Date.now()}`,
-        type,
-        position,
-        data: {},
-      };
-
-      if (type === "characterNode" && characterData) {
-        const character = JSON.parse(characterData);
-        newNode = {
-          ...newNode,
-          data: {
-            name: character.name,
-            description: character.description,
-            image: `/placeholder.svg?height=100&width=100`,
-          },
-        };
-      }
-
-      setNodes((nds) => nds.concat(newNode));
-    },
-    [reactFlowInstance, setNodes],
-  );
-
-  const editor = useCreateEditor({ value: "" });
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="animate-pulse text-muted-foreground">
+          Loading notes...
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="flex h-screen">
-      {/* Sidebar */}
-      <div className="w-64 border-r bg-background flex flex-col">
-        <div className="p-4 py-4.5 border-b">
-          <h2 className="text-xl font-bold flex items-center gap-2">
-            <Users className="h-5 w-5" />
-            Story Elements
-          </h2>
-        </div>
-        <div className="flex-1 overflow-auto p-2">
-          <NodeList />
-        </div>
+    <div className="flex h-screen flex-col gap-6 overflow-y-auto">
+      <div className="flex items-center justify-between px-6">
+        <h1 className="text-3xl font-bold">Notes</h1>
+        <Button onClick={handleCreateNote}>
+          <Plus className="mr-2" />
+          New Note
+        </Button>
       </div>
 
-      {/* Main Flow Area */}
-      <div className="flex-1 flex flex-col">
-        <header className="border-b p-4 bg-background">
-          <h1 className="text-2xl font-bold">Character Relationship Flow</h1>
-        </header>
+      <div className="grid-cols-4 grid overflow-y-auto ">
+        <div className="col-span-3 overflow-y-auto py-2 p-4 space-y-4">
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            placeholder="Search notes..."
+            className="pl-9"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+          <div
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 overflow-y-auto"
+            ref={animate}
+          >
+            {filteredNotes?.map((note) => (
+              <NoteCard
+                key={note.id}
+                note={note}
+                onDelete={() => setNoteToDelete(note.id)}
+                onUpdate={updateNote}
+                onClick={() => setSelectedNote(note)}
+                isSelected={selectedNote?.id === note.id}
+              />
+            ))}
+          </div>
+        </div>
 
         <div
-          className="flex-1"
-          ref={reactFlowWrapper}
-          onDragOver={onDragOver}
-          onDrop={onDrop}
+          className="absolute lg:w-1/3 xl:w-[21%] right-0 h-[calc(100vh-6.8rem)] col-span-1 rounded-l-xl border border-secondary-sidebar-border shadow-md pointer-events-auto shadow-md bg-secondary-sidebar p-6"
+          ref={animate}
         >
-          <ReactFlow
-            nodes={nodes}
-            edges={edges}
-            onNodesChange={onNodesChange}
-            onEdgesChange={onEdgesChange}
-            onConnectStart={onConnectStart}
-            onConnect={onConnect}
-            onInit={setReactFlowInstance}
-            nodeTypes={nodeTypes}
-            edgeTypes={edgeTypes}
-            fitView
-          >
-            <Controls />
-            <MiniMap />
-            <Background />
-          </ReactFlow>
+          {selectedNote ? (
+            <div className="flex flex-col h-full">
+              <div className="flex items-start justify-between mb-4">
+                <h2
+                  ref={titleRef}
+                  className="text-lg text-sidebar-primary-foreground font-semibold ring-0 outline-none"
+                  contentEditable
+                  dangerouslySetInnerHTML={{
+                    __html: selectedNote.title,
+                  }}
+                />
+
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="hover:bg-secondary-sidebar-primary-foreground/10"
+                    onClick={() => setSelectedNote(null)}
+                  >
+                    <DoorClosed
+                      size={16}
+                      strokeWidth={1.5}
+                      className="stroke-secondary-sidebar-foreground"
+                    />
+                  </Button>
+                </div>
+              </div>
+              <div className="flex-1 overflow-y-auto h-full">
+                <BasicEditor
+                  editor={editor}
+                  setContent={(value) => {
+                    setContent(value);
+                  }}
+                  editorClassName="text-sm text-secondary-sidebar-foreground"
+                  placeholder="Start writing..."
+                />
+              </div>
+              <Button
+                variant="ghost"
+                className="self-end hover:bg-secondary-sidebar-primary-foreground/10"
+                size="icon"
+                onClick={handleSaveNote}
+              >
+                <Save
+                  size={16}
+                  strokeWidth={1.5}
+                  className="stroke-secondary-sidebar-foreground"
+                />
+              </Button>
+            </div>
+          ) : (
+            <div className="pt-24 text-sm max-w-[300px] mx-auto text-center justify-center h-full text-muted-foreground">
+              <h2 className="text-lg font-semibold text-sidebar-primary-foreground">
+                No note selected
+              </h2>
+              <p className="text-sm">
+                Open a note to start editing. You can also assign a note to a
+                chapter.
+              </p>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Relationship Dialog */}
-      <Dialog
-        open={isRelationshipDialogOpen}
-        onOpenChange={setIsRelationshipDialogOpen}
-      >
+      <Dialog open={!!noteToDelete} onOpenChange={() => setNoteToDelete(null)}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Define Relationship</DialogTitle>
+            <DialogTitle>Are you sure?</DialogTitle>
+            <DialogDescription>
+              This action cannot be undone. This will permanently delete the
+              note.
+            </DialogDescription>
           </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid gap-2">
-              <Label htmlFor="type">Relationship Type</Label>
-              <Select
-                value={relationshipType}
-                onValueChange={setRelationshipType}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select relationship type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="friend">Friend</SelectItem>
-                  <SelectItem value="family">Family</SelectItem>
-                  <SelectItem value="romantic">Romantic</SelectItem>
-                  <SelectItem value="rival">Rival</SelectItem>
-                  <SelectItem value="mentor">Mentor</SelectItem>
-                  <SelectItem value="enemy">Enemy</SelectItem>
-                  <SelectItem value="colleague">Colleague</SelectItem>
-                  <SelectItem value="other">Other</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="relationshipDescription">Description</Label>
-              {/* <Textarea
-                id="relationshipDescription"
-                value={relationshipDescription}
-                onChange={(e) => setRelationshipDescription(e.target.value)}
-                placeholder="Describe the relationship"
-                rows={3}
-              /> */}
-              <BasicEditor
-                editor={editor}
-                setContent={(value) => setRelationshipDescription(value)}
-              />
-            </div>
-          </div>
           <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setIsRelationshipDialogOpen(false)}
-            >
+            <Button variant="outline" onClick={() => setNoteToDelete(null)}>
               Cancel
             </Button>
-            <Button onClick={createRelationship}>Create Relationship</Button>
+            <Button
+              variant="destructive"
+              onClick={() => noteToDelete && handleDeleteNote(noteToDelete)}
+            >
+              Delete
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

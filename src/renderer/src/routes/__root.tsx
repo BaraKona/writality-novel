@@ -52,6 +52,11 @@ export const currentProjectIdAtom = atomWithStorage<number | null>(
   null,
 );
 
+export const menuItemStatesAtom = atomWithStorage<Record<string, boolean>>(
+  "menuItemStates",
+  {},
+);
+
 function RootDocument({
   children,
 }: Readonly<{ children: ReactNode }>): JSX.Element {

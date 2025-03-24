@@ -19,7 +19,7 @@ export const useCreateNote = (projectId: number, parent_id: number | null) => {
         .run(),
     onSuccess: () =>
       queryClient.invalidateQueries({
-        queryKey: ["notes", parent_id],
+        queryKey: ["notes"],
       }),
   });
 };
