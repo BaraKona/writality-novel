@@ -1,4 +1,4 @@
-import { FilePlus2, FolderPlus, Plus, Trash2 } from "lucide-react";
+import { FilePlus2, FolderPlus, Plus, Trash2, Waypoints } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -60,7 +60,10 @@ export function SidebarFiles({
               <FolderPlus className="text-muted-foreground" />
               <span>Create Folder</span>
             </DropdownMenuItem>
-
+            <DropdownMenuItem onClick={() => createProjectFolder(null)}>
+              <Waypoints className="text-muted-foreground" />
+              <span>Create Fractal</span>
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
               <Trash2 className="text-muted-foreground" />

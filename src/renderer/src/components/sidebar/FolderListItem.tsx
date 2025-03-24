@@ -5,6 +5,7 @@ import {
   FolderPlus,
   MoreHorizontal,
   Trash2,
+  Waypoints,
 } from "lucide-react";
 
 import {
@@ -118,6 +119,10 @@ export const FolderListItem = ({
             <DropdownMenuItem onClick={() => createProjectFolder(folder.id)}>
               <FolderPlus className="text-muted-foreground" />
               <span>New folder</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => createProjectFolder(folder.id)}>
+              <Waypoints className="text-muted-foreground" />
+              <span>New Fractal</span>
             </DropdownMenuItem>
 
             <DropdownMenuSeparator />

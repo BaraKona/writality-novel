@@ -78,6 +78,13 @@
       "when": 1742657320441,
       "tag": "0010_colorful_paladin",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "6",
+      "when": 1742806080514,
+      "tag": "0011_cynical_sphinx",
+      "breakpoints": true
     }
   ]
 }
