@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 
 import type React from "react";
 
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import ReactFlow, {
   MiniMap,
   Controls,
@@ -16,6 +16,7 @@ import ReactFlow, {
   type NodeTypes,
   type EdgeTypes,
   type OnConnectStartParams,
+  type ReactFlowInstance,
 } from "reactflow";
 import "reactflow/dist/style.css";
 import { Button } from "@renderer/components/ui/button";
@@ -34,7 +35,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@renderer/components/ui/select";
-import { Users } from "lucide-react";
+import { Blocks } from "lucide-react";
 import CharacterNode from "@renderer/components/flows/nodes/CharacterNode";
 import ContentNode from "@renderer/components/flows/nodes/ContentNode";
 import RelationshipEdge from "@renderer/components/flows/edges/relationshipEdge";
@@ -42,6 +43,9 @@ import { BasicEditor } from "@renderer/components/editor/BasicEditor";
 import { useCreateEditor } from "@renderer/components/editor/use-create-editor";
 import NodeList from "@renderer/components/flows/NodeList";
 import { useFractal } from "@renderer/hooks/fractal/useFractal";
+import { useSaveFractalState } from "@renderer/hooks/fractal/useSaveFractalState";
+import { useUpdateFractal } from "@renderer/hooks/fractal/useUpdateFractal";
+import { useDebounce } from "@renderer/hooks/useDebounce";
 
 const initialNodes: Node[] = [];
 const initialEdges: Edge[] = [];
@@ -72,6 +76,47 @@ function RouteComponent(): JSX.Element {
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const [reactFlowInstance, setReactFlowInstance] =
     useState<ReactFlowInstance | null>(null);
+  const { fractalId } = Route.useParams();
+  const { data: fractal } = useFractal(Number(fractalId));
+  const { mutate: saveFractalState } = useSaveFractalState(Number(fractalId));
+  const { mutate: updateFractal } = useUpdateFractal(Number(fractalId));
+
+  const debouncedSave = useDebounce(() => {
+    if (fractal?.id) {
+      saveFractalState({ nodes, edges });
+    }
+  }, 1000);
+
+  // Reset nodes and edges when fractalId changes
+  useEffect(() => {
+    setNodes(initialNodes);
+    setEdges(initialEdges);
+  }, [fractalId, setNodes, setEdges]);
+
+  // Load saved fractal state
+  useEffect(() => {
+    if (fractal?.description) {
+      try {
+        const savedState = fractal.description as {
+          nodes?: Node[];
+          edges?: Edge[];
+        };
+        if (savedState.nodes) {
+          setNodes(savedState.nodes);
+        }
+        if (savedState.edges) {
+          setEdges(savedState.edges);
+        }
+      } catch (error) {
+        console.error("Failed to load fractal state:", error);
+      }
+    }
+  }, [fractal?.description, setNodes, setEdges]);
+
+  // Save fractal state when nodes or edges change
+  useEffect(() => {
+    debouncedSave();
+  }, [nodes, edges, debouncedSave]);
 
   // Handle connection start
   const onConnectStart = useCallback(
@@ -140,9 +185,6 @@ function RouteComponent(): JSX.Element {
       event.preventDefault();
 
       const type = event.dataTransfer.getData("application/reactflow/type");
-      const characterData = event.dataTransfer.getData(
-        "application/reactflow/character",
-      );
 
       if (typeof type === "undefined" || !type || !reactFlowInstance) {
         return;
@@ -160,13 +202,12 @@ function RouteComponent(): JSX.Element {
         data: {},
       };
 
-      if (type === "characterNode" && characterData) {
-        const character = JSON.parse(characterData);
+      if (type === "characterNode") {
         newNode = {
           ...newNode,
           data: {
-            name: character.name,
-            description: character.description,
+            name: "Select Character",
+            description: "Click to select a character",
             image: `/placeholder.svg?height=100&width=100`,
           },
         };
@@ -178,26 +219,37 @@ function RouteComponent(): JSX.Element {
   );
 
   const editor = useCreateEditor({ value: "" });
-  const { fractalId } = Route.useParams();
-  const { data: fractal } = useFractal(Number(fractalId));
+
   return (
-    <div className="flex h-screen">
-      <div className="w-64 border-r bg-background flex flex-col">
-        <div className="p-4 py-4.5 border-b">
-          <h2 className="text-xl font-bold flex items-center gap-2">
-            <Users className="h-5 w-5" />
-            Story Elements
-          </h2>
-        </div>
-        <div className="flex-1 overflow-auto p-2">
-          <NodeList />
+    <div className="flex h-screen relative">
+      <div className="absolute left-0 top-0 bottom-0 my-auto p-2 pt-1 py-2">
+        <div className="w-64 bg-background h-full flex flex-col z-10 relative border rounded-lg shadow">
+          <div className="p-4 py-2 border-b">
+            <h2 className="text-xl font-bold flex items-center gap-2">
+              <Blocks className="h-5 w-5" />
+              Story Elements
+            </h2>
+          </div>
+          <div className="flex-1 overflow-auto p-2">
+            <NodeList />
+          </div>
         </div>
       </div>
 
       <div className="flex-1 flex flex-col">
-        <header className="border-b p-4 bg-background">
-          <h1 className="text-2xl font-bold">{fractal?.name}</h1>
-        </header>
+        <div className="border-b bg-background pl-68">
+          <h2
+            className="text-2xl font-bold"
+            contentEditable
+            onBlur={(e) => {
+              if (fractal?.id) {
+                updateFractal({ name: e.target.innerText });
+              }
+            }}
+          >
+            {fractal?.name}
+          </h2>
+        </div>
 
         <div
           className="flex-1"

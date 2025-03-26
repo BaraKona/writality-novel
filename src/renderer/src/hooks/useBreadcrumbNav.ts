@@ -5,6 +5,7 @@ interface BreadcrumbItem {
   title: string;
   href?: string;
   isCurrentPage: boolean;
+  siblings?: { title: string; href: string }[];
 }
 
 interface DropdownItem {
@@ -55,10 +56,20 @@ export function useBreadcrumbNav(): BreadcrumbNavData {
   const currentSubsection = currentSection.items.find(
     (item) => item.url === currentPath,
   );
+
   if (currentSubsection) {
+    // Get siblings (other items in the same section)
+    const siblings = currentSection.items
+      .filter((item) => item.url !== currentPath)
+      .map((item) => ({
+        title: item.title,
+        href: item.url,
+      }));
+
     items.push({
       title: currentSubsection.title,
       isCurrentPage: true,
+      siblings: siblings.length > 0 ? siblings : undefined,
     });
   }
 

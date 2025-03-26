@@ -7,7 +7,6 @@ import {
   FileText,
   Globe2Icon,
   ImageIcon,
-  BlocksIcon,
   LibraryBigIcon,
   SettingsIcon,
   SquareUserIcon,
@@ -17,6 +16,7 @@ import {
   CirclePlus,
   LibraryBig,
   FolderOpen,
+  Waypoints,
 } from "lucide-react";
 
 export const TabListItem: FC<{
@@ -65,8 +65,8 @@ function iconList(tabUrl: string | undefined): JSX.Element {
     return <SettingsIcon size={size} strokeWidth={stroke} />;
   } else if (tabUrl.includes("chapter")) {
     return <FileText size={size} strokeWidth={stroke} />;
-  } else if (tabUrl.includes(".canvas")) {
-    return <BlocksIcon size={size} strokeWidth={stroke} />;
+  } else if (tabUrl.includes("fractal")) {
+    return <Waypoints size={size} strokeWidth={stroke} />;
   } else if (tabUrl.includes("folders")) {
     return (
       <FolderOpen

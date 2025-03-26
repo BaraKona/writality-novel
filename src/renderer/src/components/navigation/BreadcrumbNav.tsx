@@ -22,6 +22,7 @@ interface BreadcrumbNavProps {
     title: string;
     href?: string;
     isCurrentPage?: boolean;
+    siblings?: { title: string; href: string }[];
   }[];
   dropdownItems?: {
     title: string;
@@ -43,9 +44,35 @@ export function BreadcrumbNav({
             <>
               <BreadcrumbItem key={item.title}>
                 {item.isCurrentPage ? (
-                  <BreadcrumbPage className="text-xs font-medium !px-2 p-1 bg-accent rounded-md">
-                    {item.title}
-                  </BreadcrumbPage>
+                  item.siblings && item.siblings.length > 0 ? (
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-6 !px-2 p-1 bg-accent rounded-md text-xs font-medium hover:bg-accent/80"
+                        >
+                          {item.title}
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="start" className="w-48">
+                        {item.siblings.map((sibling) => (
+                          <DropdownMenuItem key={sibling.href} asChild>
+                            <Link
+                              to={sibling.href}
+                              className="text-xs font-medium px-2 p-1 hover:bg-accent rounded-md cursor-pointer"
+                            >
+                              {sibling.title}
+                            </Link>
+                          </DropdownMenuItem>
+                        ))}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  ) : (
+                    <BreadcrumbPage className="text-xs font-medium !px-2 p-1 bg-accent rounded-md">
+                      {item.title}
+                    </BreadcrumbPage>
+                  )
                 ) : (
                   <BreadcrumbLink asChild>
                     <Link
