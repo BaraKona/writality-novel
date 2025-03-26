@@ -6,7 +6,6 @@ import {
   MoreHorizontal,
   Share,
   Trash2,
-  FileClock,
   FileSignature,
   FileText,
 } from "lucide-react";
@@ -20,7 +19,7 @@ import { notesTable } from "@db/schema";
 import type { InferSelectModel } from "drizzle-orm";
 import { deserialize } from "@renderer/db";
 import { Value } from "@udecode/plate";
-import { getDateFromTime, getTimeFromNow } from "@renderer/lib/utils";
+import { getTimeFromNow } from "@renderer/lib/utils";
 
 interface NoteCardProps {
   note: InferSelectModel<typeof notesTable> & {
@@ -119,20 +118,9 @@ export function NoteCard({
 
       <div className="mt-auto flex flex-col gap-2 border-t p-4">
         <div className="flex items-center justify-between gap-8">
-          <div className="flex items-center gap-2 text-xs">
-            <FileClock size={16} className="shrink-0 stroke-muted-foreground" />
-            <span className="text-muted-foreground">
-              {getDateFromTime(note.created_at)}
-            </span>
-          </div>
-          <div className="flex items-center gap-2 text-xs">
-            <FileSignature
-              size={16}
-              className="shrink-0 stroke-muted-foreground"
-            />
-            <span className="text-muted-foreground">
-              {getTimeFromNow(note.updated_at)}
-            </span>
+          <div className="flex items-center gap-2 text-xs text-sidebar-primary ml-auto">
+            <FileSignature size={16} className="shrink-0" />
+            <span className="">{getTimeFromNow(note.updated_at)}</span>
           </div>
         </div>
       </div>
