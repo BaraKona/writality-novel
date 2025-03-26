@@ -1,4 +1,4 @@
-import { createLazyFileRoute } from "@tanstack/react-router";
+import { createLazyFileRoute, Link } from "@tanstack/react-router";
 import { useProjectNotes } from "@renderer/hooks/useProjectNotes";
 import { currentProjectIdAtom } from "@renderer/routes/__root";
 import { useAtomValue, useAtom } from "jotai";
@@ -26,6 +26,14 @@ import { atomWithStorage } from "jotai/utils";
 import { Open, TOpen } from "@renderer/routes/__root";
 import clsx from "clsx";
 import { SidebarExtender } from "@renderer/components/sidebar/SidebarExtender";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@renderer/components/ui/breadcrumb";
 
 import "reactflow/dist/style.css";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
@@ -116,9 +124,26 @@ function RouteComponent(): JSX.Element {
   return (
     <div className="flex h-screen flex-col overflow-y-auto">
       <div className="flex w-full gap-2 border-y p-2 py-1">
-        <div className="rounded-md bg-accent p-1 px-2 text-xs font-medium">
-          Notes
-        </div>
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild>
+                <Link
+                  to="/world"
+                  className="text-xs font-medium px-2 p-1 hover:bg-accent rounded-md"
+                >
+                  World
+                </Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage className="text-xs font-medium px-2 p-1 bg-accent rounded-md">
+                Notes
+              </BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
         <Button
           variant="ghost"
           size="sm"
@@ -259,7 +284,7 @@ function RouteComponent(): JSX.Element {
               </div>
             ) : (
               <div
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 overflow-y-auto"
+                className="grid grid-cols-1 lg:grid-cols-3 2xl:grid-cols-4 gap-2 overflow-y-auto grid-auto-rows-max"
                 ref={animate}
               >
                 {filteredNotes?.map((note) => (

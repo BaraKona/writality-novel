@@ -61,25 +61,17 @@ export const data = (): {
         ],
       },
       {
-        title: "Characters",
-        url: "#",
+        title: "People",
+        url: "/people",
         icon: SquareUser,
         items: [
           {
-            title: "Introduction",
-            url: "#",
+            title: "Characters",
+            url: "/people/characters",
           },
           {
-            title: "Get Started",
-            url: "#",
-          },
-          {
-            title: "Tutorials",
-            url: "#",
-          },
-          {
-            title: "Changelog",
-            url: "#",
+            title: "Cultures",
+            url: "/people/cultures",
           },
         ],
       },

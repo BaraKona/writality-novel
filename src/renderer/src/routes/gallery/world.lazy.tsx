@@ -1,9 +1,13 @@
 import { createLazyFileRoute } from "@tanstack/react-router";
+import { BreadcrumbNav } from "@renderer/components/navigation/BreadcrumbNav";
+import { useBreadcrumbNav } from "@renderer/hooks/useBreadcrumbNav";
 
 export const Route = createLazyFileRoute("/gallery/world")({
   component: RouteComponent,
 });
 
 function RouteComponent(): JSX.Element {
-  return <div>Hello Gallery World</div>;
+  const { items, dropdownItems } = useBreadcrumbNav();
+
+  return <BreadcrumbNav items={items} dropdownItems={dropdownItems} />;
 }

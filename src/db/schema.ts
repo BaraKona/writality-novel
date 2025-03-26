@@ -72,6 +72,10 @@ export const charactersTable = sqliteTable("characters", {
   id: int().primaryKey({ autoIncrement: true }),
   name: text().notNull(),
   description: text(),
+  status: text().notNull().default("alive"), // Could be 'alive', 'dead', 'unknown'
+  sex: text(),
+  age: int(),
+  traits: text(), // JSON string of traits array
   created_at: int("created_at", { mode: "timestamp" })
     .notNull()
     .default(sql`(unixepoch())`),

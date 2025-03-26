@@ -1,0 +1,1 @@
+ALTER TABLE `characters` ADD `status` text DEFAULT 'alive' NOT NULL;
