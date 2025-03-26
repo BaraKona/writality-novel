@@ -1,4 +1,4 @@
-import { createLazyFileRoute, Link } from "@tanstack/react-router";
+import { createLazyFileRoute } from "@tanstack/react-router";
 import { useProjectNotes } from "@renderer/hooks/useProjectNotes";
 import { currentProjectIdAtom } from "@renderer/routes/__root";
 import { useAtomValue, useAtom } from "jotai";
@@ -26,14 +26,8 @@ import { atomWithStorage } from "jotai/utils";
 import { Open, TOpen } from "@renderer/routes/__root";
 import clsx from "clsx";
 import { SidebarExtender } from "@renderer/components/sidebar/SidebarExtender";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@renderer/components/ui/breadcrumb";
+import { useBreadcrumbNav } from "@renderer/hooks/useBreadcrumbNav";
+import { BreadcrumbNav } from "@renderer/components/navigation/BreadcrumbNav";
 
 import "reactflow/dist/style.css";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
@@ -68,6 +62,7 @@ function RouteComponent(): JSX.Element {
   );
   const { mutate: deleteNote } = useDeleteNote();
   const { mutate: updateNote } = useUpdateNote();
+  const { items, dropdownItems } = useBreadcrumbNav();
   const [content, setContent] = useState<Value | null>(null);
   const titleRef = useRef<HTMLDivElement>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -123,37 +118,21 @@ function RouteComponent(): JSX.Element {
 
   return (
     <div className="flex h-screen flex-col overflow-y-auto">
-      <div className="flex w-full gap-2 border-y p-2 py-1">
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link
-                  to="/world"
-                  className="text-xs font-medium px-2 p-1 hover:bg-accent rounded-md"
-                >
-                  World
-                </Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage className="text-xs font-medium px-2 p-1 bg-accent rounded-md">
-                Notes
-              </BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="ml-auto flex items-center gap-2 rounded-md p-1 px-2 text-xs font-medium"
-          onClick={handleCreateNote}
-        >
-          <PlusIcon size={16} className="" strokeWidth={2.5} />
-          New Note
-        </Button>
-      </div>
+      <BreadcrumbNav
+        items={items}
+        dropdownItems={dropdownItems}
+        actions={
+          <Button
+            variant="ghost"
+            size="sm"
+            className="flex items-center gap-2 rounded-md p-1 px-2 text-xs font-medium"
+            onClick={handleCreateNote}
+          >
+            <PlusIcon size={16} className="" strokeWidth={2.5} />
+            New Note
+          </Button>
+        }
+      />
 
       <div className="flex grow overflow-y-auto relative">
         <div

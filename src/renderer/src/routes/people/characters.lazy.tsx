@@ -18,6 +18,7 @@ import { Label } from "@renderer/components/ui/label";
 import { CharacterCard } from "@renderer/components/character/CharacterCard";
 import { PlusIcon } from "lucide-react";
 import { BreadcrumbNav } from "@renderer/components/navigation/BreadcrumbNav";
+import { useBreadcrumbNav } from "@renderer/hooks/useBreadcrumbNav";
 
 export const Route = createLazyFileRoute("/people/characters")({
   component: RouteComponent,
@@ -35,6 +36,7 @@ function RouteComponent(): JSX.Element {
   const [newCharacterAge, setNewCharacterAge] = useState<number | null>(null);
   const [newCharacterOccupation, setNewCharacterOccupation] = useState("");
   const [newCharacterTraits, setNewCharacterTraits] = useState<string[]>([]);
+  const { items, dropdownItems } = useBreadcrumbNav();
   const editor = useCreateEditor({ value: [] });
 
   const handleCreateCharacter = async (): Promise<void> => {
@@ -64,88 +66,83 @@ function RouteComponent(): JSX.Element {
 
   return (
     <div className="">
-      <div className="flex w-full gap-2 border-y p-2 py-1">
-        <BreadcrumbNav
-          items={[
-            {
-              title: "People",
-              href: "/people",
-            },
-            {
-              title: "Characters",
-              isCurrentPage: true,
-            },
-          ]}
-        />
-        <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-          <DialogTrigger asChild>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="ml-auto flex items-center gap-2 rounded-md p-1 px-2 text-xs font-medium"
-            >
-              <PlusIcon size={16} className="" strokeWidth={2.5} />
-              New Character
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Create New Character</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="name">Name</Label>
-                <Input
-                  id="name"
-                  value={newCharacterName}
-                  onChange={(e) => setNewCharacterName(e.target.value)}
-                  placeholder="Enter character name"
-                />
+      <BreadcrumbNav
+        items={items}
+        dropdownItems={dropdownItems}
+        actions={
+          <Dialog
+            open={isCreateDialogOpen}
+            onOpenChange={setIsCreateDialogOpen}
+          >
+            <DialogTrigger asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="flex items-center gap-2 rounded-md p-1 px-2 text-xs font-medium"
+              >
+                <PlusIcon size={16} className="" strokeWidth={2.5} />
+                New Character
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Create New Character</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="name">Name</Label>
+                  <Input
+                    id="name"
+                    value={newCharacterName}
+                    onChange={(e) => setNewCharacterName(e.target.value)}
+                    placeholder="Enter character name"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="sex">Sex</Label>
+                  <Input
+                    id="sex"
+                    value={newCharacterSex}
+                    onChange={(e) => setNewCharacterSex(e.target.value)}
+                    placeholder="Enter character sex"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="age">Age</Label>
+                  <Input
+                    id="age"
+                    type="number"
+                    value={newCharacterAge || ""}
+                    onChange={(e) =>
+                      setNewCharacterAge(
+                        e.target.value ? parseInt(e.target.value) : null,
+                      )
+                    }
+                    placeholder="Enter character age"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Description</Label>
+                  <BasicEditor
+                    editor={editor}
+                    setContent={setNewCharacterDescription}
+                    placeholder="Enter character description"
+                  />
+                </div>
+                <div className="flex justify-end space-x-2">
+                  <Button
+                    variant="outline"
+                    onClick={() => setIsCreateDialogOpen(false)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button onClick={handleCreateCharacter}>Create</Button>
+                </div>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="sex">Sex</Label>
-                <Input
-                  id="sex"
-                  value={newCharacterSex}
-                  onChange={(e) => setNewCharacterSex(e.target.value)}
-                  placeholder="Enter character sex"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="age">Age</Label>
-                <Input
-                  id="age"
-                  type="number"
-                  value={newCharacterAge || ""}
-                  onChange={(e) =>
-                    setNewCharacterAge(
-                      e.target.value ? parseInt(e.target.value) : null,
-                    )
-                  }
-                  placeholder="Enter character age"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label>Description</Label>
-                <BasicEditor
-                  editor={editor}
-                  setContent={setNewCharacterDescription}
-                  placeholder="Enter character description"
-                />
-              </div>
-              <div className="flex justify-end space-x-2">
-                <Button
-                  variant="outline"
-                  onClick={() => setIsCreateDialogOpen(false)}
-                >
-                  Cancel
-                </Button>
-                <Button onClick={handleCreateCharacter}>Create</Button>
-              </div>
-            </div>
-          </DialogContent>
-        </Dialog>
-      </div>
+            </DialogContent>
+          </Dialog>
+        }
+      />
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 container">
         {characters?.map((character) => (

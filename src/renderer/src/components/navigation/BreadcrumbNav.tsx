@@ -15,6 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@renderer/components/ui/dropdown-menu";
 import { Button } from "@renderer/components/ui/button";
+import { ReactNode } from "react";
 
 interface BreadcrumbNavProps {
   items: {
@@ -26,21 +27,23 @@ interface BreadcrumbNavProps {
     title: string;
     href: string;
   }[];
+  actions?: ReactNode;
 }
 
 export function BreadcrumbNav({
   items,
   dropdownItems,
+  actions,
 }: BreadcrumbNavProps): JSX.Element {
   return (
-    <div className="flex w-full gap-2 border-y p-2 py-1">
+    <div className="flex w-full items-center justify-between border-y p-2 py-1">
       <Breadcrumb>
         <BreadcrumbList>
           {items.map((item, index) => (
             <>
               <BreadcrumbItem key={item.title}>
                 {item.isCurrentPage ? (
-                  <BreadcrumbPage className="text-xs font-medium px-2 p-1 bg-accent rounded-md">
+                  <BreadcrumbPage className="text-xs font-medium !px-2 p-1 bg-accent rounded-md">
                     {item.title}
                   </BreadcrumbPage>
                 ) : (
@@ -86,6 +89,7 @@ export function BreadcrumbNav({
           )}
         </BreadcrumbList>
       </Breadcrumb>
+      {actions && <div className="flex items-center gap-2">{actions}</div>}
     </div>
   );
 }
