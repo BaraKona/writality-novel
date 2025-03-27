@@ -17,6 +17,7 @@ type CreateCharacterInput = {
   age?: number;
   occupation?: string;
   traits?: string[];
+  project_id: number;
 };
 
 export const useCreateCharacter = (): ReturnType<
@@ -36,6 +37,7 @@ export const useCreateCharacter = (): ReturnType<
           sex: character.sex,
           age: character.age,
           traits: character.traits ? JSON.stringify(character.traits) : null,
+          project_id: character.project_id,
         })
         .returning()
         .get();

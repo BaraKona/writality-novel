@@ -73,6 +73,9 @@ export const charactersTable = sqliteTable("characters", {
   name: text().notNull(),
   description: text(),
   status: text().notNull().default("alive"), // Could be 'alive', 'dead', 'unknown'
+  project_id: int()
+    .notNull()
+    .references(() => projectsTable.id, { onDelete: "cascade" }),
   sex: text(),
   age: int(),
   traits: text(), // JSON string of traits array

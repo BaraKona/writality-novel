@@ -19,6 +19,8 @@ import { CharacterCard } from "@renderer/components/character/CharacterCard";
 import { PlusIcon } from "lucide-react";
 import { BreadcrumbNav } from "@renderer/components/navigation/BreadcrumbNav";
 import { useBreadcrumbNav } from "@renderer/hooks/useBreadcrumbNav";
+import { currentProjectIdAtom } from "@renderer/routes/__root";
+import { useAtomValue } from "jotai";
 
 export const Route = createLazyFileRoute("/people/characters")({
   component: RouteComponent,
@@ -38,11 +40,13 @@ function RouteComponent(): JSX.Element {
   const [newCharacterTraits, setNewCharacterTraits] = useState<string[]>([]);
   const { items, dropdownItems } = useBreadcrumbNav();
   const editor = useCreateEditor({ value: [] });
+  const currentProjectId = useAtomValue(currentProjectIdAtom);
 
   const handleCreateCharacter = async (): Promise<void> => {
     if (!newCharacterName.trim()) return;
 
     createCharacter({
+      project_id: currentProjectId!,
       name: newCharacterName,
       description: newCharacterDescription,
       sex: newCharacterSex,

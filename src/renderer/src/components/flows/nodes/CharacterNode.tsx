@@ -1,29 +1,28 @@
-import { memo, useState } from "react";
-import { Handle, Position, type NodeProps } from "reactflow";
+import { memo } from "react";
+import { Handle, Position, useReactFlow, type NodeProps } from "reactflow";
 import {
   Avatar,
   AvatarFallback,
   AvatarImage,
 } from "@renderer/components/ui/avatar";
-import { CardContent } from "@renderer/components/ui/card";
-import { Plus } from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@renderer/components/ui/dialogue";
+import { User, List, Ellipsis } from "lucide-react";
 import { Button } from "@renderer/components/ui/button";
-import { Input } from "@renderer/components/ui/input";
-import { Label } from "@renderer/components/ui/label";
 import { useCharacters } from "@renderer/hooks/character/useCharacters";
-import { useCreateCharacter } from "@renderer/hooks/character/useCreateCharacter";
 import { BasicEditor } from "@renderer/components/editor/BasicEditor";
 import { useCreateEditor } from "@renderer/components/editor/use-create-editor";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@renderer/components/ui/dropdown-menu";
+import { useDebounce } from "@renderer/hooks/useDebounce";
 import { Value } from "@udecode/plate";
-import { serialize } from "@renderer/db";
-
+import { useUpdateCharacter } from "@renderer/hooks/character/useUpdateCharacter";
+import { useCharacter } from "@renderer/hooks/character/useCharacter";
+import EmptyCharacterNode from "./EmptyCharacterNode";
+import { charactersTable } from "@db/schema";
+import { InferSelectModel } from "drizzle-orm";
 interface CharacterNodeData {
   name: string;
   description: string;
@@ -34,191 +33,156 @@ interface CharacterNodeData {
 function CharacterNode({
   data,
   isConnectable,
-  selected,
+  id,
 }: NodeProps<CharacterNodeData>): JSX.Element {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [isCreateMode, setIsCreateMode] = useState(false);
-  const [newCharacterName, setNewCharacterName] = useState("");
-  const [newCharacterDescription, setNewCharacterDescription] = useState<Value>(
-    [],
-  );
-  const [newCharacterSex, setNewCharacterSex] = useState("");
-  const [newCharacterAge, setNewCharacterAge] = useState<number | null>(null);
-  const [newCharacterTraits, setNewCharacterTraits] = useState<string[]>([]);
-
   const { data: characters } = useCharacters();
-  const { mutate: createCharacter } = useCreateCharacter();
-  const editor = useCreateEditor({ value: [] });
+  const { data: character, isLoading } = useCharacter(
+    data.characterId as number,
+  );
+  const editor = useCreateEditor({ value: character?.description as Value });
 
-  const handleCreateCharacter = async (): Promise<void> => {
-    if (!newCharacterName.trim()) return;
+  const { setNodes } = useReactFlow();
+  const { mutate: updateCharacter } = useUpdateCharacter();
 
-    createCharacter({
-      name: newCharacterName,
-      description: newCharacterDescription,
-      sex: newCharacterSex,
-      age: newCharacterAge || undefined,
-      traits: newCharacterTraits,
+  const handleCharacterUpdate = (content: Value): void => {
+    updateCharacter({
+      ...character,
+      description: content,
     });
-
-    setNewCharacterName("");
-    setNewCharacterDescription([]);
-    setNewCharacterSex("");
-    setNewCharacterAge(null);
-    setNewCharacterTraits([]);
-    setIsCreateMode(false);
   };
 
   const handleCharacterSelect = (
-    character: NonNullable<typeof characters>[number],
+    character: InferSelectModel<typeof charactersTable>,
   ): void => {
-    // Update node data with selected character
-    data.name = character.name;
-    // Convert the Plate editor value to a string for display
-    data.description = serialize(character.description);
-    data.characterId = character.id;
-    setIsDialogOpen(false);
+    console.log({ character });
+    setNodes((nodes) =>
+      nodes.map((node) =>
+        node.id === id
+          ? { ...node, data: { characterId: character.id } }
+          : node,
+      ),
+    );
   };
 
+  // const handleSelectNote = (
+  //   note: InferSelectModel<typeof notesTable>,
+  // ): void => {
+  //   setNodes((nodes) =>
+  //     nodes.map((node) => {
+  //       if (node.id === id) {
+  //         return {
+  //           ...node,
+  //           data: {
+  //             noteId: note.id,
+  //           },
+  //         };
+  //       }
+  //       return node;
+  //     }),
+  //   );
+  // };
+
+  const debounceUpdateCharacter = useDebounce((content: Value) => {
+    handleCharacterUpdate(content);
+  }, 500);
+
+  if (!character) {
+    return (
+      <EmptyCharacterNode
+        handleNewCharacter={() => {}}
+        handleCharacterSelect={handleCharacterSelect}
+        data={{ characterId: data.characterId as number }}
+      />
+    );
+  }
+
   return (
-    <div
-      className={`p-1 w-full h-full flex flex-col overflow-y-auto !z-5 rounded-md ${selected ? "!bg-accent" : "!bg-transparent"}`}
-    >
-      <div
-        className={`w-52 bg-background border rounded-lg hover:border-primary/20 group transition-colors cursor-pointer ${selected ? "border-primary/20" : ""}`}
-        onClick={() => setIsDialogOpen(true)}
-      >
-        <CardContent className="p-3 text-center">
-          <h3 className="font-bold text-sm truncate">{data.name}</h3>
-          <p className="text-xs text-muted-foreground line-clamp-3 mt-1">
-            {data.description || "No description"}
-          </p>
-        </CardContent>
-
-        <Handle
-          type="source"
-          position={Position.Right}
-          id="right"
-          isConnectable={isConnectable}
-          className="w-3 h-3 bg-primary group-hover:visible invisible"
-        />
-        <Handle
-          type="source"
-          position={Position.Bottom}
-          id="bottom"
-          isConnectable={isConnectable}
-          className="w-3 h-3 bg-primary group-hover:visible invisible"
-        />
-        <Handle
-          type="target"
-          position={Position.Left}
-          id="left"
-          isConnectable={isConnectable}
-          className="w-3 h-3 bg-primary group-hover:visible invisible"
-        />
-        <Handle
-          type="target"
-          position={Position.Top}
-          id="top"
-          isConnectable={isConnectable}
-          className="w-3 h-3 bg-primary group-hover:visible invisible"
-        />
-      </div>
-
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>
-              {isCreateMode ? "Create New Character" : "Select Character"}
-            </DialogTitle>
-          </DialogHeader>
-
-          {isCreateMode ? (
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="name">Name</Label>
-                <Input
-                  id="name"
-                  value={newCharacterName}
-                  onChange={(e) => setNewCharacterName(e.target.value)}
-                  placeholder="Enter character name"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="sex">Sex</Label>
-                <Input
-                  id="sex"
-                  value={newCharacterSex}
-                  onChange={(e) => setNewCharacterSex(e.target.value)}
-                  placeholder="Enter character sex"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="age">Age</Label>
-                <Input
-                  id="age"
-                  type="number"
-                  value={newCharacterAge || ""}
-                  onChange={(e) =>
-                    setNewCharacterAge(
-                      e.target.value ? parseInt(e.target.value) : null,
-                    )
-                  }
-                  placeholder="Enter character age"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label>Description</Label>
-                <BasicEditor
-                  editor={editor}
-                  setContent={setNewCharacterDescription}
-                  placeholder="Enter character description"
-                />
-              </div>
-              <DialogFooter>
-                <Button
-                  variant="outline"
-                  onClick={() => setIsCreateMode(false)}
-                >
-                  Cancel
-                </Button>
-                <Button onClick={handleCreateCharacter}>Create</Button>
-              </DialogFooter>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              <div className="space-y-2">
+    <div className="w-64 bg-card max-h-96 overflow-y-auto cursor-grab rounded-xl flex flex-col gap-2 border-2 hover:border-foreground/25 transition-colors cursor-pointer">
+      <div className="w-full border-b flex items-center px-2 cursor-grab">
+        <Avatar className="h-8 w-8 absolute top-4 left-2">
+          <AvatarImage src={data.image} />
+          <AvatarFallback>
+            <User size={16} />
+          </AvatarFallback>
+        </Avatar>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild className="ml-auto">
+            <Button variant="ghost" size="icon">
+              <Ellipsis size={16} />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" className="w-48">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <DropdownMenuItem>
+                  <List className="h-4 w-4 mr-2" />
+                  Change Character
+                </DropdownMenuItem>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                side="right"
+                className="w-48 max-h-64 overflow-y-auto"
+              >
                 {characters?.map((character) => (
-                  <Button
+                  <DropdownMenuItem
                     key={character.id}
-                    variant="ghost"
-                    className="w-full justify-start"
+                    className="items-start"
                     onClick={() => handleCharacterSelect(character)}
                   >
-                    <Avatar className="h-8 w-8 mr-2">
-                      <AvatarImage src={""} />
-                      <AvatarFallback>
-                        {character.name.charAt(0)}
-                      </AvatarFallback>
-                    </Avatar>
+                    <User size={15} className="pt-1" />
                     {character.name}
-                  </Button>
+                  </DropdownMenuItem>
                 ))}
-              </div>
-              <DialogFooter>
-                <Button
-                  variant="outline"
-                  className="w-full"
-                  onClick={() => setIsCreateMode(true)}
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  Create New Character
-                </Button>
-              </DialogFooter>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+      <div
+        className="flex flex-col gap-2 pb-2 nodrag rounded-xl cursor-default px-2 cursor-default overflow-y-auto nowheel"
+        id="editor-wrapper"
+      >
+        <div className="w-full flex mt-4">
+          {character.age && (
+            <div className="text-sm text-foreground border rounded-sm bg-muted px-2 text-primary py-0.25 ml-auto">
+              age: {character.age}
             </div>
           )}
-        </DialogContent>
-      </Dialog>
+        </div>
+        <h2
+          contentEditable={true}
+          className="ring-0 outline-none text-md font-semibold text-foreground/80 pr-4 w-full"
+          dangerouslySetInnerHTML={{ __html: character.name }}
+          onBlur={(e) => {
+            updateCharacter({
+              ...character,
+              name: e.target.innerHTML,
+            });
+          }}
+        />
+        <BasicEditor
+          editor={editor}
+          setContent={(content) => debounceUpdateCharacter(content)}
+          editorClassName="text-sm text-foreground min-h-[100px] p-0"
+          placeholder="Start writing..."
+        />
+      </div>
+      {isConnectable && (
+        <>
+          <Handle
+            type="target"
+            position={Position.Top}
+            className="!bg-brand"
+            isConnectable={isConnectable}
+          />
+          <Handle
+            type="source"
+            position={Position.Bottom}
+            className="!bg-brand"
+            isConnectable={isConnectable}
+          />
+        </>
+      )}
     </div>
   );
 }

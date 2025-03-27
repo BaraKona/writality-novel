@@ -8,25 +8,25 @@ import { notesTable } from "../../../../db/schema";
 import { eq } from "drizzle-orm";
 import { Value } from "@udecode/plate";
 import { toast } from "sonner";
-import { InferSelectModel } from "drizzle-orm";
+
+type NoteUpdate = Omit<typeof notesTable.$inferSelect, "content"> & {
+  content: Value;
+};
 
 export const useUpdateNote = (): UseMutationResult<
-  { id: number; title: string; content: Value | string },
+  NoteUpdate,
   Value,
-  { id: number; title: string; content: Value | string }
+  NoteUpdate
 > => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (note: { id: number; title: string; content: Value }) => {
+    mutationFn: async (note: NoteUpdate) => {
       await database.transaction(async (tx) => {
         await tx
           .update(notesTable)
           .set({
-            title: note.title,
-            content:
-              typeof note.content === "string"
-                ? note.content
-                : serialize(note.content),
+            ...note,
+            content: serialize(note.content),
           })
           .where(eq(notesTable.id, note.id))
           .run();
@@ -35,12 +35,10 @@ export const useUpdateNote = (): UseMutationResult<
     },
     onSuccess: (note) => {
       queryClient.setQueryData(
-        ["notes"],
-        (oldData: InferSelectModel<typeof notesTable>[] | undefined) => {
+        ["note", note.id],
+        (oldData: NoteUpdate | undefined) => {
           if (!oldData) return oldData;
-          return oldData.map((n) =>
-            n.id === note.id ? { ...n, title: note.title } : n,
-          );
+          return { ...oldData, title: note.title };
         },
       );
       toast.success("Note updated");
