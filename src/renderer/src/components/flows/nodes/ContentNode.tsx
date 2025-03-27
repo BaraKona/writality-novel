@@ -34,7 +34,7 @@ function ContentNode({ data, id }: NodeProps<ContentNodeData>): JSX.Element {
   const currentProjectId = useAtomValue(currentProjectIdAtom);
   const { data: notes } = useProjectNotes(currentProjectId as number);
   const { data: note } = useNote(data.noteId as number);
-  const { setNodes } = useReactFlow();
+  const { setNodes, getNodes } = useReactFlow();
 
   const { mutate: createNote } = useCreateNote(
     currentProjectId as number,
@@ -45,23 +45,13 @@ function ContentNode({ data, id }: NodeProps<ContentNodeData>): JSX.Element {
   const editor = useCreateEditor({ value: note?.content as Value });
 
   const handleNewNote = (): void => {
-    createNote(
-      {
-        title: "New Note",
-        content: "",
-      },
-      {
-        onSuccess: () => {
-          if (notes && notes.length > 0) {
-            const newestNote = notes.reduce((latest, current) => {
-              return new Date(current.created_at) > new Date(latest.created_at)
-                ? current
-                : latest;
-            });
-            handleSelectNote(newestNote);
-          }
-        },
-      },
+    createNote({
+      title: "New Note",
+      content: "",
+    });
+
+    handleSelectNote(
+      notes?.[notes.length - 1] as InferSelectModel<typeof notesTable>,
     );
   };
 
@@ -84,7 +74,7 @@ function ContentNode({ data, id }: NodeProps<ContentNodeData>): JSX.Element {
   };
 
   const handleContentUpdate = (newContent: Value): void => {
-    if (data.noteId) {
+    if (data.noteId && note) {
       updateNote({
         ...note,
         content: newContent,
@@ -93,7 +83,7 @@ function ContentNode({ data, id }: NodeProps<ContentNodeData>): JSX.Element {
   };
 
   const handleTitleUpdate = (newTitle: string): void => {
-    if (data.noteId) {
+    if (data.noteId && note) {
       updateNote({
         ...note,
         title: newTitle,
@@ -106,6 +96,12 @@ function ContentNode({ data, id }: NodeProps<ContentNodeData>): JSX.Element {
     1000,
   );
 
+  // Get all note IDs currently in use in the fractal
+  const usedNoteIds = getNodes()
+    .filter((node) => node.type === "contentNode")
+    .map((node) => (node.data as ContentNodeData).noteId)
+    .filter((id): id is number => id !== undefined);
+
   if (!note) {
     return (
       <EmptyContentNode
@@ -113,6 +109,7 @@ function ContentNode({ data, id }: NodeProps<ContentNodeData>): JSX.Element {
         handleSelectNote={handleSelectNote}
         currentProjectId={currentProjectId as number}
         data={{ noteId: data.noteId as number }}
+        usedNoteIds={usedNoteIds}
       />
     );
   }
@@ -139,23 +136,25 @@ function ContentNode({ data, id }: NodeProps<ContentNodeData>): JSX.Element {
                 side="right"
                 className="w-48 max-h-64 overflow-y-auto"
               >
-                {notes?.map((note) => (
-                  <DropdownMenuItem
-                    key={note.id}
-                    className="items-start"
-                    onClick={() => handleSelectNote(note)}
-                  >
-                    <Paperclip size={15} className="pt-1" />
-                    {note.title}
-                  </DropdownMenuItem>
-                ))}
+                {notes
+                  ?.filter((note) => !usedNoteIds.includes(note.id))
+                  .map((note) => (
+                    <DropdownMenuItem
+                      key={note.id}
+                      className="items-start"
+                      onClick={() => handleSelectNote(note)}
+                    >
+                      <Paperclip size={15} className="pt-1" />
+                      {note.title}
+                    </DropdownMenuItem>
+                  ))}
               </DropdownMenuContent>
             </DropdownMenu>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
       <div
-        className="flex flex-col gap-2 nodrag rounded-xl cursor-default px-2 cursor-default overflow-y-auto nowheel"
+        className="flex flex-col gap-2 pb-2 nodrag rounded-xl cursor-default px-2 cursor-default overflow-y-auto nowheel"
         id="editor-wrapper"
       >
         <h2

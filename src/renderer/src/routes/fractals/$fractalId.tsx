@@ -299,7 +299,7 @@ function RouteComponent(): JSX.Element {
             edgeTypes={edgeTypes}
             fitView
           >
-            <Controls />
+            <Controls position="top-right" />
             <MiniMap />
             <Background />
           </ReactFlow>

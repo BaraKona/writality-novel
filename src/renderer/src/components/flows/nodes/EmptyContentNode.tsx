@@ -16,6 +16,7 @@ export default function EmptyContentNode({
   handleSelectNote,
   currentProjectId,
   data,
+  usedNoteIds,
 }: {
   handleNewNote: () => void;
   handleSelectNote: (note: InferSelectModel<typeof notesTable>) => void;
@@ -23,6 +24,7 @@ export default function EmptyContentNode({
   data: {
     noteId: number;
   };
+  usedNoteIds: number[];
 }): JSX.Element {
   const { data: notes } = useProjectNotes(currentProjectId as number);
   return (
@@ -60,7 +62,10 @@ export default function EmptyContentNode({
           </DropdownMenuTrigger>
           <DropdownMenuContent side="right" className="w-48">
             {notes
-              ?.filter((note) => note.id !== data.noteId)
+              ?.filter(
+                (note) =>
+                  !usedNoteIds.includes(note.id) && note.id !== data.noteId,
+              )
               .map((note) => (
                 <DropdownMenuItem
                   key={note.id}

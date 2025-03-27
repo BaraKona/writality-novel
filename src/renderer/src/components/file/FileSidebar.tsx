@@ -1,10 +1,5 @@
 import { FC, ReactNode } from "react";
-import {
-  FileStackIcon,
-  Paperclip,
-  ListTodoIcon,
-  PencilRulerIcon,
-} from "lucide-react";
+import { FileStackIcon, Paperclip, PencilRulerIcon, User } from "lucide-react";
 import { FileNotes } from "./sidebar/notes/FileNotes";
 import { ChapterSidebarState } from "@renderer/routes/chapters/$chapterId";
 import { chaptersTable } from "@db/schema";
@@ -39,15 +34,11 @@ export const FileSidebar: FC<{
           />
         </FileSidebarListItem>
         <FileSidebarListItem
-          name="todo"
-          active={sidebarState.category === "todo"}
+          name="characters"
+          active={sidebarState.category === "characters"}
           setSidebarState={setSidebarState}
         >
-          <ListTodoIcon
-            size={16}
-            strokeWidth={2}
-            className="stroke-muted-foreground"
-          />
+          <User size={16} strokeWidth={2} className="stroke-muted-foreground" />
         </FileSidebarListItem>
         <FileSidebarListItem
           name="versions"

@@ -15,6 +15,7 @@ export default function EmptyCharacterNode({
   handleNewCharacter,
   handleCharacterSelect,
   data,
+  usedCharacterIds,
 }: {
   handleNewCharacter: () => void;
   handleCharacterSelect: (
@@ -23,6 +24,7 @@ export default function EmptyCharacterNode({
   data: {
     characterId: number;
   };
+  usedCharacterIds: number[];
 }): JSX.Element {
   const { data: characters } = useCharacters();
   return (
@@ -60,7 +62,11 @@ export default function EmptyCharacterNode({
           </DropdownMenuTrigger>
           <DropdownMenuContent side="right" className="w-48">
             {characters
-              ?.filter((character) => character.id !== data.characterId)
+              ?.filter(
+                (character) =>
+                  !usedCharacterIds?.includes(character.id) &&
+                  character.id !== data.characterId,
+              )
               .map((character) => (
                 <DropdownMenuItem
                   key={`character-${character.id}`}

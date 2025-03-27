@@ -23,6 +23,7 @@ import { useCharacter } from "@renderer/hooks/character/useCharacter";
 import EmptyCharacterNode from "./EmptyCharacterNode";
 import { charactersTable } from "@db/schema";
 import { InferSelectModel } from "drizzle-orm";
+
 interface CharacterNodeData {
   name: string;
   description: string;
@@ -36,12 +37,9 @@ function CharacterNode({
   id,
 }: NodeProps<CharacterNodeData>): JSX.Element {
   const { data: characters } = useCharacters();
-  const { data: character, isLoading } = useCharacter(
-    data.characterId as number,
-  );
+  const { data: character } = useCharacter(data.characterId as number);
   const editor = useCreateEditor({ value: character?.description as Value });
-
-  const { setNodes } = useReactFlow();
+  const { setNodes, getNodes } = useReactFlow();
   const { mutate: updateCharacter } = useUpdateCharacter();
 
   const handleCharacterUpdate = (content: Value): void => {
@@ -64,27 +62,15 @@ function CharacterNode({
     );
   };
 
-  // const handleSelectNote = (
-  //   note: InferSelectModel<typeof notesTable>,
-  // ): void => {
-  //   setNodes((nodes) =>
-  //     nodes.map((node) => {
-  //       if (node.id === id) {
-  //         return {
-  //           ...node,
-  //           data: {
-  //             noteId: note.id,
-  //           },
-  //         };
-  //       }
-  //       return node;
-  //     }),
-  //   );
-  // };
-
   const debounceUpdateCharacter = useDebounce((content: Value) => {
     handleCharacterUpdate(content);
   }, 500);
+
+  // Get all character IDs currently in use in the fractal
+  const usedCharacterIds = getNodes()
+    .filter((node) => node.type === "characterNode")
+    .map((node) => (node.data as CharacterNodeData).characterId)
+    .filter((id): id is number => id !== undefined);
 
   if (!character) {
     return (
@@ -92,6 +78,7 @@ function CharacterNode({
         handleNewCharacter={() => {}}
         handleCharacterSelect={handleCharacterSelect}
         data={{ characterId: data.characterId as number }}
+        usedCharacterIds={usedCharacterIds}
       />
     );
   }
@@ -123,16 +110,18 @@ function CharacterNode({
                 side="right"
                 className="w-48 max-h-64 overflow-y-auto"
               >
-                {characters?.map((character) => (
-                  <DropdownMenuItem
-                    key={character.id}
-                    className="items-start"
-                    onClick={() => handleCharacterSelect(character)}
-                  >
-                    <User size={15} className="pt-1" />
-                    {character.name}
-                  </DropdownMenuItem>
-                ))}
+                {characters
+                  ?.filter((char) => !usedCharacterIds?.includes(char.id))
+                  .map((character) => (
+                    <DropdownMenuItem
+                      key={character.id}
+                      className="items-start"
+                      onClick={() => handleCharacterSelect(character)}
+                    >
+                      <User size={15} className="pt-1" />
+                      {character.name}
+                    </DropdownMenuItem>
+                  ))}
               </DropdownMenuContent>
             </DropdownMenu>
           </DropdownMenuContent>
@@ -142,10 +131,13 @@ function CharacterNode({
         className="flex flex-col gap-2 pb-2 nodrag rounded-xl cursor-default px-2 cursor-default overflow-y-auto nowheel"
         id="editor-wrapper"
       >
-        <div className="w-full flex mt-4">
+        <div className="w-full flex mt-4 items-center gap-2 justify-between">
+          <span className="text-xs">
+            {character.age || "unknown"} years old
+          </span>
           {character.age && (
-            <div className="text-sm text-foreground border rounded-sm bg-muted px-2 text-primary py-0.25 ml-auto">
-              age: {character.age}
+            <div className="text-xs text-foreground border rounded-sm bg-muted px-2 text-primary py-0.25 ">
+              {character.sex}
             </div>
           )}
         </div>
