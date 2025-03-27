@@ -11,6 +11,8 @@ import {
 interface RelationshipEdgeData {
   type: string;
   description?: string;
+  subject: string;
+  object: string;
 }
 
 const relationshipColors: Record<string, string> = {
@@ -35,6 +37,7 @@ function RelationshipEdge({
   sourcePosition,
   targetPosition,
   data,
+  markerEnd,
 }: EdgeProps<RelationshipEdgeData>) {
   const [edgePath, labelX, labelY] = getBezierPath({
     sourceX,
@@ -47,15 +50,35 @@ function RelationshipEdge({
 
   const relationshipType = data?.type || "other";
   const colorClass = relationshipColors[relationshipType] || "bg-gray-500";
+  const strokeColor = colorClass
+    .replace("bg-", "stroke-")
+    .replace("-500", "-400");
 
   return (
     <>
+      <defs>
+        <marker
+          id={`arrow-${id}`}
+          viewBox="0 0 10 10"
+          refX="5"
+          refY="5"
+          markerWidth="6"
+          markerHeight="6"
+          orient="auto-start-reverse"
+        >
+          <path
+            d="M 0 0 L 10 5 L 0 10 z"
+            fill={strokeColor.replace("stroke-", "")}
+          />
+        </marker>
+      </defs>
       <path
         id={id}
         className="react-flow__edge-path stroke-2"
         d={edgePath}
         strokeWidth={2}
-        stroke={colorClass.replace("bg-", "stroke-").replace("-500", "-400")}
+        stroke={strokeColor}
+        markerEnd={`url(#arrow-${id})`}
       />
 
       <EdgeLabelRenderer>

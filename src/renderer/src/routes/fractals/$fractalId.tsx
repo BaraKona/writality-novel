@@ -17,6 +17,7 @@ import ReactFlow, {
   type EdgeTypes,
   type OnConnectStartParams,
   type ReactFlowInstance,
+  MarkerType,
 } from "reactflow";
 import "reactflow/dist/style.css";
 import { Button } from "@renderer/components/ui/button";
@@ -46,6 +47,7 @@ import { useFractal } from "@renderer/hooks/fractal/useFractal";
 import { useSaveFractalState } from "@renderer/hooks/fractal/useSaveFractalState";
 import { useUpdateFractal } from "@renderer/hooks/fractal/useUpdateFractal";
 import { useDebounce } from "@renderer/hooks/useDebounce";
+import { toast } from "sonner";
 
 const initialNodes: Node[] = [];
 const initialEdges: Edge[] = [];
@@ -77,7 +79,7 @@ function RouteComponent(): JSX.Element {
   const [reactFlowInstance, setReactFlowInstance] =
     useState<ReactFlowInstance | null>(null);
   const { fractalId } = Route.useParams();
-  const { data: fractal } = useFractal(Number(fractalId));
+  const { data: fractal, isLoading } = useFractal(Number(fractalId));
   const { mutate: saveFractalState } = useSaveFractalState(Number(fractalId));
   const { mutate: updateFractal } = useUpdateFractal(Number(fractalId));
 
@@ -91,7 +93,7 @@ function RouteComponent(): JSX.Element {
   useEffect(() => {
     setNodes(initialNodes);
     setEdges(initialEdges);
-  }, [fractalId, setNodes, setEdges]);
+  }, [fractalId]);
 
   // Load saved fractal state
   useEffect(() => {
@@ -116,7 +118,7 @@ function RouteComponent(): JSX.Element {
   // Save fractal state when nodes or edges change
   useEffect(() => {
     debouncedSave();
-  }, [nodes, edges, debouncedSave]);
+  }, [nodes, edges]);
 
   // Handle connection start
   const onConnectStart = useCallback(
@@ -144,11 +146,22 @@ function RouteComponent(): JSX.Element {
         return; // Don't allow connections to/from content nodes
       }
 
+      // Check if a connection already exists in the same direction
+      const existingConnection = edges.find(
+        (edge) =>
+          edge.source === params.source && edge.target === params.target,
+      );
+
+      if (existingConnection) {
+        toast.error("Relationship already established in this direction");
+        return; // Don't allow duplicate connections in the same direction
+      }
+
       // Store connection params and open the relationship dialog
       setConnectionParams(params);
       setIsRelationshipDialogOpen(true);
     },
-    [nodes],
+    [nodes, edges],
   );
 
   // Create the relationship edge after dialog confirmation
@@ -162,8 +175,16 @@ function RouteComponent(): JSX.Element {
         data: {
           type: relationshipType,
           description: relationshipDescription,
+          subject: connectionParams.source,
+          object: connectionParams.target,
         },
         animated: true,
+        markerEnd: {
+          type: MarkerType.Arrow,
+          color: "#b1b1b7",
+          width: 20,
+          height: 20,
+        },
       };
 
       setEdges((eds) => addEdge(newEdge, eds));
@@ -220,6 +241,14 @@ function RouteComponent(): JSX.Element {
 
   const editor = useCreateEditor({ value: "" });
 
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!fractal) {
+    return <div>Fractal not found</div>;
+  }
+
   return (
     <div className="flex h-screen relative">
       <div className="absolute left-0 top-0 bottom-0 my-auto p-2 pt-1 py-2">
@@ -241,14 +270,13 @@ function RouteComponent(): JSX.Element {
           <h2
             className="text-2xl font-bold"
             contentEditable
+            dangerouslySetInnerHTML={{ __html: fractal.name }}
             onBlur={(e) => {
               if (fractal?.id) {
                 updateFractal({ name: e.target.innerText });
               }
             }}
-          >
-            {fractal?.name}
-          </h2>
+          />
         </div>
 
         <div

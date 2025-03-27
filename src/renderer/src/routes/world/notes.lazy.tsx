@@ -73,6 +73,7 @@ function RouteComponent(): JSX.Element {
   const originalClientX = useRef(sidebarState.width);
   const selectedNote =
     notes?.find((note) => note.id === sidebarState.selectedNoteId) || null;
+
   const editor = useCreateEditor({
     value: selectedNote ? (deserialize(selectedNote.content) as Value) : null,
   });
@@ -115,6 +116,7 @@ function RouteComponent(): JSX.Element {
       });
     }
   };
+  console.log("refreshed");
 
   return (
     <div className="flex h-screen flex-col overflow-y-auto">
@@ -200,9 +202,7 @@ function RouteComponent(): JSX.Element {
                 <div className="flex-1 overflow-y-auto h-full">
                   <BasicEditor
                     editor={editor}
-                    setContent={(value) => {
-                      setContent(value);
-                    }}
+                    setContent={(value) => setContent(value)}
                     editorClassName="text-sm text-secondary-sidebar-foreground"
                     placeholder="Start writing..."
                   />

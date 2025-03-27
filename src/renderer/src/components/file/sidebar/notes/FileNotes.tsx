@@ -1,6 +1,6 @@
 import { FC, useState } from "react";
 
-import { Archive, LightbulbIcon, PlusIcon } from "lucide-react";
+import { Archive, PaperclipIcon, PlusIcon } from "lucide-react";
 import { Button } from "@renderer/components/ui/button";
 import { chaptersTable } from "@db/schema";
 import { useChapterNotes } from "@renderer/hooks/note/useChapterNotes";
@@ -34,7 +34,7 @@ export const FileNotes: FC<{ file: typeof chaptersTable.$inferSelect }> = ({
     return (
       <div className="w-full flex flex-col gap-0.5 items-center text-text p-2 grow overflow-y-auto group/todo-menu relative">
         <div className="flex items-center mt-8 gap-2 text-sm text-secondary-sidebar-foreground">
-          <LightbulbIcon
+          <PaperclipIcon
             size={18}
             className="stroke-secondary-sidebar-primary"
           />

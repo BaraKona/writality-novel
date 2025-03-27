@@ -1,7 +1,7 @@
 import { FC, ReactNode } from "react";
 import {
   FileStackIcon,
-  LightbulbIcon,
+  Paperclip,
   ListTodoIcon,
   PencilRulerIcon,
 } from "lucide-react";
@@ -32,7 +32,7 @@ export const FileSidebar: FC<{
           active={sidebarState.category === "notes"}
           setSidebarState={setSidebarState}
         >
-          <LightbulbIcon
+          <Paperclip
             size={16}
             strokeWidth={2}
             className="stroke-muted-foreground"

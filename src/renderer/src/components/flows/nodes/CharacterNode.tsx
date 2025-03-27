@@ -5,8 +5,8 @@ import {
   AvatarFallback,
   AvatarImage,
 } from "@renderer/components/ui/avatar";
-import { Card, CardContent, CardHeader } from "@renderer/components/ui/card";
-import { User, Plus } from "lucide-react";
+import { CardContent } from "@renderer/components/ui/card";
+import { Plus } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -81,19 +81,13 @@ function CharacterNode({
   };
 
   return (
-    <>
-      <Card
-        className={`w-48 shadow-md border-2 hover:border-primary transition-colors cursor-pointer ${selected ? "border-primary" : ""}`}
+    <div
+      className={`p-1 w-full h-full flex flex-col overflow-y-auto !z-5 rounded-md ${selected ? "!bg-accent" : "!bg-transparent"}`}
+    >
+      <div
+        className={`w-52 bg-background border rounded-lg hover:border-primary/20 group transition-colors cursor-pointer ${selected ? "border-primary/20" : ""}`}
         onClick={() => setIsDialogOpen(true)}
       >
-        <CardHeader className="p-3 pb-0 flex justify-center">
-          <Avatar className="h-16 w-16">
-            <AvatarImage src={data.image} alt={data.name} />
-            <AvatarFallback className="bg-primary/10">
-              <User className="h-8 w-8 text-primary" />
-            </AvatarFallback>
-          </Avatar>
-        </CardHeader>
         <CardContent className="p-3 text-center">
           <h3 className="font-bold text-sm truncate">{data.name}</h3>
           <p className="text-xs text-muted-foreground line-clamp-3 mt-1">
@@ -106,30 +100,30 @@ function CharacterNode({
           position={Position.Right}
           id="right"
           isConnectable={isConnectable}
-          className="w-3 h-3 bg-primary"
+          className="w-3 h-3 bg-primary group-hover:visible invisible"
         />
         <Handle
           type="source"
           position={Position.Bottom}
           id="bottom"
           isConnectable={isConnectable}
-          className="w-3 h-3 bg-primary"
+          className="w-3 h-3 bg-primary group-hover:visible invisible"
         />
         <Handle
           type="target"
           position={Position.Left}
           id="left"
           isConnectable={isConnectable}
-          className="w-3 h-3 bg-primary"
+          className="w-3 h-3 bg-primary group-hover:visible invisible"
         />
         <Handle
           type="target"
           position={Position.Top}
           id="top"
           isConnectable={isConnectable}
-          className="w-3 h-3 bg-primary"
+          className="w-3 h-3 bg-primary group-hover:visible invisible"
         />
-      </Card>
+      </div>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent>
@@ -225,7 +219,7 @@ function CharacterNode({
           )}
         </DialogContent>
       </Dialog>
-    </>
+    </div>
   );
 }
 

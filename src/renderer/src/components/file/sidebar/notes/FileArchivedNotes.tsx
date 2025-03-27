@@ -1,6 +1,6 @@
 import { FC } from "react";
 
-import { Info, Lightbulb } from "lucide-react";
+import { Info, Paperclip } from "lucide-react";
 import { Button } from "@renderer/components/ui/button";
 import { chaptersTable } from "@db/schema";
 import { useArchivedNotes } from "@renderer/hooks/note/useArchivedNotes";
@@ -52,7 +52,7 @@ export const FileArchivedNotes: FC<{
         variant="ghost"
         onClick={() => setArchiveTab(false)}
       >
-        <Lightbulb
+        <Paperclip
           size={16}
           strokeWidth={1.5}
           className="stroke-secondary-sidebar-foreground"
