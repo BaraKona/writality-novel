@@ -5,7 +5,7 @@ import {
   AvatarFallback,
   AvatarImage,
 } from "@renderer/components/ui/avatar";
-import { User, List, Ellipsis } from "lucide-react";
+import { User, List, Ellipsis, SquareArrowRight } from "lucide-react";
 import { Button } from "@renderer/components/ui/button";
 import { useCharacters } from "@renderer/hooks/character/useCharacters";
 import { BasicEditor } from "@renderer/components/editor/BasicEditor";
@@ -23,6 +23,9 @@ import { useCharacter } from "@renderer/hooks/character/useCharacter";
 import EmptyCharacterNode from "./EmptyCharacterNode";
 import { charactersTable } from "@db/schema";
 import { InferSelectModel } from "drizzle-orm";
+import { useCreateCharacter } from "@renderer/hooks/character/useCreateCharacter";
+import { useAtomValue } from "jotai";
+import { currentProjectIdAtom } from "@renderer/routes/__root";
 
 interface CharacterNodeData {
   name: string;
@@ -41,6 +44,9 @@ function CharacterNode({
   const editor = useCreateEditor({ value: character?.description as Value });
   const { setNodes, getNodes } = useReactFlow();
   const { mutate: updateCharacter } = useUpdateCharacter();
+  const { mutate: createCharacter } = useCreateCharacter();
+
+  const currentProjectId = useAtomValue(currentProjectIdAtom);
 
   const handleCharacterUpdate = (content: Value): void => {
     updateCharacter({
@@ -62,6 +68,28 @@ function CharacterNode({
     );
   };
 
+  const handleNewCharacter = (): void => {
+    createCharacter(
+      {
+        name: "New Character",
+        description: [
+          {
+            type: "paragraph",
+            children: [{ text: "" }],
+          },
+        ],
+        project_id: currentProjectId as number,
+      },
+      {
+        onSuccess: (character) => {
+          handleCharacterSelect(
+            character as InferSelectModel<typeof charactersTable>,
+          );
+        },
+      },
+    );
+  };
+
   const debounceUpdateCharacter = useDebounce((content: Value) => {
     handleCharacterUpdate(content);
   }, 500);
@@ -75,7 +103,7 @@ function CharacterNode({
   if (!character) {
     return (
       <EmptyCharacterNode
-        handleNewCharacter={() => {}}
+        handleNewCharacter={handleNewCharacter}
         handleCharacterSelect={handleCharacterSelect}
         data={{ characterId: data.characterId as number }}
         usedCharacterIds={usedCharacterIds}
@@ -100,6 +128,10 @@ function CharacterNode({
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" className="w-48">
             <DropdownMenu>
+              <DropdownMenuItem>
+                <SquareArrowRight className="h-4 w-4 mr-2" />
+                Open Character
+              </DropdownMenuItem>
               <DropdownMenuTrigger asChild>
                 <DropdownMenuItem>
                   <List className="h-4 w-4 mr-2" />

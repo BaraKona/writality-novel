@@ -45,13 +45,16 @@ function ContentNode({ data, id }: NodeProps<ContentNodeData>): JSX.Element {
   const editor = useCreateEditor({ value: note?.content as Value });
 
   const handleNewNote = (): void => {
-    createNote({
-      title: "New Note",
-      content: "",
-    });
-
-    handleSelectNote(
-      notes?.[notes.length - 1] as InferSelectModel<typeof notesTable>,
+    createNote(
+      {
+        title: "New Note",
+        content: "",
+      },
+      {
+        onSuccess: (note) => {
+          handleSelectNote(note as InferSelectModel<typeof notesTable>);
+        },
+      },
     );
   };
 

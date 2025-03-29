@@ -22,6 +22,7 @@ import { Button } from "../ui/button";
 import { projectsTable } from "@db/schema";
 import { Value } from "@udecode/plate";
 import { useCreateFractal } from "@renderer/hooks/fractal/useCreateFractal";
+import { FractalListItem } from "./FractalListItem";
 
 export function SidebarFiles({
   project,
@@ -116,6 +117,9 @@ export function SidebarFiles({
             ))}
             {projectFiles?.chapters?.map((chapter) => (
               <FileListItem key={chapter.id} chapter={chapter} level={0} />
+            ))}
+            {projectFiles?.fractals?.map((fractal) => (
+              <FractalListItem key={fractal.id} fractal={fractal} level={0} />
             ))}
           </>
         )}
