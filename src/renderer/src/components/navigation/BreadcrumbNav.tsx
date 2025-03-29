@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { PlusIcon } from "lucide-react";
+import React from "react";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -41,8 +42,8 @@ export function BreadcrumbNav({
       <Breadcrumb>
         <BreadcrumbList>
           {items.map((item, index) => (
-            <>
-              <BreadcrumbItem key={item.title}>
+            <React.Fragment key={item.title}>
+              <BreadcrumbItem>
                 {item.isCurrentPage ? (
                   item.siblings && item.siblings.length > 0 ? (
                     <DropdownMenu>
@@ -85,7 +86,7 @@ export function BreadcrumbNav({
                 )}
               </BreadcrumbItem>
               {index < items.length - 1 && <BreadcrumbSeparator />}
-            </>
+            </React.Fragment>
           ))}
           {dropdownItems && dropdownItems.length > 0 && (
             <BreadcrumbItem>
