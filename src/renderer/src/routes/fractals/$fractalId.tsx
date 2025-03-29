@@ -38,7 +38,7 @@ import {
 } from "@renderer/components/ui/select";
 import { Blocks } from "lucide-react";
 import CharacterNode from "@renderer/components/flows/nodes/CharacterNode";
-import ContentNode from "@renderer/components/flows/nodes/ContentNode";
+import NoteNode from "@renderer/components/flows/nodes/NoteNode";
 import RelationshipEdge from "@renderer/components/flows/edges/relationshipEdge";
 import { BasicEditor } from "@renderer/components/editor/BasicEditor";
 import { useCreateEditor } from "@renderer/components/editor/use-create-editor";
@@ -54,7 +54,7 @@ const initialEdges: Edge[] = [];
 
 const nodeTypes: NodeTypes = {
   characterNode: CharacterNode,
-  contentNode: ContentNode,
+  contentNode: NoteNode,
 };
 
 const edgeTypes: EdgeTypes = {

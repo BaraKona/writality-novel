@@ -62,7 +62,7 @@ export function NoteCard({
 
   return (
     <div
-      className={`group relative col-span-1 flex flex-col basis-[320px] rounded-xl border ${isSelected ? "border-primary" : "hover:border-foreground/25"}`}
+      className={`group relative bg-card col-span-1 flex flex-col basis-[320px] rounded-xl border ${isSelected ? "border-primary" : "hover:border-foreground/25"}`}
     >
       <div className="flex items-center p-2 justify-end gap-2">
         {note.chapter_name && (

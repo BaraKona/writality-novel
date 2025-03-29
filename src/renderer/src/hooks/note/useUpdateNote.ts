@@ -29,19 +29,26 @@ export const useUpdateNote = (): UseMutationResult<
             content: serialize(note.content),
           })
           .where(eq(notesTable.id, note.id))
+          .returning()
           .run();
       });
       return note;
     },
     onSuccess: (note) => {
-      queryClient.setQueryData(
-        ["note", note.id],
-        (oldData: NoteUpdate | undefined) => {
-          if (!oldData) return oldData;
-          return { ...oldData, title: note.title };
-        },
-      );
-      toast.success("Note updated");
+      if (note.chapter_id) {
+        queryClient.invalidateQueries({
+          queryKey: ["notes", "chapter", note.chapter_id],
+        });
+      } else {
+        queryClient.setQueryData(
+          ["note", note.id],
+          (oldData: NoteUpdate | undefined) => {
+            if (!oldData) return oldData;
+            return { ...oldData, title: note.title };
+          },
+        );
+        toast.success("Note updated");
+      }
     },
     mutationKey: ["updateNote"],
   });

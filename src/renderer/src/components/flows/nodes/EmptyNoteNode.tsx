@@ -11,7 +11,7 @@ import { FileText, List, Plus } from "lucide-react";
 import { notesTable } from "../../../../../db/schema";
 import { InferSelectModel } from "drizzle-orm";
 
-export default function EmptyContentNode({
+export default function EmptyNoteNode({
   handleNewNote,
   handleSelectNote,
   currentProjectId,

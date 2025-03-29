@@ -21,15 +21,15 @@ import { useDebounce } from "@renderer/hooks/useDebounce";
 import { Value } from "@udecode/plate";
 import { useNote } from "@renderer/hooks/note/useNote";
 import { useReactFlow } from "reactflow";
-import EmptyContentNode from "./EmptyContentNode";
+import EmptyNoteNode from "./EmptyNoteNode";
 
-interface ContentNodeData {
+interface NoteNodeData {
   title: string;
   content: string;
   noteId?: number;
 }
 
-function ContentNode({ data, id }: NodeProps<ContentNodeData>): JSX.Element {
+function NoteNode({ data, id }: NodeProps<NoteNodeData>): JSX.Element {
   const titleRef = useRef<HTMLDivElement>(null);
   const currentProjectId = useAtomValue(currentProjectIdAtom);
   const { data: notes } = useProjectNotes(currentProjectId as number);
@@ -102,12 +102,12 @@ function ContentNode({ data, id }: NodeProps<ContentNodeData>): JSX.Element {
   // Get all note IDs currently in use in the fractal
   const usedNoteIds = getNodes()
     .filter((node) => node.type === "contentNode")
-    .map((node) => (node.data as ContentNodeData).noteId)
+    .map((node) => (node.data as NoteNodeData).noteId)
     .filter((id): id is number => id !== undefined);
 
   if (!note) {
     return (
-      <EmptyContentNode
+      <EmptyNoteNode
         handleNewNote={handleNewNote}
         handleSelectNote={handleSelectNote}
         currentProjectId={currentProjectId as number}
@@ -178,4 +178,4 @@ function ContentNode({ data, id }: NodeProps<ContentNodeData>): JSX.Element {
   );
 }
 
-export default memo(ContentNode);
+export default memo(NoteNode);

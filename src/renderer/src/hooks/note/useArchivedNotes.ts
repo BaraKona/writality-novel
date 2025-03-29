@@ -7,7 +7,7 @@ export const useArchivedNotes = (
   chapterId: number,
 ): UseQueryResult<(typeof notesTable.$inferSelect)[], Error> => {
   return useQuery({
-    queryKey: ["notes", chapterId, "archived"],
+    queryKey: ["notes", "chapter", chapterId, "archived"],
     queryFn: async () => {
       const result = await database
         .select()

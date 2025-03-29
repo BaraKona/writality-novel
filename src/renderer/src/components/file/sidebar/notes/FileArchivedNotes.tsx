@@ -42,7 +42,7 @@ export const FileArchivedNotes: FC<{
         </div>
         <div className="flex flex-col gap-2" ref={animate}>
           {archivedNotes?.map((note) => (
-            <ArchivedNote key={note.id} note={note} chapterId={file.id} />
+            <ArchivedNote key={note.id} note={note} />
           ))}
         </div>
       </div>

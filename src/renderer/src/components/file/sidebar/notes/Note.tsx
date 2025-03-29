@@ -23,29 +23,35 @@ export const Note: FC<{
 
   return (
     <DropdownMenu>
-      <div
-        className="group/note rounded-md relative shadow border bg-background/5 border-secondary-sidebar-foreground/10 hover:border-secondary-sidebar-foreground/20"
-        onBlur={() =>
-          updateNote({
-            ...note,
-            content,
-            title: titleRef.current?.textContent || "no title",
-          })
-        }
-      >
+      <div className="group/note rounded-md relative shadow border bg-background/5 border-secondary-sidebar-foreground/10 hover:border-secondary-sidebar-foreground/20">
         <div className="flex flex-col">
-          <div className="border-b px-4 py-2 border-secondary-sidebar-foreground/10 flex items-center gap-2">
-            {/* <div className="flex justify-between items-start"> */}
+          <div className="border-b px-4 py-2 border-secondary-sidebar-foreground/10 flex justify-between items-center gap-2">
             <Paperclip size={16} className="shrink-0 text-muted-foreground" />
+            <DropdownMenuTrigger
+              className="p-0.5 rounded-md hover:bg-secondaryBackground text-muted-foreground "
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+            >
+              <Ellipsis size={16} strokeWidth={2} />
+            </DropdownMenuTrigger>
+          </div>
+          <div
+            className="mt-3 px-4"
+            onBlur={() =>
+              updateNote({
+                ...note,
+                content,
+                title: titleRef.current?.textContent || "no title",
+              })
+            }
+          >
             <h2
               ref={titleRef}
               contentEditable={true}
-              className="ring-0 outline-none text-md font-semibold text-secondary-sidebar-primary-foreground/80 pr-4 w-full"
+              className="ring-0 outline-none py-2 text-md font-semibold text-secondary-sidebar-primary-foreground/80 pr-4 w-full"
               dangerouslySetInnerHTML={{ __html: note.title }}
             />
-            {/* </div> */}
-          </div>
-          <div className="mt-3 px-4">
             <BasicEditor
               editor={editor}
               setContent={(value) => {
@@ -59,14 +65,7 @@ export const Note: FC<{
             {getTimeFromNow(note.updated_at)}
           </div>
         </div>
-        <DropdownMenuTrigger
-          className="p-1 rounded-md hover:bg-secondaryBackground text-muted-foreground absolute top-2 right-2"
-          onClick={(e) => {
-            e.stopPropagation();
-          }}
-        >
-          <Ellipsis size={16} strokeWidth={2} />
-        </DropdownMenuTrigger>
+
         <DropdownMenuContent className="w-48 rounded-lg" align="start">
           <DropdownMenuItem
             onClick={() =>

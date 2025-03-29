@@ -15,8 +15,7 @@ import { FC } from "react";
 
 export const ArchivedNote: FC<{
   note: typeof notesTable.$inferSelect;
-  chapterId: number;
-}> = ({ note, chapterId }) => {
+}> = ({ note }) => {
   const editor = useCreateEditor({ value: note.content });
 
   const { mutate: deleteNote } = useDeleteNote();
