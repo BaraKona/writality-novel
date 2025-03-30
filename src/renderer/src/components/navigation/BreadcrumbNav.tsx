@@ -38,7 +38,7 @@ export function BreadcrumbNav({
   actions,
 }: BreadcrumbNavProps): JSX.Element {
   return (
-    <div className="flex w-full items-center justify-between border-y p-2 py-1">
+    <div className="flex w-full items-center justify-between border-b p-2 py-1">
       <Breadcrumb>
         <BreadcrumbList>
           {items.map((item, index) => (

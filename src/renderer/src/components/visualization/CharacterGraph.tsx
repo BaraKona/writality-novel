@@ -5,33 +5,12 @@ import * as d3Drag from "d3-drag";
 import { type SimulationNodeDatum, type SimulationLinkDatum } from "d3-force";
 import { type D3DragEvent } from "d3-drag";
 import { type Selection, type BaseType } from "d3-selection";
-
-interface Character {
-  id: number;
-  name: string;
-  description: string | null;
-  status: string;
-  project_id: number;
-  sex: string | null;
-  age: number | null;
-  traits: string | null;
-  created_at: Date;
-  updated_at: Date;
-}
-
-interface CharacterRelationship {
-  id: number;
-  fractal_id: number;
-  subject_character_id: number;
-  object_character_id: number;
-  relationship_type: string;
-  created_at: Date;
-  updated_at: Date;
-}
+import { fractalCharacterRelationshipsTable } from "@db/schema";
+import { charactersTable } from "@db/schema";
 
 interface CharacterData {
-  characters: Character;
-  fractal_character_relationships: CharacterRelationship;
+  characters: typeof charactersTable.$inferSelect;
+  fractal_character_relationships: typeof fractalCharacterRelationshipsTable.$inferSelect;
 }
 
 interface CharacterGraphProps {
@@ -56,13 +35,19 @@ interface LinkData extends SimulationLinkDatum<NodeData> {
 
 export function CharacterGraph({ data }: CharacterGraphProps): JSX.Element {
   const svgRef = useRef<SVGSVGElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!svgRef.current || !data) return;
+    if (!svgRef.current || !data || !containerRef.current) return;
 
-    const width = 800;
-    const height = 600;
+    // Get container dimensions
+    const container = containerRef.current;
+    const width = container.clientWidth;
+    const height = container.clientHeight;
     const svg = d3Selection.select(svgRef.current);
+
+    // Set SVG dimensions to match container
+    svg.attr("width", width).attr("height", height);
 
     // Clear any existing content
     svg.selectAll("*").remove();
@@ -136,14 +121,14 @@ export function CharacterGraph({ data }: CharacterGraphProps): JSX.Element {
         d3
           .forceLink(links)
           .id((d) => (d as NodeData).id)
-          .distance(50)
-          .strength(1),
+          .distance(100)
+          .strength(0.7),
       )
-      .force("charge", d3.forceManyBody().strength(-30))
-      .force("center", d3.forceCenter(width / 2, height / 2).strength(0.8))
-      .force("collision", d3.forceCollide().radius(30))
-      .force("x", d3.forceX(width / 2).strength(0.1))
-      .force("y", d3.forceY(height / 2).strength(0.1));
+      .force("charge", d3.forceManyBody().strength(-100))
+      .force("center", d3.forceCenter(width / 2, height / 2).strength(1))
+      .force("collision", d3.forceCollide().radius(40))
+      .force("x", d3.forceX(width / 2).strength(0.3))
+      .force("y", d3.forceY(height / 2).strength(0.3));
 
     // Create the SVG elements
     const link = svg
@@ -223,7 +208,7 @@ export function CharacterGraph({ data }: CharacterGraphProps): JSX.Element {
     function dragstarted(
       event: D3DragEvent<SVGGElement, NodeData, unknown>,
     ): void {
-      if (!event.active) simulation.alphaTarget(0.3).restart();
+      if (!event.active) simulation.alphaTarget(0.2).restart();
       const d = event.subject as NodeData;
       d.fx = d.x;
       d.fy = d.y;
@@ -235,7 +220,7 @@ export function CharacterGraph({ data }: CharacterGraphProps): JSX.Element {
       d.fx = Math.max(50, Math.min(width - 50, event.x));
       d.fy = Math.max(50, Math.min(height - 50, event.y));
 
-      simulation.alpha(0.2).restart(); // Increased alpha for faster response
+      simulation.alpha(0.06).restart();
     }
 
     function dragended(
@@ -246,7 +231,7 @@ export function CharacterGraph({ data }: CharacterGraphProps): JSX.Element {
       d.fx = null;
       d.fy = null;
 
-      simulation.alpha(0.2).restart(); // Increased alpha for faster response
+      simulation.alpha(0.06).restart();
     }
 
     // Cleanup
@@ -256,10 +241,13 @@ export function CharacterGraph({ data }: CharacterGraphProps): JSX.Element {
   }, [data]);
 
   return (
-    <div className="w-full h-full flex items-center justify-center">
+    <div
+      ref={containerRef}
+      className="w-full h-full flex items-center justify-center"
+    >
       <svg
         ref={svgRef}
-        className=" w-full h-full border rounded-lg bg-background"
+        className="w-full h-full border rounded-xl bg-background"
       />
     </div>
   );
