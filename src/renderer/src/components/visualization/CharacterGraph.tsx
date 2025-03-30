@@ -7,6 +7,8 @@ import { type D3DragEvent } from "d3-drag";
 import { type Selection, type BaseType } from "d3-selection";
 import { fractalCharacterRelationshipsTable } from "@db/schema";
 import { charactersTable } from "@db/schema";
+import { useCharactersWithFractalRelationships } from "@renderer/hooks/character/useCharacters";
+import { Loader2 } from "lucide-react";
 
 interface CharacterData {
   characters: typeof charactersTable.$inferSelect;
@@ -14,7 +16,8 @@ interface CharacterData {
 }
 
 interface CharacterGraphProps {
-  data: CharacterData[];
+  onCharacterSelect: (characterId: number) => void;
+  selectedFractalId: number | null;
 }
 
 interface NodeData extends SimulationNodeDatum {
@@ -33,9 +36,14 @@ interface LinkData extends SimulationLinkDatum<NodeData> {
   type: string;
 }
 
-export function CharacterGraph({ data }: CharacterGraphProps): JSX.Element {
+export function CharacterGraph({
+  onCharacterSelect,
+  selectedFractalId,
+}: CharacterGraphProps): JSX.Element {
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const { data, isLoading } =
+    useCharactersWithFractalRelationships(selectedFractalId);
 
   useEffect(() => {
     if (!svgRef.current || !data || !containerRef.current) return;
@@ -187,6 +195,12 @@ export function CharacterGraph({ data }: CharacterGraphProps): JSX.Element {
       .attr("fill", "hsl(var(--foreground))")
       .attr("font-size", "12px");
 
+    // Add click handler to nodes
+    node.on("click", (event, d) => {
+      console.log({ d, event });
+      onCharacterSelect(d.id);
+    });
+
     // Update positions on each tick
     simulation.on("tick", () => {
       // Keep nodes within bounds
@@ -238,17 +252,50 @@ export function CharacterGraph({ data }: CharacterGraphProps): JSX.Element {
     return () => {
       simulation.stop();
     };
-  }, [data]);
+  }, [data, onCharacterSelect, selectedFractalId]);
 
   return (
     <div
       ref={containerRef}
       className="w-full h-full flex items-center justify-center"
     >
-      <svg
-        ref={svgRef}
-        className="w-full h-full border rounded-xl bg-background"
-      />
+      {isLoading ? (
+        <div className="w-full h-full flex items-center justify-center">
+          <Loader2 className="w-4 h-4 animate-spin" />
+        </div>
+      ) : null}
+
+      {!selectedFractalId ? (
+        <div className="w-full h-full flex flex-col items-center justify-center border rounded-xl">
+          <div className="flex flex-col items-center justify-center border rounded-xl -mt-24 p-4 bg-accent max-w-md">
+            <h2 className="text-lg font-medium mb-2">Character Graph</h2>
+            <p className="text-sm text-muted-foreground">
+              Select a fractal to view the character graph. Fractals are
+              collections of characters and their relationships.
+            </p>
+            <br />
+            <p className="text-sm text-muted-foreground">
+              You can assign fractals to chapters and/or folders to help you
+              organize your characters and their changing relationships.
+            </p>
+          </div>
+        </div>
+      ) : null}
+
+      {data && data.length === 0 ? (
+        <div className="w-full h-full flex items-center justify-center border rounded-xl">
+          <p className="text-sm text-muted-foreground">
+            No characters or relationships found for the selected fractal.
+          </p>
+        </div>
+      ) : null}
+
+      {data && data.length > 0 && selectedFractalId && (
+        <svg
+          ref={svgRef}
+          className="w-full h-full border rounded-xl bg-background"
+        />
+      )}
     </div>
   );
 }

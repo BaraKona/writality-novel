@@ -150,15 +150,7 @@ function RouteComponent(): JSX.Element {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 container">
         {characters?.map((character) => (
-          <CharacterCard
-            key={character.id}
-            id={character.id}
-            name={character.name}
-            sex={character.sex}
-            age={character.age}
-            description={character.description}
-            traits={character.traits}
-          />
+          <CharacterCard key={character.id} character={character} />
         ))}
       </div>
     </div>

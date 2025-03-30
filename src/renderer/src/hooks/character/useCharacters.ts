@@ -35,7 +35,7 @@ export const useCharacters = (): UseQueryResult<
 };
 
 export const useCharactersWithFractalRelationships = (
-  fractal_id: number,
+  fractal_id: number | null,
 ): UseQueryResult<
   {
     characters: typeof charactersTable.$inferSelect & {
@@ -48,10 +48,22 @@ export const useCharactersWithFractalRelationships = (
   const currentProjectId = useAtomValue(currentProjectIdAtom);
 
   return useQuery({
-    queryKey: ["charactersWithFractalRelationships", currentProjectId],
+    queryKey: [
+      "charactersWithFractalRelationships",
+      currentProjectId,
+      fractal_id,
+    ],
     queryFn: async () => {
+      if (!fractal_id) {
+        return [];
+      }
+
       const result = await database
-        .select()
+        .select({
+          characters: charactersTable,
+          fractal_character_relationships: fractalCharacterRelationshipsTable,
+          character_id: charactersTable.id,
+        })
         .from(charactersTable)
         .leftJoin(
           fractalCharacterRelationshipsTable,

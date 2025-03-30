@@ -45,6 +45,8 @@
   --color-accent: hsl(var(--accent));
   --color-accent-foreground: hsl(var(--accent-foreground));
 
+  --color-tertiary: hsl(var(--tertiary));
+
   --color-popover: hsl(var(--popover));
   --color-popover-foreground: hsl(var(--popover-foreground));
 
@@ -224,6 +226,8 @@
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
+
+    --tertiary: 73 15% 90%;
 
     --border: 30 10% 87%;
     --input: 30 10% 90%;
