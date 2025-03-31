@@ -254,6 +254,25 @@ export function CharacterGraph({
     };
   }, [data, onCharacterSelect, selectedFractalId]);
 
+  if (!selectedFractalId) {
+    return (
+      <div className="w-full h-full flex flex-col items-center justify-center border rounded-xl">
+        <div className="flex flex-col items-center justify-center border rounded-xl -mt-24 p-4 bg-accent max-w-md">
+          <h2 className="text-lg font-medium mb-2">Character Graph</h2>
+          <p className="text-sm text-muted-foreground">
+            Select a fractal to view the character graph. Fractals are
+            collections of characters and their relationships.
+          </p>
+          <br />
+          <p className="text-sm text-muted-foreground">
+            You can assign fractals to chapters and/or folders to help you
+            organize your characters and their changing relationships.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div
       ref={containerRef}
@@ -262,23 +281,6 @@ export function CharacterGraph({
       {isLoading ? (
         <div className="w-full h-full flex items-center justify-center">
           <Loader2 className="w-4 h-4 animate-spin" />
-        </div>
-      ) : null}
-
-      {!selectedFractalId ? (
-        <div className="w-full h-full flex flex-col items-center justify-center border rounded-xl">
-          <div className="flex flex-col items-center justify-center border rounded-xl -mt-24 p-4 bg-accent max-w-md">
-            <h2 className="text-lg font-medium mb-2">Character Graph</h2>
-            <p className="text-sm text-muted-foreground">
-              Select a fractal to view the character graph. Fractals are
-              collections of characters and their relationships.
-            </p>
-            <br />
-            <p className="text-sm text-muted-foreground">
-              You can assign fractals to chapters and/or folders to help you
-              organize your characters and their changing relationships.
-            </p>
-          </div>
         </div>
       ) : null}
 
@@ -293,7 +295,7 @@ export function CharacterGraph({
       {data && data.length > 0 && selectedFractalId && (
         <svg
           ref={svgRef}
-          className="w-full h-full border rounded-xl bg-background"
+          className="w-full h-full border rounded-xl bg-background "
         />
       )}
     </div>
