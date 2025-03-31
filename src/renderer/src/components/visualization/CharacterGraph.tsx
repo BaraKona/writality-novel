@@ -1,19 +1,12 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback, memo } from "react";
 import * as d3 from "d3-force";
 import * as d3Selection from "d3-selection";
 import * as d3Drag from "d3-drag";
 import { type SimulationNodeDatum, type SimulationLinkDatum } from "d3-force";
 import { type D3DragEvent } from "d3-drag";
 import { type Selection, type BaseType } from "d3-selection";
-import { fractalCharacterRelationshipsTable } from "@db/schema";
-import { charactersTable } from "@db/schema";
 import { useCharactersWithFractalRelationships } from "@renderer/hooks/character/useCharacters";
 import { Loader2 } from "lucide-react";
-
-interface CharacterData {
-  characters: typeof charactersTable.$inferSelect;
-  fractal_character_relationships: typeof fractalCharacterRelationshipsTable.$inferSelect;
-}
 
 interface CharacterGraphProps {
   onCharacterSelect: (characterId: number) => void;
@@ -36,16 +29,24 @@ interface LinkData extends SimulationLinkDatum<NodeData> {
   type: string;
 }
 
-export function CharacterGraph({
+function CharacterGraph({
   onCharacterSelect,
   selectedFractalId,
 }: CharacterGraphProps): JSX.Element {
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const simulationRef = useRef<d3.Simulation<NodeData, LinkData> | null>(null);
   const { data, isLoading } =
     useCharactersWithFractalRelationships(selectedFractalId);
 
-  useEffect(() => {
+  const handleCharacterSelect = useCallback(
+    (characterId: number) => {
+      onCharacterSelect(characterId);
+    },
+    [onCharacterSelect],
+  );
+
+  const setupVisualization = useCallback(() => {
     if (!svgRef.current || !data || !containerRef.current) return;
 
     // Get container dimensions
@@ -78,7 +79,6 @@ export function CharacterGraph({
       if (
         !nodeMap.has(item.fractal_character_relationships.object_character_id)
       ) {
-        // Find the object character in the data
         const objectCharacter = data.find(
           (d) =>
             d.characters.id ===
@@ -101,25 +101,37 @@ export function CharacterGraph({
     const nodes = Array.from(nodeMap.values());
 
     // Create links for valid relationships
-    const links: LinkData[] = data
-      .filter((item) => {
-        const sourceNode = nodeMap.get(item.characters.id);
-        const targetNode = nodeMap.get(
-          item.fractal_character_relationships.object_character_id,
-        );
-        return sourceNode && targetNode;
-      })
-      .map((item) => {
-        const sourceNode = nodeMap.get(item.characters.id)!;
-        const targetNode = nodeMap.get(
-          item.fractal_character_relationships.object_character_id,
-        )!;
-        return {
+    const links: LinkData[] = data.flatMap((item) => {
+      const links: LinkData[] = [];
+
+      // Case 1: Current character is the subject
+      const sourceNode = nodeMap.get(item.characters.id);
+      const targetNode = nodeMap.get(
+        item.fractal_character_relationships.object_character_id,
+      );
+      if (sourceNode && targetNode) {
+        links.push({
           source: sourceNode,
           target: targetNode,
           type: item.fractal_character_relationships.relationship_type,
-        };
-      });
+        });
+      }
+
+      // Case 2: Current character is the object
+      const objectSourceNode = nodeMap.get(
+        item.fractal_character_relationships.subject_character_id,
+      );
+      const objectTargetNode = nodeMap.get(item.characters.id);
+      if (objectSourceNode && objectTargetNode) {
+        links.push({
+          source: objectSourceNode,
+          target: objectTargetNode,
+          type: item.fractal_character_relationships.relationship_type,
+        });
+      }
+
+      return links;
+    });
 
     // Create the simulation
     const simulation = d3
@@ -137,6 +149,9 @@ export function CharacterGraph({
       .force("collision", d3.forceCollide().radius(40))
       .force("x", d3.forceX(width / 2).strength(0.3))
       .force("y", d3.forceY(height / 2).strength(0.3));
+
+    // Store simulation reference
+    simulationRef.current = simulation;
 
     // Create the SVG elements
     const link = svg
@@ -197,8 +212,7 @@ export function CharacterGraph({
 
     // Add click handler to nodes
     node.on("click", (event, d) => {
-      console.log({ d, event });
-      onCharacterSelect(d.id);
+      handleCharacterSelect(d.id);
     });
 
     // Update positions on each tick
@@ -247,12 +261,18 @@ export function CharacterGraph({
 
       simulation.alpha(0.06).restart();
     }
+  }, [data, handleCharacterSelect]);
+
+  useEffect(() => {
+    setupVisualization();
 
     // Cleanup
     return () => {
-      simulation.stop();
+      if (simulationRef.current) {
+        simulationRef.current.stop();
+      }
     };
-  }, [data, onCharacterSelect, selectedFractalId]);
+  }, [setupVisualization]);
 
   if (!selectedFractalId) {
     return (
@@ -301,3 +321,5 @@ export function CharacterGraph({
     </div>
   );
 }
+
+export default memo(CharacterGraph);
