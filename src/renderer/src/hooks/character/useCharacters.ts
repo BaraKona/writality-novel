@@ -67,17 +67,15 @@ export const useCharactersWithFractalRelationships = (
         .from(charactersTable)
         .leftJoin(
           fractalCharacterRelationshipsTable,
-          eq(
-            charactersTable.id,
-            fractalCharacterRelationshipsTable.subject_character_id,
-          ),
-        )
-        .where(
           and(
-            eq(charactersTable.project_id, currentProjectId!),
+            eq(
+              charactersTable.id,
+              fractalCharacterRelationshipsTable.subject_character_id,
+            ),
             eq(fractalCharacterRelationshipsTable.fractal_id, fractal_id),
           ),
-        );
+        )
+        .where(eq(charactersTable.project_id, currentProjectId!));
 
       return result.map((item) => ({
         characters: {

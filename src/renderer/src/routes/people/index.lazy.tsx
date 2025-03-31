@@ -1,16 +1,14 @@
 import { createLazyFileRoute } from "@tanstack/react-router";
 import { BreadcrumbNav } from "@renderer/components/navigation/BreadcrumbNav";
-import CharacterGraph from "@renderer/components/visualization/CharacterGraph";
+import { CharacterGraph } from "@renderer/components/visualization/CharacterGraph";
 import "@blocknote/core/fonts/inter.css";
 import "@blocknote/mantine/style.css";
 
 import { Open, type TOpen } from "../__root";
 import clsx from "clsx";
 import { SidebarExtender } from "@renderer/components/sidebar/SidebarExtender";
-import "@blocknote/core/fonts/inter.css";
-import "@blocknote/mantine/style.css";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useCallback } from "react";
 import { atomWithStorage } from "jotai/utils";
 import { useAtom } from "jotai";
 import { Button } from "@renderer/components/ui/button";
@@ -34,6 +32,23 @@ const peopleSidebarStateAtom = atomWithStorage<TOpen>(
   Open.Open,
 );
 
+// const CharacterGraphSection = memo(function CharacterGraphSection({
+//   selectedFractalId,
+//   onCharacterSelect,
+// }: {
+//   selectedFractalId: number | null;
+//   onCharacterSelect: (characterId: number) => void;
+// }): JSX.Element {
+//   return (
+//     <div className="h-full overflow-y-auto p-2">
+//       <CharacterGraph
+//         onCharacterSelect={onCharacterSelect}
+//         selectedFractalId={selectedFractalId}
+//       />
+//     </div>
+//   );
+// });
+
 function RouteComponent(): JSX.Element {
   const [selectedFractalId, setSelectedFractalId] = useState<number | null>(
     null,
@@ -49,9 +64,9 @@ function RouteComponent(): JSX.Element {
 
   const { data: fractals } = useFractals();
 
-  const onCharacterSelect = (characterId: number): void => {
+  const onCharacterSelect = useCallback((characterId: number): void => {
     setSelectedCharacterId(characterId);
-  };
+  }, []);
 
   return (
     <div className="flex grow overflow-y-auto relative">
@@ -126,7 +141,6 @@ function RouteComponent(): JSX.Element {
                       key={fractal.id}
                       value={fractal.id.toString()}
                       onSelect={() => setSelectedFractalId(fractal.id)}
-                      // onChange={() => setSelectedFractalId(fractal.id)}
                     >
                       {fractal.name}
                     </SelectItem>
@@ -177,8 +191,8 @@ function RouteComponent(): JSX.Element {
         />
         <div className="h-full overflow-y-auto p-2">
           <CharacterGraph
-            onCharacterSelect={onCharacterSelect}
             selectedFractalId={selectedFractalId}
+            onCharacterSelect={onCharacterSelect}
           />
         </div>
       </div>

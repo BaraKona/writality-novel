@@ -17,6 +17,7 @@ interface NodeData extends SimulationNodeDatum {
   id: number;
   name: string;
   type: string;
+  age?: number;
   x?: number;
   y?: number;
   fx?: number | null;
@@ -29,7 +30,7 @@ interface LinkData extends SimulationLinkDatum<NodeData> {
   type: string;
 }
 
-function CharacterGraph({
+export const CharacterGraph = memo(function CharacterGraph({
   onCharacterSelect,
   selectedFractalId,
 }: CharacterGraphProps): JSX.Element {
@@ -71,27 +72,29 @@ function CharacterGraph({
         nodeMap.set(item.characters.id, {
           id: item.characters.id,
           name: item.characters.name,
-          type: item.fractal_character_relationships.relationship_type,
+          type: item.fractal_character_relationships?.relationship_type,
+          age: item.characters.age ?? undefined,
         });
       }
 
       // Add object character node
       if (
-        !nodeMap.has(item.fractal_character_relationships.object_character_id)
+        !nodeMap.has(item.fractal_character_relationships?.object_character_id)
       ) {
         const objectCharacter = data.find(
           (d) =>
             d.characters.id ===
-            item.fractal_character_relationships.object_character_id,
+            item.fractal_character_relationships?.object_character_id,
         );
         if (objectCharacter) {
           nodeMap.set(
-            item.fractal_character_relationships.object_character_id,
+            item.fractal_character_relationships?.object_character_id,
             {
               id: objectCharacter.characters.id,
               name: objectCharacter.characters.name,
               type: objectCharacter.fractal_character_relationships
-                .relationship_type,
+                ?.relationship_type,
+              age: objectCharacter.characters.age ?? undefined,
             },
           );
         }
@@ -107,26 +110,26 @@ function CharacterGraph({
       // Case 1: Current character is the subject
       const sourceNode = nodeMap.get(item.characters.id);
       const targetNode = nodeMap.get(
-        item.fractal_character_relationships.object_character_id,
+        item.fractal_character_relationships?.object_character_id,
       );
       if (sourceNode && targetNode) {
         links.push({
           source: sourceNode,
           target: targetNode,
-          type: item.fractal_character_relationships.relationship_type,
+          type: item.fractal_character_relationships?.relationship_type,
         });
       }
 
       // Case 2: Current character is the object
       const objectSourceNode = nodeMap.get(
-        item.fractal_character_relationships.subject_character_id,
+        item.fractal_character_relationships?.subject_character_id,
       );
       const objectTargetNode = nodeMap.get(item.characters.id);
       if (objectSourceNode && objectTargetNode) {
         links.push({
           source: objectSourceNode,
           target: objectTargetNode,
-          type: item.fractal_character_relationships.relationship_type,
+          type: item.fractal_character_relationships?.relationship_type,
         });
       }
 
@@ -186,7 +189,13 @@ function CharacterGraph({
     // Add circles to nodes
     node
       .append("circle")
-      .attr("r", 10)
+      .attr("r", (d) => {
+        // Default size is 10, scale up based on age
+        const baseSize = 10;
+        const age = d.age ?? 0;
+        // Scale factor: 1 + (age/100) to make it reasonable
+        return baseSize * (1 + age / 100);
+      })
       .attr("fill", (d) => {
         switch (d.type) {
           case "friend":
@@ -320,6 +329,4 @@ function CharacterGraph({
       )}
     </div>
   );
-}
-
-export default memo(CharacterGraph);
+});
