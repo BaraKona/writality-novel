@@ -148,7 +148,7 @@ function RouteComponent(): JSX.Element {
         }
       />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 container">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 container p-2">
         {characters?.map((character) => (
           <CharacterCard key={character.id} character={character} />
         ))}

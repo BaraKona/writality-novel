@@ -5,6 +5,7 @@ import { ChapterSidebarState } from "@renderer/routes/chapters/$chapterId";
 import { chaptersTable } from "@db/schema";
 import { FileVersions } from "./sidebar/FileVersions";
 import { Value } from "@udecode/plate";
+import { FileCharacters } from "./sidebar/characters/FileCharacters";
 
 type FileSidebarListItemProps = {
   name: string;
@@ -67,6 +68,9 @@ export const FileSidebar: FC<{
         {sidebarState.category === "notes" && <FileNotes file={file} />}
         {sidebarState.category === "versions" && (
           <FileVersions file={file} content={content} />
+        )}
+        {sidebarState.category === "characters" && (
+          <FileCharacters file={file} />
         )}
       </div>
     </div>
