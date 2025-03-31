@@ -30,7 +30,6 @@ const CharactersIndexLazyImport = createFileRoute('/characters/')()
 const WorldNotesLazyImport = createFileRoute('/world/notes')()
 const WorldMapLazyImport = createFileRoute('/world/map')()
 const WorldHistoryLazyImport = createFileRoute('/world/history')()
-const WorldAnalyticsLazyImport = createFileRoute('/world/analytics')()
 const PeopleCharactersLazyImport = createFileRoute('/people/characters')()
 const GalleryWorldLazyImport = createFileRoute('/gallery/world')()
 const GalleryPeopleLazyImport = createFileRoute('/gallery/people')()
@@ -108,14 +107,6 @@ const WorldHistoryLazyRoute = WorldHistoryLazyImport.update({
   path: '/world/history',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/world/history.lazy').then((d) => d.Route))
-
-const WorldAnalyticsLazyRoute = WorldAnalyticsLazyImport.update({
-  id: '/world/analytics',
-  path: '/world/analytics',
-  getParentRoute: () => rootRoute,
-} as any).lazy(() =>
-  import('./routes/world/analytics.lazy').then((d) => d.Route),
-)
 
 const PeopleCharactersLazyRoute = PeopleCharactersLazyImport.update({
   id: '/people/characters',
@@ -261,13 +252,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PeopleCharactersLazyImport
       parentRoute: typeof rootRoute
     }
-    '/world/analytics': {
-      id: '/world/analytics'
-      path: '/world/analytics'
-      fullPath: '/world/analytics'
-      preLoaderRoute: typeof WorldAnalyticsLazyImport
-      parentRoute: typeof rootRoute
-    }
     '/world/history': {
       id: '/world/history'
       path: '/world/history'
@@ -335,7 +319,6 @@ export interface FileRoutesByFullPath {
   '/gallery/people': typeof GalleryPeopleLazyRoute
   '/gallery/world': typeof GalleryWorldLazyRoute
   '/people/characters': typeof PeopleCharactersLazyRoute
-  '/world/analytics': typeof WorldAnalyticsLazyRoute
   '/world/history': typeof WorldHistoryLazyRoute
   '/world/map': typeof WorldMapLazyRoute
   '/world/notes': typeof WorldNotesLazyRoute
@@ -358,7 +341,6 @@ export interface FileRoutesByTo {
   '/gallery/people': typeof GalleryPeopleLazyRoute
   '/gallery/world': typeof GalleryWorldLazyRoute
   '/people/characters': typeof PeopleCharactersLazyRoute
-  '/world/analytics': typeof WorldAnalyticsLazyRoute
   '/world/history': typeof WorldHistoryLazyRoute
   '/world/map': typeof WorldMapLazyRoute
   '/world/notes': typeof WorldNotesLazyRoute
@@ -382,7 +364,6 @@ export interface FileRoutesById {
   '/gallery/people': typeof GalleryPeopleLazyRoute
   '/gallery/world': typeof GalleryWorldLazyRoute
   '/people/characters': typeof PeopleCharactersLazyRoute
-  '/world/analytics': typeof WorldAnalyticsLazyRoute
   '/world/history': typeof WorldHistoryLazyRoute
   '/world/map': typeof WorldMapLazyRoute
   '/world/notes': typeof WorldNotesLazyRoute
@@ -407,7 +388,6 @@ export interface FileRouteTypes {
     | '/gallery/people'
     | '/gallery/world'
     | '/people/characters'
-    | '/world/analytics'
     | '/world/history'
     | '/world/map'
     | '/world/notes'
@@ -429,7 +409,6 @@ export interface FileRouteTypes {
     | '/gallery/people'
     | '/gallery/world'
     | '/people/characters'
-    | '/world/analytics'
     | '/world/history'
     | '/world/map'
     | '/world/notes'
@@ -451,7 +430,6 @@ export interface FileRouteTypes {
     | '/gallery/people'
     | '/gallery/world'
     | '/people/characters'
-    | '/world/analytics'
     | '/world/history'
     | '/world/map'
     | '/world/notes'
@@ -475,7 +453,6 @@ export interface RootRouteChildren {
   GalleryPeopleLazyRoute: typeof GalleryPeopleLazyRoute
   GalleryWorldLazyRoute: typeof GalleryWorldLazyRoute
   PeopleCharactersLazyRoute: typeof PeopleCharactersLazyRoute
-  WorldAnalyticsLazyRoute: typeof WorldAnalyticsLazyRoute
   WorldHistoryLazyRoute: typeof WorldHistoryLazyRoute
   WorldMapLazyRoute: typeof WorldMapLazyRoute
   WorldNotesLazyRoute: typeof WorldNotesLazyRoute
@@ -498,7 +475,6 @@ const rootRouteChildren: RootRouteChildren = {
   GalleryPeopleLazyRoute: GalleryPeopleLazyRoute,
   GalleryWorldLazyRoute: GalleryWorldLazyRoute,
   PeopleCharactersLazyRoute: PeopleCharactersLazyRoute,
-  WorldAnalyticsLazyRoute: WorldAnalyticsLazyRoute,
   WorldHistoryLazyRoute: WorldHistoryLazyRoute,
   WorldMapLazyRoute: WorldMapLazyRoute,
   WorldNotesLazyRoute: WorldNotesLazyRoute,
@@ -530,7 +506,6 @@ export const routeTree = rootRoute
         "/gallery/people",
         "/gallery/world",
         "/people/characters",
-        "/world/analytics",
         "/world/history",
         "/world/map",
         "/world/notes",
@@ -575,9 +550,6 @@ export const routeTree = rootRoute
     },
     "/people/characters": {
       "filePath": "people/characters.lazy.tsx"
-    },
-    "/world/analytics": {
-      "filePath": "world/analytics.lazy.tsx"
     },
     "/world/history": {
       "filePath": "world/history.lazy.tsx"

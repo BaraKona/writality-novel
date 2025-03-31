@@ -136,15 +136,21 @@ function RouteComponent(): JSX.Element {
                   <SelectValue placeholder="Select a fractal" />
                 </SelectTrigger>
                 <SelectContent>
-                  {fractals?.map((fractal) => (
-                    <SelectItem
-                      key={fractal.id}
-                      value={fractal.id.toString()}
-                      onSelect={() => setSelectedFractalId(fractal.id)}
-                    >
-                      {fractal.name}
-                    </SelectItem>
-                  ))}
+                  {fractals?.length === 0 ? (
+                    <div className="py-2 text-sm text-muted-foreground text-center">
+                      No fractals available
+                    </div>
+                  ) : (
+                    fractals?.map((fractal) => (
+                      <SelectItem
+                        key={fractal.id}
+                        value={fractal.id.toString()}
+                        onSelect={() => setSelectedFractalId(fractal.id)}
+                      >
+                        {fractal.name}
+                      </SelectItem>
+                    ))
+                  )}
                 </SelectContent>
               </Select>
               <Button

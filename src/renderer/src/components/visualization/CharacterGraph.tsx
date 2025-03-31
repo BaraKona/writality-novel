@@ -164,7 +164,36 @@ export const CharacterGraph = memo(function CharacterGraph({
       .join("line")
       .attr("stroke", "#999")
       .attr("stroke-opacity", 0.6)
-      .attr("stroke-width", 1);
+      .attr("stroke-width", 1)
+      .attr("data-type", (d: LinkData) => d.type)
+      .on("mouseover", function (_event: MouseEvent, d: LinkData) {
+        // Highlight all edges with the same relationship type
+        d3Selection
+          .selectAll<SVGLineElement, LinkData>("line")
+          .filter((linkData) => linkData.type === d.type)
+          .attr("stroke", (linkData) => {
+            switch (linkData.type) {
+              case "friend":
+                return "hsl(var(--accent))";
+              case "family":
+                return "hsl(var(--accent-foreground))";
+              case "enemy":
+                return "hsl(var(--destructive))";
+              default:
+                return "hsl(var(--muted-foreground))";
+            }
+          })
+          .attr("stroke-opacity", 1)
+          .attr("stroke-width", 2);
+      })
+      .on("mouseout", function () {
+        // Reset all edges to default style
+        d3Selection
+          .selectAll("line")
+          .attr("stroke", "#999")
+          .attr("stroke-opacity", 0.6)
+          .attr("stroke-width", 1);
+      });
 
     const node = svg.append("g").selectAll("g").data(nodes).join("g");
 
@@ -189,12 +218,16 @@ export const CharacterGraph = memo(function CharacterGraph({
     // Add circles to nodes
     node
       .append("circle")
+      .attr("stroke", "hsl(var(--muted-foreground))")
+      .attr("stroke-width", 1)
       .attr("r", (d) => {
         // Default size is 10, scale up based on age
         const baseSize = 10;
         const age = d.age ?? 0;
         // Scale factor: 1 + (age/100) to make it reasonable
-        return baseSize * (1 + age / 100);
+        // Add a maximum size of 40 to prevent extremely large nodes
+        const calculatedSize = baseSize * (1 + age / 100);
+        return Math.min(calculatedSize, 80);
       })
       .attr("fill", (d) => {
         switch (d.type) {
@@ -289,7 +322,7 @@ export const CharacterGraph = memo(function CharacterGraph({
         <div className="flex flex-col items-center justify-center border rounded-xl -mt-24 p-4 bg-accent max-w-md">
           <h2 className="text-lg font-medium mb-2">Character Graph</h2>
           <p className="text-sm text-muted-foreground">
-            Select a fractal to view the character graph. Fractals are
+            Select a fractal above to view the character graph. Fractals are
             collections of characters and their relationships.
           </p>
           <br />

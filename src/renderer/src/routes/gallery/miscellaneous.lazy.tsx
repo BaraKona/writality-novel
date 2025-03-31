@@ -1,6 +1,7 @@
 import { createLazyFileRoute } from "@tanstack/react-router";
 import { BreadcrumbNav } from "@renderer/components/navigation/BreadcrumbNav";
 import { useBreadcrumbNav } from "@renderer/hooks/useBreadcrumbNav";
+import { ComingSoon } from "@renderer/components/ComingSoon";
 
 export const Route = createLazyFileRoute("/gallery/miscellaneous")({
   component: RouteComponent,
@@ -9,5 +10,10 @@ export const Route = createLazyFileRoute("/gallery/miscellaneous")({
 function RouteComponent(): JSX.Element {
   const { items, dropdownItems } = useBreadcrumbNav();
 
-  return <BreadcrumbNav items={items} dropdownItems={dropdownItems} />;
+  return (
+    <div className="flex flex-col gap-2 h-full">
+      <BreadcrumbNav items={items} dropdownItems={dropdownItems} />
+      <ComingSoon />
+    </div>
+  );
 }

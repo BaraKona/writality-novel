@@ -69,10 +69,6 @@ export const data = (): {
             title: "Characters",
             url: "/people/characters",
           },
-          {
-            title: "Cultures",
-            url: "/people/cultures",
-          },
         ],
       },
     ],

@@ -1,9 +1,10 @@
-import { createLazyFileRoute } from '@tanstack/react-router'
+import { createLazyFileRoute } from "@tanstack/react-router";
+import { ComingSoon } from "@renderer/components/ComingSoon";
 
-export const Route = createLazyFileRoute('/world/map')({
+export const Route = createLazyFileRoute("/world/map")({
   component: RouteComponent,
-})
+});
 
-function RouteComponent() {
-  return <div>Hello "/world/map/lazy"!</div>
+function RouteComponent(): JSX.Element {
+  return <ComingSoon />;
 }
