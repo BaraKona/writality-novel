@@ -7,16 +7,24 @@ import {
 } from "../../../../db/schema";
 import { eq, or, and } from "drizzle-orm";
 
+type SelectedCharacter = {
+  id: number;
+  age: number | null;
+  sex: string | null;
+  name: string;
+};
+
+type RelationshipGroup = {
+  fractal: typeof fractalsTable.$inferSelect;
+  relationships: {
+    relationship: typeof fractalCharacterRelationshipsTable.$inferSelect;
+    relatedCharacter: SelectedCharacter;
+  }[];
+};
+
 export const useCharacterRelationships = (
   characterId: number,
-): UseQueryResult<
-  {
-    relationship: typeof fractalCharacterRelationshipsTable.$inferSelect;
-    relatedCharacter: typeof charactersTable.$inferSelect;
-    fractal: typeof fractalsTable.$inferSelect;
-  }[],
-  Error
-> => {
+): UseQueryResult<RelationshipGroup[], Error> => {
   return useQuery({
     queryKey: ["character", characterId, "relationships"],
     queryFn: async () => {
@@ -36,24 +44,26 @@ export const useCharacterRelationships = (
         .innerJoin(
           charactersTable,
           or(
+            // Case 1: Character is the subject
             and(
-              eq(
-                fractalCharacterRelationshipsTable.object_character_id,
-                charactersTable.id,
-              ),
               eq(
                 fractalCharacterRelationshipsTable.subject_character_id,
                 characterId,
+              ),
+              eq(
+                fractalCharacterRelationshipsTable.object_character_id,
+                charactersTable.id,
               ),
             ),
+            // Case 2: Character is the object
             and(
-              eq(
-                fractalCharacterRelationshipsTable.subject_character_id,
-                charactersTable.id,
-              ),
               eq(
                 fractalCharacterRelationshipsTable.object_character_id,
                 characterId,
+              ),
+              eq(
+                fractalCharacterRelationshipsTable.subject_character_id,
+                charactersTable.id,
               ),
             ),
           ),
@@ -63,7 +73,36 @@ export const useCharacterRelationships = (
           eq(fractalCharacterRelationshipsTable.fractal_id, fractalsTable.id),
         );
 
-      return relationships;
+      // Group relationships by fractal
+      const groupedRelationships = relationships.reduce<RelationshipGroup[]>(
+        (acc, curr) => {
+          const existingGroup = acc.find(
+            (group) => group.fractal.id === curr.fractal.id,
+          );
+
+          if (existingGroup) {
+            existingGroup.relationships.push({
+              relationship: curr.relationship,
+              relatedCharacter: curr.relatedCharacter,
+            });
+          } else {
+            acc.push({
+              fractal: curr.fractal,
+              relationships: [
+                {
+                  relationship: curr.relationship,
+                  relatedCharacter: curr.relatedCharacter,
+                },
+              ],
+            });
+          }
+
+          return acc;
+        },
+        [],
+      );
+
+      return groupedRelationships;
     },
     enabled: !!characterId,
   });
