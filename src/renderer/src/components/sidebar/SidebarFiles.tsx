@@ -94,6 +94,14 @@ export function SidebarFiles({
             >
               Create a file
             </Button>
+            <Button
+              className="w-full rounded-none"
+              size="md"
+              variant="ghost"
+              onClick={createFractal}
+            >
+              Create a fractal
+            </Button>
 
             <Button
               className="w-full rounded-none"

@@ -6,18 +6,16 @@ import path, { join } from "path";
 import { homedir } from "os";
 import { appDirectoryName } from "@shared/constants";
 
-const dbPath = join(`${homedir()}/${appDirectoryName}`, "writality-data.db");
-
-console.log({ dbPath });
+const dbPath = join(`${homedir()}/${appDirectoryName}`, "writality-data-0.db");
 
 const sqlite = new Database(dbPath);
 
 export const db = drizzle(sqlite, { schema });
 
-function toDrizzleResult(row: Record<string, any>);
-function toDrizzleResult(
-  rows: Record<string, any> | Array<Record<string, any>>,
-) {
+type DrizzleRow = Record<string, unknown>;
+type DrizzleResult = unknown[];
+
+function toDrizzleResult(rows: DrizzleRow | Array<DrizzleRow>): DrizzleResult {
   if (!rows) {
     return [];
   }
@@ -30,13 +28,20 @@ function toDrizzleResult(
   }
 }
 
-export const execute = async (e, sqlstr, params, method) => {
+type SqliteMethod = "all" | "get" | "run";
+
+export const execute = async (
+  _event: unknown,
+  sqlstr: string,
+  params: unknown[],
+  method: SqliteMethod,
+): Promise<DrizzleResult> => {
   const result = sqlite.prepare(sqlstr);
   const ret = result[method](...params);
-  return toDrizzleResult(ret);
+  return toDrizzleResult(ret as DrizzleRow | Array<DrizzleRow>);
 };
 
-export const runMigrate = async () => {
+export const runMigrate = async (): Promise<void> => {
   migrate(db, {
     migrationsFolder: path.join(__dirname, "../../drizzle"),
   });

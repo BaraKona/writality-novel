@@ -25,10 +25,16 @@ import {
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
 import { custom_emojis } from "@renderer/lib/custom_emoji";
+import { Value } from "@udecode/plate";
 
 export const Infobar: FC<{
-  chapter: typeof chaptersTable.$inferSelect;
-  updatedContent: string;
+  chapter: typeof chaptersTable.$inferSelect & {
+    emoji: {
+      src: string;
+      native: string;
+    };
+  };
+  updatedContent: Value;
   setSidebarState: (ChapterSidebarState) => void;
   sidebarState: ChapterSidebarState;
 }> = ({ chapter, updatedContent, setSidebarState, sidebarState }) => {
@@ -36,44 +42,6 @@ export const Infobar: FC<{
     <div className="flex h-[2.25rem] w-full flex-shrink-0 items-center border-b justify-between gap-2 overflow-x-auto px-2">
       <div className="flex items-center gap-0.5">
         <Breadcrumb className="flex w-fit shrink-0 items-center gap-1">
-          {/* {chapter.ancestors?.map((ancestor) => (
-            <BreadcrumbList
-              key={ancestor.id}
-              className="shrink-0 text-xs font-medium"
-            >
-              <Link
-                to={`/folders/$folderId`}
-                params={{ folderId: ancestor.id.toString() }}
-                disabled={ancestor.type === "project"}
-                className={`group ${ancestor.type === "project" ? "" : "hover:bg-accent"} shrink-0 rounded-md p-1 px-1.5 text-xs font-medium`}
-              >
-                <BreadcrumbItem className="flex max-w-48 shrink-0 gap-1">
-                  {ancestor.type === "project" ? (
-                    <BookTextIcon
-                      size={16}
-                      strokeWidth={1.5}
-                      className="shrink-0"
-                    />
-                  ) : (
-                    <FolderOpenIcon
-                      size={16}
-                      strokeWidth={1.5}
-                      className="shrink-0"
-                    />
-                  )}
-                  <span className="truncate">{ancestor.name}</span>
-                </BreadcrumbItem>
-              </Link>
-
-              <BreadcrumbSeparator>
-                <ChevronRight
-                  size={16}
-                  strokeWidth={1.5}
-                  className="shrink-0"
-                />
-              </BreadcrumbSeparator>
-            </BreadcrumbList>
-          ))} */}
           <BreadcrumbList className="shrink-0 text-xs font-medium">
             <BreadcrumbItem className="flex max-w-48 shrink-0 gap-1 pl-1 text-text z-10">
               <Popover>

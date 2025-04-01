@@ -171,7 +171,7 @@ export const getTextContentFromRichContent = (content: Value): string => {
       if (typeof node === "string") {
         return node;
       }
-      return getText(node);
+      return getText(node as unknown as { text?: string; children?: string[] });
     })
     .join(" ")
     .replace(/\s{2,}/g, " ")

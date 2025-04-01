@@ -67,7 +67,7 @@ export const getCurrentProjectId: () => Promise<ProjectDirectory> =
 
     const setup = await readJson(setupFile);
 
-    if (!setup.currentProjectId || !setup.setupComplete) {
+    if (!setup.setupComplete) {
       throw new Error("Setup is not complete");
     }
 

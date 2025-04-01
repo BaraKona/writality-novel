@@ -1,1 +1,0 @@
-ALTER TABLE `chapters` ADD `deleted_at` integer;

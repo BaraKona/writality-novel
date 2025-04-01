@@ -1,1 +1,0 @@
-ALTER TABLE `characters` ADD `project_id` integer NOT NULL REFERENCES projects(id);

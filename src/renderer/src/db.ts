@@ -23,5 +23,5 @@ export const serialize = (data: unknown): string => {
 export const deserialize = (data: string | null | unknown): unknown => {
   if (!data) return null;
 
-  return JSON.parse(data);
+  return JSON.parse(data as string);
 };

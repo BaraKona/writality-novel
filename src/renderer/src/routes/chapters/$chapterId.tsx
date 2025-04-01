@@ -18,6 +18,7 @@ import { useAtom } from "jotai";
 import { SidebarExtender } from "@renderer/components/sidebar/SidebarExtender";
 import { getWordCountFromRichContent } from "@renderer/lib/utils";
 import { Value } from "@udecode/plate";
+import { chaptersTable } from "@db/schema";
 
 export const Route = createFileRoute("/chapters/$chapterId")({
   component: RouteComponent,
@@ -31,7 +32,7 @@ export type ChapterSidebarState = {
 const chapterSidebarStateAtom = atomWithStorage<ChapterSidebarState>(
   "ChapterSidebarState",
   {
-    state: Open.Closed,
+    state: Open.Open,
     category: "note",
   },
 );
@@ -45,9 +46,9 @@ function RouteComponent(): JSX.Element {
   const { data: chapter } = useChapter(Number(chapterId));
   const editor = useCreateEditor({ value: chapter?.description });
 
-  const [content, setContent] = useState(chapter?.description);
+  const [content, setContent] = useState(chapter?.description as Value);
   const [lastSavedContent, setLastSavedContent] = useState(
-    chapter?.description,
+    chapter?.description as Value,
   );
   const { mutate: updateChapter } = useUpdateChapter(
     chapter?.parent || undefined,
@@ -130,8 +131,15 @@ function RouteComponent(): JSX.Element {
         )}
       >
         <Infobar
-          chapter={chapter!}
-          updatedContent={content || ""}
+          chapter={
+            chapter! as unknown as typeof chaptersTable.$inferSelect & {
+              emoji: {
+                src: string;
+                native: string;
+              };
+            }
+          }
+          updatedContent={content as Value}
           setSidebarState={setSidebarState}
           sidebarState={sidebarState}
         />

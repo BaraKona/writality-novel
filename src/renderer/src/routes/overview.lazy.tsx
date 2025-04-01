@@ -5,9 +5,10 @@ import { useCreateProject } from "@renderer/hooks/project/useCreateProject";
 import { useCurrentDir } from "@renderer/hooks/useProjectDir";
 import { greetingTime } from "@renderer/lib/utils";
 import { createLazyFileRoute } from "@tanstack/react-router";
-import { PlusIcon } from "lucide-react";
+import { LibraryBig, PlusIcon } from "lucide-react";
 import { currentProjectIdAtom } from "./__root";
 import { useSetAtom } from "jotai";
+import { projectsTable } from "@db/schema";
 
 export const Route = createLazyFileRoute("/overview")({
   component: RouteComponent,
@@ -78,28 +79,83 @@ function RouteComponent(): JSX.Element {
               {data?.name || "Stranger"}!
             </span>
           </h1>
-
-          {updatedProjects.map((category, index) => (
-            <div key={index}>
-              {category.projects && category.projects.length > 0 && (
-                <div className="relative mb-3 flex items-center gap-3">
-                  <h2 className="shrink-0 text-sm font-medium">
-                    {category.name}
-                  </h2>
-                  <div className="h-px w-full bg-border" />
+          <div className="flex flex-col gap-4">
+            {projects?.length > 0 ? (
+              updatedProjects.map((category, index) => (
+                <div key={index}>
+                  {category.projects && category.projects.length > 0 && (
+                    <div className="relative mb-3 flex items-center gap-3">
+                      <h2 className="shrink-0 text-sm font-medium">
+                        {category.name}
+                      </h2>
+                      <div className="h-px w-full bg-border" />
+                    </div>
+                  )}
+                  <div className="flex flex-col gap-0.5">
+                    {category.projects?.map((project, index) => (
+                      <ProjectCard
+                        project={project}
+                        onClick={() => setCurrentProjectId(project.id)}
+                        key={index}
+                      />
+                    ))}
+                  </div>
                 </div>
-              )}
-              <div className="flex flex-col gap-0.5">
-                {category.projects?.map((project, index) => (
-                  <ProjectCard
-                    project={project}
-                    onClick={() => setCurrentProjectId(project.id)}
-                    key={index}
-                  />
-                ))}
+              ))
+            ) : (
+              <div className="w-full h-full flex flex-col justify-center">
+                <div className="flex items-center gap-2 mb-3 px-2">
+                  <LibraryBig size={18} className="text-muted-foreground" />
+                  <h2 className="font-[200]">Your stories</h2>
+                </div>
+                <div className="grid grid-cols-2 justify-center border divide-x divide-x-border rounded-xl bg-accent/70 max-w-screen-xl w-full">
+                  <div className="flex flex-col gap-4 p-12">
+                    <LibraryBig size={50} className="text-muted-foreground" />
+                    {/* <h2 className="text-lg font-medium mb-2 text-left">
+                    No stories yet
+                  </h2> */}
+                    <p className="text-sm text-muted-foreground">
+                      Let&apos;s get you started with your first story.
+                    </p>
+                    <Button
+                      variant="outline"
+                      size="md"
+                      onClick={createProject}
+                      className="mr-auto"
+                    >
+                      Begin
+                    </Button>
+                  </div>
+                  <div className="flex flex-col p-12 opacity-50">
+                    <div className="relative mb-3 flex items-center gap-3">
+                      <h2 className="shrink-0 text-sm font-medium">
+                        This Week
+                      </h2>
+                      <div className="h-px w-full bg-border" />
+                    </div>
+                    <div className="flex flex-col">
+                      {Array.from({ length: 4 }).map((_, index) => (
+                        <ProjectCard
+                          project={
+                            {
+                              name: "Story " + index,
+                              updated_at: new Date(),
+                              id: null,
+                              description: "Description " + index,
+                              emoji: "🚀",
+                              created_at: new Date(),
+                            } as typeof projectsTable.$inferSelect
+                          }
+                          onClick={() => {}}
+                          key={index}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-          ))}
+            )}
+          </div>
         </div>
       </div>
     </section>

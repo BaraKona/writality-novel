@@ -5,7 +5,7 @@ import { Operations } from "./index.d";
 // Custom APIs for renderer
 const api: Operations = {
   // DB
-  execute: async (operation: string, ...args: any[]) =>
+  execute: async (operation: string, ...args: unknown[]) =>
     await ipcRenderer.invoke("db:execute", operation, ...args),
 
   getCurrentProjectId: async () =>
@@ -17,7 +17,7 @@ const api: Operations = {
   completeSetup: async (projectPath: string, name: string, username: string) =>
     await ipcRenderer.invoke("completeSetup", projectPath, name, username),
 
-  openSetupDialog: () => ipcRenderer.invoke("open_setup_dialog"),
+  openSetupDialog: () => ipcRenderer.invoke("openSetupDialog"),
 };
 
 // Use `contextBridge` APIs to expose Electron APIs to

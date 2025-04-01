@@ -1,38 +1,41 @@
-import { Button } from '@renderer/components/ui/button'
-import image from '../assets/images/campfire.jpeg'
-import icon from '../assets/writality-novel.svg'
-import { Separator } from '@renderer/components/ui/separator'
-import { Input } from '@renderer/components/ui/input'
-import { useState } from 'react'
-import { appDirectoryName } from '@shared/constants'
-import { ArrowRightIcon } from 'lucide-react'
+import { Button } from "@renderer/components/ui/button";
+import image from "../assets/images/banner-3.webp";
+import icon from "../assets/writality-novel.svg";
+import { Separator } from "@renderer/components/ui/separator";
+import { Input } from "@renderer/components/ui/input";
+import { useState } from "react";
+import { appDirectoryName } from "@shared/constants";
+import { ArrowRightIcon } from "lucide-react";
 
 export default function SetupApp(): JSX.Element {
-  const [name, setName] = useState<string>('New Project')
-  const [username, setUsername] = useState<string>('')
-  const [path, setPath] = useState<string>('')
-  const [mousePosition, setMousePosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 })
+  const [name, setName] = useState<string>("New Project");
+  const [username, setUsername] = useState<string>("");
+  const [path, setPath] = useState<string>("");
+  const [mousePosition, setMousePosition] = useState<{ x: number; y: number }>({
+    x: 0,
+    y: 0,
+  });
 
   function openDialog(): void {
     window.api.openSetupDialog().then((res) => {
-      setPath(res.filePaths[0])
-    })
+      setPath(res.filePaths[0]);
+    });
   }
 
   function handleMouseMove(event: React.MouseEvent): void {
-    const { clientX, clientY } = event
-    setMousePosition({ x: clientX, y: clientY })
+    const { clientX, clientY } = event;
+    setMousePosition({ x: clientX, y: clientY });
   }
 
   const imageStyle = {
-    objectPosition: `${mousePosition.x / 500 + 50}% ${(mousePosition.y / 100) * -1}%`
-  }
+    objectPosition: `${mousePosition.x / 500 + 50}% ${(mousePosition.y / 100) * -1}%`,
+  };
 
   async function handleCompleteSetup(): Promise<void> {
     try {
-      await window.api.completeSetup(path, name, username)
+      await window.api.completeSetup(path, name, username);
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
   }
 
@@ -42,7 +45,12 @@ export default function SetupApp(): JSX.Element {
       onMouseMove={handleMouseMove}
     >
       <nav className="absolute h-12 top-0 w-full z-10"></nav>
-      <img src={image} alt="setup" className="h-full w-full object-cover" style={imageStyle} />
+      <img
+        src={image}
+        alt="setup"
+        className="h-full w-full object-cover"
+        style={imageStyle}
+      />
       <section className="flex grow items-center justify-center py-12 max-w-lg mx-auto px-4">
         <div className="mx-auto grid w-[4 50px] gap-12">
           <div className="grid gap-2 text-center">
@@ -59,15 +67,20 @@ export default function SetupApp(): JSX.Element {
           <div className="grid gap-4">
             <div className="flex gap-8 leading-tight w-full items-center">
               <div className="grow">
-                <p className="font-semibold text-sm">Select where you want to store your files</p>
+                <p className="font-semibold text-sm">
+                  Select where you want to store your files
+                </p>
                 <p className="text-sm mb-4">
-                  We recommend choosing a folder that is synced with a cloud storage service like
-                  Dropbox, Google Drive, or iCloud.
+                  We recommend choosing a folder that is synced with a cloud
+                  storage service like Dropbox, Google Drive, or iCloud.
                 </p>
                 <p className="font-semibold text-sm flex gap-2">
                   Path:
-                  <span className={`font-normal ${path ? 'text-indigo-700' : 'text-gray-400'}`}>
-                    {`${path}/${appDirectoryName}/${name}` || 'No path selected'}
+                  <span
+                    className={`font-normal ${path ? "text-indigo-700" : "text-gray-400"}`}
+                  >
+                    {`${path}/${appDirectoryName}/${name}` ||
+                      "No path selected"}
                   </span>
                 </p>
                 <p className="font-semibold text-sm flex gap-2">
@@ -95,7 +108,7 @@ export default function SetupApp(): JSX.Element {
                 Choose Folder
               </Button>
             </div>
-            <div className='flex gap-2'>
+            <div className="flex gap-2">
               <Input
                 id="name"
                 type="text"
@@ -108,7 +121,9 @@ export default function SetupApp(): JSX.Element {
             <Separator />
             <div className="flex gap-8 leading-tight w-full items-center">
               <div className="grow">
-                <p className="font-semibold text-sm">Already have an existing project?</p>
+                <p className="font-semibold text-sm">
+                  Already have an existing project?
+                </p>
                 <p className=" text-sm mb-4">
                   Restore your projects from a backup or existing folder.
                 </p>
@@ -121,15 +136,25 @@ export default function SetupApp(): JSX.Element {
           <div className="mt-12 flex flex-col">
             <Button
               className="ml-auto flex gap-2 items-center"
-              disabled={!path || !name || name.length < 1 || !username || username.length < 1}
+              disabled={
+                !path ||
+                !name ||
+                name.length < 1 ||
+                !username ||
+                username.length < 1
+              }
               onClick={handleCompleteSetup}
             >
               Complete setup
-              <ArrowRightIcon size={16} strokeWidth={1.5} className='stroke-background'/>
+              <ArrowRightIcon
+                size={16}
+                strokeWidth={1.5}
+                className="stroke-background"
+              />
             </Button>
           </div>
         </div>
       </section>
     </div>
-  )
+  );
 }

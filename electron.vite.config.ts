@@ -1,7 +1,9 @@
 import { resolve } from "path";
 import { defineConfig, externalizeDepsPlugin } from "electron-vite";
 import react from "@vitejs/plugin-react";
+// @ts-expect-error - This is a bug in the plugin
 import { TanStackRouterVite } from "@tanstack/router-plugin/vite";
+// @ts-expect-error - This is a bug in the plugin
 import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({

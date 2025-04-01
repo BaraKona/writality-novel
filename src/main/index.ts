@@ -1,12 +1,16 @@
-import { app, shell, BrowserWindow, ipcMain } from "electron";
+import { app, shell, BrowserWindow, ipcMain, dialog } from "electron";
 import { join } from "path";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 import icon from "../../resources/download.png?asset";
 import { appDirectoryName } from "@shared/constants";
-import { checkSetup, getCurrentProjectId, setCurrentProjectId } from "./api";
+import {
+  checkSetup,
+  getCurrentProjectId,
+  setCurrentProjectId,
+  completeSetup,
+} from "./api";
 import { execute, runMigrate } from "./db";
 
-let mainWindow: BrowserWindow | null;
 let setupWindow: BrowserWindow | null;
 
 function createMainWindow(): void {
@@ -128,7 +132,17 @@ app.whenReady().then(async () => {
   ipcMain.handle("setCurrentProjectId", async (_, id: number) =>
     setCurrentProjectId(id),
   );
-  // registerIpcHandlers(ipcMain);
+  ipcMain.handle("openSetupDialog", async () =>
+    dialog.showOpenDialog(setupWindow!, {
+      properties: ["openDirectory"],
+    }),
+  );
+
+  ipcMain.handle(
+    "completeSetup",
+    async (_, projectPath: string, name: string, username: string) =>
+      completeSetup(projectPath, name, username),
+  );
 
   await runMigrate();
   createWindow();
@@ -153,6 +167,5 @@ app.on("window-all-closed", () => {
     app.quit();
   }
 });
-
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
