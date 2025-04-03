@@ -90,10 +90,6 @@ function RouteComponent(): JSX.Element {
             href: "/people",
           },
           {
-            title: "Characters",
-            href: "/people/characters",
-          },
-          {
             title: character?.name ?? "New Character",
             href: `/people/characters/${characterId}`,
             isCurrentPage: true,
@@ -103,15 +99,15 @@ function RouteComponent(): JSX.Element {
       />
       <section className="flex p-2 w-full flex-1 overflow-hidden">
         <div className="border rounded-lg w-full h-full shadow-xs flex flex-col">
-          <div className="flex gap-2 border-b py-2 px-3">
-            <h1 className="text-2xl font-bold">{character?.name}</h1>
+          <div className="flex gap-2 border-b py-1 px-2">
+            <h1 className="text-xl font-bold">{character?.name}</h1>
             <div className="flex gap-2 ml-auto">
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() =>
                   navigate({
-                    to: "/people/characters",
+                    to: "/people",
                   })
                 }
               >

@@ -344,37 +344,37 @@ export const CharacterRelationshipsGraph = memo(
         ref={containerRef}
         className="w-full h-full flex items-center justify-center"
       >
-        {!relationships || relationships.length === 0 ? (
-          <div className="w-full h-full flex items-center justify-center bg-background border rounded-lg">
-            <p className="text-sm text-muted-foreground">
-              No relationships found for this character.
-            </p>
-          </div>
-        ) : (
-          <div className="w-full h-full border rounded-lg bg-background flex flex-col">
-            <svg ref={svgRef} className="w-full h-full" />
-            <div className="border-t p-2 flex items-center gap-2">
-              <Select
-                value={selectedFractalId?.toString() || "all"}
-                onValueChange={(value) =>
-                  onFractalChange(value === "all" ? null : Number(value))
-                }
-              >
-                <SelectTrigger id="fractal-filter" className="h-7 text-xs">
-                  <SelectValue placeholder="All Fractals" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Fractals</SelectItem>
-                  {fractals?.map((fractal) => (
-                    <SelectItem key={fractal.id} value={fractal.id.toString()}>
-                      {fractal.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+        <div className="w-full h-full border rounded-lg bg-background flex flex-col">
+          {!relationships || relationships.length === 0 ? (
+            <div className="w-full h-full flex items-center justify-center">
+              <p className="text-sm text-muted-foreground">
+                No relationships found for this character.
+              </p>
             </div>
+          ) : (
+            <svg ref={svgRef} className="w-full h-full" />
+          )}
+          <div className="border-t p-2 flex items-center gap-2">
+            <Select
+              value={selectedFractalId?.toString() || "all"}
+              onValueChange={(value) =>
+                onFractalChange(value === "all" ? null : Number(value))
+              }
+            >
+              <SelectTrigger id="fractal-filter" className="h-7 text-xs">
+                <SelectValue placeholder="All Fractals" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Fractals</SelectItem>
+                {fractals?.map((fractal) => (
+                  <SelectItem key={fractal.id} value={fractal.id.toString()}>
+                    {fractal.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
-        )}
+        </div>
       </div>
     );
   },

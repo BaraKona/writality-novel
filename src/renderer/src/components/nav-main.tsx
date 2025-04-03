@@ -79,14 +79,16 @@ export function NavMain({
                 >
                   {item.title}
                 </span>
-                <CollapsibleTrigger
-                  asChild
-                  onClick={(e) => {
-                    e.stopPropagation();
-                  }}
-                >
-                  <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-                </CollapsibleTrigger>
+                {item.items && item.items.length > 0 && (
+                  <CollapsibleTrigger
+                    asChild
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}
+                  >
+                    <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                  </CollapsibleTrigger>
+                )}
               </SidebarMenuButton>
               <CollapsibleContent ref={animate}>
                 <SidebarMenuSub>

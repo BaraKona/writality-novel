@@ -38,6 +38,12 @@ export const data = (): {
         ],
       },
       {
+        title: "People",
+        url: "/people",
+        icon: SquareUser,
+        items: [],
+      },
+      {
         title: "Gallery",
         url: "/gallery",
         icon: Image,
@@ -57,17 +63,6 @@ export const data = (): {
           {
             title: "Miscellaneous",
             url: "/gallery/miscellaneous",
-          },
-        ],
-      },
-      {
-        title: "People",
-        url: "/people",
-        icon: SquareUser,
-        items: [
-          {
-            title: "Characters",
-            url: "/people/characters",
           },
         ],
       },

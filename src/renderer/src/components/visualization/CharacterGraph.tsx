@@ -5,7 +5,6 @@ import * as d3Drag from "d3-drag";
 import { type SimulationNodeDatum, type SimulationLinkDatum } from "d3-force";
 import { type D3DragEvent } from "d3-drag";
 import { type Selection, type BaseType } from "d3-selection";
-import { useCharactersWithFractalRelationships } from "@renderer/hooks/character/useCharacters";
 import { Loader2, X } from "lucide-react";
 import { Badge } from "../ui/badge";
 import {
@@ -13,9 +12,22 @@ import {
   getRelationshipTypeColor,
   getFactionColor,
 } from "@renderer/lib/utils";
+import { Value } from "@udecode/plate";
+import {
+  charactersTable,
+  fractalCharacterRelationshipsTable,
+} from "@db/schema";
+
 interface CharacterGraphProps {
   onCharacterSelect: (characterId: number) => void;
   selectedFractalId: number | null;
+  isLoading: boolean;
+  data: {
+    character: typeof charactersTable.$inferSelect & {
+      description: Value;
+    };
+    fractal_character_relationships: (typeof fractalCharacterRelationshipsTable.$inferSelect)[];
+  }[];
 }
 
 interface NodeData extends SimulationNodeDatum {
@@ -50,14 +62,14 @@ interface RelationshipInfo {
 export const CharacterGraph = memo(function CharacterGraph({
   onCharacterSelect,
   selectedFractalId,
+  data,
+  isLoading,
 }: CharacterGraphProps): JSX.Element {
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const simulationRef = useRef<d3.Simulation<NodeData, LinkData> | null>(null);
   const [relationshipInfo, setRelationshipInfo] =
     useState<RelationshipInfo | null>(null);
-  const { data, isLoading } =
-    useCharactersWithFractalRelationships(selectedFractalId);
 
   const handleCharacterSelect = useCallback(
     (characterId: number) => {
@@ -433,30 +445,12 @@ export const CharacterGraph = memo(function CharacterGraph({
 
       {/* Relationship Info Panel */}
       {relationshipInfo && (
-        <div className="absolute -top-1 -right-1 border rounded-md p-3 bg-accent z-10">
+        <div className="absolute -top-1 -right-1 border rounded-md p-3 bg-background z-10 grainy">
           <div className="flex justify-between items-center">
             <div>
               <h3 className="font-medium">Relationship</h3>
-              {relationshipInfo.hasSubjectRelationship &&
-              relationshipInfo.hasObjectRelationship ? (
+              {relationshipInfo.hasObjectRelationship && (
                 <div className="space-y-2">
-                  <p className="text-sm text-muted-foreground">
-                    <span className="font-medium">
-                      {relationshipInfo.sourceName}
-                    </span>{" "}
-                    has a{" "}
-                    <Badge
-                      className={cn(
-                        getRelationshipTypeColor(relationshipInfo.subjectType),
-                      )}
-                    >
-                      {relationshipInfo.subjectType}
-                    </Badge>{" "}
-                    with{" "}
-                    <span className="font-medium">
-                      {relationshipInfo.targetName}
-                    </span>
-                  </p>
                   <p className="text-sm text-muted-foreground">
                     <span className="font-medium">
                       {relationshipInfo.targetName}
@@ -475,58 +469,43 @@ export const CharacterGraph = memo(function CharacterGraph({
                     </span>
                   </p>
                 </div>
-              ) : (
+              )}
+              {relationshipInfo.hasSubjectRelationship && (
                 <p className="text-sm text-muted-foreground mt-2">
-                  {relationshipInfo.hasSubjectRelationship ? (
-                    <>
-                      <span className="font-medium">
-                        {relationshipInfo.sourceName}
-                      </span>{" "}
-                      has a{" "}
-                      <Badge
-                        className={cn(
-                          getRelationshipTypeColor(
-                            relationshipInfo.subjectType,
-                          ),
-                        )}
-                      >
-                        {relationshipInfo.subjectType}
-                      </Badge>{" "}
-                      with{" "}
-                      <span className="font-medium">
-                        {relationshipInfo.targetName}
-                      </span>
-                    </>
-                  ) : relationshipInfo.hasObjectRelationship ? (
-                    <>
-                      <span className="font-medium">
-                        {relationshipInfo.targetName}
-                      </span>{" "}
-                      is a{" "}
-                      <Badge
-                        className={cn(
-                          getRelationshipTypeColor(relationshipInfo.objectType),
-                        )}
-                      >
-                        {relationshipInfo.objectType}
-                      </Badge>{" "}
-                      of{" "}
-                      <span className="font-medium">
-                        {relationshipInfo.sourceName}
-                      </span>
-                    </>
-                  ) : (
-                    <>
-                      No relationship defined between{" "}
-                      <span className="font-medium">
-                        {relationshipInfo.sourceName}
-                      </span>{" "}
-                      and{" "}
-                      <span className="font-medium">
-                        {relationshipInfo.targetName}
-                      </span>
-                    </>
-                  )}
+                  <>
+                    <span className="font-medium">
+                      {relationshipInfo.sourceName}
+                    </span>{" "}
+                    has a{" "}
+                    <Badge
+                      className={cn(
+                        getRelationshipTypeColor(relationshipInfo.subjectType),
+                      )}
+                    >
+                      {relationshipInfo.subjectType}
+                    </Badge>{" "}
+                    with{" "}
+                    <span className="font-medium">
+                      {relationshipInfo.targetName}
+                    </span>
+                  </>
+                </p>
+              )}
+              {(!relationshipInfo.hasObjectRelationship ||
+                !relationshipInfo.hasSubjectRelationship) && (
+                <p className="text-sm text-muted-foreground mt-2">
+                  No relationship defined between{" "}
+                  <span className="font-medium">
+                    {!relationshipInfo.hasObjectRelationship
+                      ? relationshipInfo.targetName
+                      : relationshipInfo.sourceName}
+                  </span>{" "}
+                  and{" "}
+                  <span className="font-medium">
+                    {!relationshipInfo.hasSubjectRelationship
+                      ? relationshipInfo.targetName
+                      : relationshipInfo.sourceName}
+                  </span>
                 </p>
               )}
             </div>

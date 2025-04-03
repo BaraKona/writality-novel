@@ -36,7 +36,6 @@ const GalleryMiscellaneousLazyImport = createFileRoute(
   '/gallery/miscellaneous',
 )()
 const GalleryInspirationLazyImport = createFileRoute('/gallery/inspiration')()
-const PeopleCharactersIndexLazyImport = createFileRoute('/people/characters/')()
 
 // Create/Update Routes
 
@@ -147,14 +146,6 @@ const ChaptersChapterIdRoute = ChaptersChapterIdImport.update({
   path: '/chapters/$chapterId',
   getParentRoute: () => rootRoute,
 } as any)
-
-const PeopleCharactersIndexLazyRoute = PeopleCharactersIndexLazyImport.update({
-  id: '/people/characters/',
-  path: '/people/characters/',
-  getParentRoute: () => rootRoute,
-} as any).lazy(() =>
-  import('./routes/people/characters/index.lazy').then((d) => d.Route),
-)
 
 const PeopleCharactersCharacterIdRoute =
   PeopleCharactersCharacterIdImport.update({
@@ -293,13 +284,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PeopleCharactersCharacterIdImport
       parentRoute: typeof rootRoute
     }
-    '/people/characters/': {
-      id: '/people/characters/'
-      path: '/people/characters'
-      fullPath: '/people/characters'
-      preLoaderRoute: typeof PeopleCharactersIndexLazyImport
-      parentRoute: typeof rootRoute
-    }
   }
 }
 
@@ -324,7 +308,6 @@ export interface FileRoutesByFullPath {
   '/people': typeof PeopleIndexLazyRoute
   '/world': typeof WorldIndexLazyRoute
   '/people/characters/$characterId': typeof PeopleCharactersCharacterIdRoute
-  '/people/characters': typeof PeopleCharactersIndexLazyRoute
 }
 
 export interface FileRoutesByTo {
@@ -346,7 +329,6 @@ export interface FileRoutesByTo {
   '/people': typeof PeopleIndexLazyRoute
   '/world': typeof WorldIndexLazyRoute
   '/people/characters/$characterId': typeof PeopleCharactersCharacterIdRoute
-  '/people/characters': typeof PeopleCharactersIndexLazyRoute
 }
 
 export interface FileRoutesById {
@@ -369,7 +351,6 @@ export interface FileRoutesById {
   '/people/': typeof PeopleIndexLazyRoute
   '/world/': typeof WorldIndexLazyRoute
   '/people/characters/$characterId': typeof PeopleCharactersCharacterIdRoute
-  '/people/characters/': typeof PeopleCharactersIndexLazyRoute
 }
 
 export interface FileRouteTypes {
@@ -393,7 +374,6 @@ export interface FileRouteTypes {
     | '/people'
     | '/world'
     | '/people/characters/$characterId'
-    | '/people/characters'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -414,7 +394,6 @@ export interface FileRouteTypes {
     | '/people'
     | '/world'
     | '/people/characters/$characterId'
-    | '/people/characters'
   id:
     | '__root__'
     | '/'
@@ -435,7 +414,6 @@ export interface FileRouteTypes {
     | '/people/'
     | '/world/'
     | '/people/characters/$characterId'
-    | '/people/characters/'
   fileRoutesById: FileRoutesById
 }
 
@@ -458,7 +436,6 @@ export interface RootRouteChildren {
   PeopleIndexLazyRoute: typeof PeopleIndexLazyRoute
   WorldIndexLazyRoute: typeof WorldIndexLazyRoute
   PeopleCharactersCharacterIdRoute: typeof PeopleCharactersCharacterIdRoute
-  PeopleCharactersIndexLazyRoute: typeof PeopleCharactersIndexLazyRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -480,7 +457,6 @@ const rootRouteChildren: RootRouteChildren = {
   PeopleIndexLazyRoute: PeopleIndexLazyRoute,
   WorldIndexLazyRoute: WorldIndexLazyRoute,
   PeopleCharactersCharacterIdRoute: PeopleCharactersCharacterIdRoute,
-  PeopleCharactersIndexLazyRoute: PeopleCharactersIndexLazyRoute,
 }
 
 export const routeTree = rootRoute
@@ -510,8 +486,7 @@ export const routeTree = rootRoute
         "/gallery/",
         "/people/",
         "/world/",
-        "/people/characters/$characterId",
-        "/people/characters/"
+        "/people/characters/$characterId"
       ]
     },
     "/": {
@@ -567,9 +542,6 @@ export const routeTree = rootRoute
     },
     "/people/characters/$characterId": {
       "filePath": "people/characters/$characterId.tsx"
-    },
-    "/people/characters/": {
-      "filePath": "people/characters/index.lazy.tsx"
     }
   }
 }
