@@ -437,87 +437,90 @@ export const CharacterGraph = memo(function CharacterGraph({
       ) : null}
 
       {data && data.length > 0 && selectedFractalId && (
-        <svg
-          ref={svgRef}
-          className="w-full h-full border rounded-xl bg-background "
-        />
+        <div className="w-full h-full flex flex-col border rounded-xl bg-background grainy overflow-hidden">
+          <svg ref={svgRef} className="w-full" />
+          {relationshipInfo && (
+            <div className="border-t p-3 bg-accent z-10">
+              <div className="flex justify-between items-center">
+                <div>
+                  <h3 className="font-medium">Relationship</h3>
+                  {relationshipInfo.hasObjectRelationship && (
+                    <div className="space-y-2">
+                      <p className="text-sm text-muted-foreground">
+                        <span className="font-medium">
+                          {relationshipInfo.targetName}
+                        </span>{" "}
+                        is a{" "}
+                        <Badge
+                          className={cn(
+                            getRelationshipTypeColor(
+                              relationshipInfo.objectType,
+                            ),
+                          )}
+                        >
+                          {relationshipInfo.objectType}
+                        </Badge>{" "}
+                        of{" "}
+                        <span className="font-medium">
+                          {relationshipInfo.sourceName}
+                        </span>
+                      </p>
+                    </div>
+                  )}
+                  {relationshipInfo.hasSubjectRelationship && (
+                    <p className="text-sm text-muted-foreground mt-2">
+                      <>
+                        <span className="font-medium">
+                          {relationshipInfo.sourceName}
+                        </span>{" "}
+                        has a{" "}
+                        <Badge
+                          className={cn(
+                            getRelationshipTypeColor(
+                              relationshipInfo.subjectType,
+                            ),
+                          )}
+                        >
+                          {relationshipInfo.subjectType}
+                        </Badge>{" "}
+                        with{" "}
+                        <span className="font-medium">
+                          {relationshipInfo.targetName}
+                        </span>
+                      </>
+                    </p>
+                  )}
+                  {(!relationshipInfo.hasObjectRelationship ||
+                    !relationshipInfo.hasSubjectRelationship) && (
+                    <p className="text-sm text-muted-foreground mt-2">
+                      No relationship defined between{" "}
+                      <span className="font-medium">
+                        {!relationshipInfo.hasObjectRelationship
+                          ? relationshipInfo.targetName
+                          : relationshipInfo.sourceName}
+                      </span>{" "}
+                      and{" "}
+                      <span className="font-medium">
+                        {!relationshipInfo.hasSubjectRelationship
+                          ? relationshipInfo.targetName
+                          : relationshipInfo.sourceName}
+                      </span>
+                    </p>
+                  )}
+                </div>
+                <button
+                  className="text-sm text-muted-foreground hover:text-foreground self-start"
+                  onClick={() => setRelationshipInfo(null)}
+                >
+                  <X size={16} />
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
       )}
 
       {/* Relationship Info Panel */}
-      {relationshipInfo && (
-        <div className="absolute -top-1 -right-1 border rounded-md p-3 bg-background z-10 grainy">
-          <div className="flex justify-between items-center">
-            <div>
-              <h3 className="font-medium">Relationship</h3>
-              {relationshipInfo.hasObjectRelationship && (
-                <div className="space-y-2">
-                  <p className="text-sm text-muted-foreground">
-                    <span className="font-medium">
-                      {relationshipInfo.targetName}
-                    </span>{" "}
-                    is a{" "}
-                    <Badge
-                      className={cn(
-                        getRelationshipTypeColor(relationshipInfo.objectType),
-                      )}
-                    >
-                      {relationshipInfo.objectType}
-                    </Badge>{" "}
-                    of{" "}
-                    <span className="font-medium">
-                      {relationshipInfo.sourceName}
-                    </span>
-                  </p>
-                </div>
-              )}
-              {relationshipInfo.hasSubjectRelationship && (
-                <p className="text-sm text-muted-foreground mt-2">
-                  <>
-                    <span className="font-medium">
-                      {relationshipInfo.sourceName}
-                    </span>{" "}
-                    has a{" "}
-                    <Badge
-                      className={cn(
-                        getRelationshipTypeColor(relationshipInfo.subjectType),
-                      )}
-                    >
-                      {relationshipInfo.subjectType}
-                    </Badge>{" "}
-                    with{" "}
-                    <span className="font-medium">
-                      {relationshipInfo.targetName}
-                    </span>
-                  </>
-                </p>
-              )}
-              {(!relationshipInfo.hasObjectRelationship ||
-                !relationshipInfo.hasSubjectRelationship) && (
-                <p className="text-sm text-muted-foreground mt-2">
-                  No relationship defined between{" "}
-                  <span className="font-medium">
-                    {!relationshipInfo.hasObjectRelationship
-                      ? relationshipInfo.targetName
-                      : relationshipInfo.sourceName}
-                  </span>{" "}
-                  and{" "}
-                  <span className="font-medium">
-                    {!relationshipInfo.hasSubjectRelationship
-                      ? relationshipInfo.targetName
-                      : relationshipInfo.sourceName}
-                  </span>
-                </p>
-              )}
-            </div>
-            <button
-              className="text-sm text-muted-foreground hover:text-foreground self-start"
-              onClick={() => setRelationshipInfo(null)}
-            >
-              <X size={16} />
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 });

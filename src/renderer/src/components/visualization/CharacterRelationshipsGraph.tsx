@@ -361,7 +361,10 @@ export const CharacterRelationshipsGraph = memo(
                 onFractalChange(value === "all" ? null : Number(value))
               }
             >
-              <SelectTrigger id="fractal-filter" className="h-7 text-xs">
+              <SelectTrigger
+                id="fractal-filter"
+                className="h-7 text-xs shadow-none"
+              >
                 <SelectValue placeholder="All Fractals" />
               </SelectTrigger>
               <SelectContent>

@@ -177,7 +177,7 @@ function RouteComponent(): JSX.Element {
                       debounceUpdateCharacter({ status: value })
                     }
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className="">
                       <SelectValue placeholder="Select status" />
                     </SelectTrigger>
                     <SelectContent>
