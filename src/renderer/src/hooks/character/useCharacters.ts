@@ -41,7 +41,7 @@ export const useCharactersWithFractalRelationships = (
     character: typeof charactersTable.$inferSelect & {
       description: Value;
     };
-    fractal_character_relationships: typeof fractalCharacterRelationshipsTable.$inferSelect;
+    fractal_character_relationships: (typeof fractalCharacterRelationshipsTable.$inferSelect)[];
   }[],
   Error
 > => {
@@ -70,10 +70,14 @@ export const useCharactersWithFractalRelationships = (
         .from(fractalCharacterRelationshipsTable)
         .where(eq(fractalCharacterRelationshipsTable.fractal_id, fractal_id));
 
-      // Map characters and match them with their relationships
+      // Map characters and match them with their relationships (both as subject and object)
       return characters.map((character) => {
-        const relationship = relationships.find(
+        const subjectRelationships = relationships.filter(
           (rel) => rel.subject_character_id === character.id,
+        );
+
+        const objectRelationships = relationships.filter(
+          (rel) => rel.object_character_id === character.id,
         );
 
         return {
@@ -81,7 +85,10 @@ export const useCharactersWithFractalRelationships = (
             ...character,
             description: deserialize(character.description),
           },
-          fractal_character_relationships: relationship || null,
+          fractal_character_relationships: [
+            ...subjectRelationships,
+            ...objectRelationships,
+          ],
         };
       });
     },

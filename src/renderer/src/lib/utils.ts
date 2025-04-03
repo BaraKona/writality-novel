@@ -10,6 +10,21 @@ dayjs.extend(relativeTime);
 
 export const cn = (...inputs: ClassValue[]): string => twMerge(clsx(inputs));
 
+export function getRelationshipTypeColor(type: string): string {
+  switch (type) {
+    case "friend":
+      return "hsl(var(--accent))";
+    case "family":
+      return "hsl(var(--accent-foreground))";
+    case "enemy":
+      return "hsl(var(--destructive))";
+    case "romantic":
+      return "hsl(var(--tertiary))";
+    default:
+      return "hsl(var(--muted-foreground))";
+  }
+}
+
 export function getTimeFromNow(date?: string | Date | number | null): string {
   return dayjs(date).fromNow();
 }

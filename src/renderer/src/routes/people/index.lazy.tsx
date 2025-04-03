@@ -30,41 +30,37 @@ const peopleSidebarStateAtom = atomWithStorage<TOpen>(
   Open.Open,
 );
 
-// const CharacterGraphSection = memo(function CharacterGraphSection({
-//   selectedFractalId,
-//   onCharacterSelect,
-// }: {
-//   selectedFractalId: number | null;
-//   onCharacterSelect: (characterId: number) => void;
-// }): JSX.Element {
-//   return (
-//     <div className="h-full overflow-y-auto p-2">
-//       <CharacterGraph
-//         onCharacterSelect={onCharacterSelect}
-//         selectedFractalId={selectedFractalId}
-//       />
-//     </div>
-//   );
-// });
+const selectedFractalIdAtom = atomWithStorage<number | null>(
+  "selectedFractalId",
+  null,
+);
+
+const selectedCharacterIdAtom = atomWithStorage<number | null>(
+  "selectedCharacterId",
+  null,
+);
 
 function RouteComponent(): JSX.Element {
-  const [selectedFractalId, setSelectedFractalId] = useState<number | null>(
-    null,
+  const [selectedFractalId, setSelectedFractalId] = useAtom(
+    selectedFractalIdAtom,
   );
   const [width, setWidth] = useState(400);
   const originalWidth = useRef(width);
   const originalClientX = useRef(width);
   const [isDragging, setDragging] = useState(false);
   const [sidebarState, setSidebarState] = useAtom(peopleSidebarStateAtom);
-  const [selectedCharacterId, setSelectedCharacterId] = useState<number | null>(
-    null,
+  const [selectedCharacterId, setSelectedCharacterId] = useAtom(
+    selectedCharacterIdAtom,
   );
 
   const { data: fractals } = useFractals();
 
-  const onCharacterSelect = useCallback((characterId: number): void => {
-    setSelectedCharacterId(characterId);
-  }, []);
+  const onCharacterSelect = useCallback(
+    (characterId: number): void => {
+      setSelectedCharacterId(characterId);
+    },
+    [setSelectedCharacterId],
+  );
 
   return (
     <div className="flex grow overflow-y-auto relative">
