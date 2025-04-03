@@ -22,7 +22,7 @@ import { useBreadcrumbNav } from "@renderer/hooks/useBreadcrumbNav";
 import { currentProjectIdAtom } from "@renderer/routes/__root";
 import { useAtomValue } from "jotai";
 
-export const Route = createLazyFileRoute("/people/characters")({
+export const Route = createLazyFileRoute("/people/characters/")({
   component: RouteComponent,
 });
 
@@ -38,7 +38,7 @@ function RouteComponent(): JSX.Element {
   const [newCharacterAge, setNewCharacterAge] = useState<number | null>(null);
   const [newCharacterOccupation, setNewCharacterOccupation] = useState("");
   const [newCharacterTraits, setNewCharacterTraits] = useState<string[]>([]);
-  const { items, dropdownItems } = useBreadcrumbNav();
+  const { dropdownItems } = useBreadcrumbNav();
   const editor = useCreateEditor({ value: [] });
   const currentProjectId = useAtomValue(currentProjectIdAtom);
 
@@ -71,7 +71,17 @@ function RouteComponent(): JSX.Element {
   return (
     <div className="">
       <BreadcrumbNav
-        items={items}
+        items={[
+          {
+            title: "People",
+            href: "/people",
+          },
+          {
+            title: "Characters",
+            href: "/people/characters",
+            isCurrentPage: true,
+          },
+        ]}
         dropdownItems={dropdownItems}
         actions={
           <Dialog

@@ -15,6 +15,8 @@ import { Value } from "@udecode/plate";
 import { useUpdateCharacter } from "@renderer/hooks/character/useUpdateCharacter";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { CharacterCardRelationships } from "./CharacterCardRelationships";
+import { Link } from "@tanstack/react-router";
+
 interface CharacterCardProps {
   character: typeof charactersTable.$inferSelect & {
     description: Value;
@@ -60,8 +62,14 @@ export function CharacterCard({ character }: CharacterCardProps): JSX.Element {
           <DropdownMenuContent align="start" className="w-48">
             <DropdownMenu>
               <DropdownMenuItem>
-                <SquareArrowRight className="h-4 w-4 mr-2" />
-                Open Character
+                <Link
+                  className="flex items-center"
+                  to="/people/characters/$characterId"
+                  params={{ characterId: character.id }}
+                >
+                  <SquareArrowRight className="h-4 w-4 mr-2" />
+                  Open Character
+                </Link>
               </DropdownMenuItem>
             </DropdownMenu>
           </DropdownMenuContent>
