@@ -1,8 +1,6 @@
 import { createLazyFileRoute } from "@tanstack/react-router";
 import { BreadcrumbNav } from "@renderer/components/navigation/BreadcrumbNav";
 import { CharacterGraph } from "@renderer/components/visualization/CharacterGraph";
-import "@blocknote/core/fonts/inter.css";
-import "@blocknote/mantine/style.css";
 
 import { Open, type TOpen } from "../__root";
 import clsx from "clsx";

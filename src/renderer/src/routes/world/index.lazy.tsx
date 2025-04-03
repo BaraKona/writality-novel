@@ -13,8 +13,6 @@ import { useUpdateProject } from "@renderer/hooks/project/useUpdateProject";
 import { defaultDateTimeFormat } from "@shared/functions";
 import { custom_emojis } from "@renderer/lib/custom_emoji";
 
-import "@blocknote/core/fonts/inter.css";
-import "@blocknote/mantine/style.css";
 import { useDebounce } from "@renderer/hooks/useDebounce";
 import { BasicEditor } from "@renderer/components/editor/BasicEditor";
 import { useCreateEditor } from "@renderer/components/editor/use-create-editor";

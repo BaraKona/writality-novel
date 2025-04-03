@@ -1,8 +1,6 @@
 import { useChapter } from "@renderer/hooks/chapter/useChapter";
 import { useDebounce } from "@renderer/hooks/useDebounce";
 import { createFileRoute } from "@tanstack/react-router";
-import "@blocknote/core/fonts/inter.css";
-import "@blocknote/mantine/style.css";
 
 import { useUpdateChapter } from "@renderer/hooks/chapter/useUpdateChapter";
 import { useCreateVersion } from "@renderer/hooks/chapter/version/useCreateVersion";
