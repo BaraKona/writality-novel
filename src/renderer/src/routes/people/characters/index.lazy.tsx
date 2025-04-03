@@ -160,11 +160,11 @@ function RouteComponent(): JSX.Element {
         }
       />
 
-      <div className="container p-2 h-full flex-1 flex-col flex overflow-y-auto">
+      <div className="p-2 h-full flex-1 flex-col flex overflow-y-auto">
         <div className="rounded-xl border rounded-t-lg h-full">
           <table className="w-full">
             <thead>
-              <tr className="border-b">
+              <tr className="border-b bg-tertiary">
                 <th className="text-left p-2 font-medium">Name</th>
                 <th className="text-left p-2 font-medium">Age</th>
                 <th className="text-left p-2 font-medium">Sex</th>

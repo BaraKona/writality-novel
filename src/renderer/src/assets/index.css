@@ -301,8 +301,8 @@
     --secondary-sidebar-ring: 210 50% 25%; */
   }
 
-  ::selection {
-    background: hsl(var(--muted-foreground));
+  *::selection {
+    background: hsl(var(--secondary-sidebar-foreground));
   }
 }
 
