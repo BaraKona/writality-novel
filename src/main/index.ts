@@ -117,6 +117,7 @@ export async function createWindow(): Promise<void> {
 app.whenReady().then(async () => {
   // Set app user model id for windows
   electronApp.setAppUserModelId("com.electron");
+  await runMigrate();
 
   // Default open or close DevTools by F12 in development
   // and ignore CommandOrControl + R in production.
@@ -144,7 +145,6 @@ app.whenReady().then(async () => {
       completeSetup(projectPath, name, username),
   );
 
-  await runMigrate();
   createWindow();
 
   app.on("activate", function () {

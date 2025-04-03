@@ -1,7 +1,7 @@
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import { charactersTable } from "../../../../db/schema";
 import { database, deserialize } from "@renderer/db";
-import { eq, or, and } from "drizzle-orm";
+import { eq, or } from "drizzle-orm";
 import { Value } from "@udecode/plate";
 import {
   fractalCharacterRelationshipsTable,
@@ -44,43 +44,51 @@ export const useCharacterWithRelationships = (
       }
 
       // Get relationships where this character is either the subject or object
-      const relationships = await database
-        .select({
-          relationship: fractalCharacterRelationshipsTable,
-          relatedCharacter: {
-            id: charactersTable.id,
-            age: charactersTable.age,
-            sex: charactersTable.sex,
-            name: charactersTable.name,
-          },
-          fractal: fractalsTable,
-        })
+      const relationshipsData = await database
+        .select()
         .from(fractalCharacterRelationshipsTable)
-        .innerJoin(
-          charactersTable,
+        .where(
           or(
-            // Case 1: Character is the subject
-            and(
-              eq(fractalCharacterRelationshipsTable.subject_character_id, id),
-              eq(
-                fractalCharacterRelationshipsTable.object_character_id,
-                charactersTable.id,
-              ),
-            ),
-            // Case 2: Character is the object
-            and(
-              eq(fractalCharacterRelationshipsTable.object_character_id, id),
-              eq(
-                fractalCharacterRelationshipsTable.subject_character_id,
-                charactersTable.id,
-              ),
-            ),
+            eq(fractalCharacterRelationshipsTable.subject_character_id, id),
+            eq(fractalCharacterRelationshipsTable.object_character_id, id),
           ),
-        )
-        .innerJoin(
-          fractalsTable,
-          eq(fractalCharacterRelationshipsTable.fractal_id, fractalsTable.id),
         );
+
+      // Process each relationship to get related character and fractal data
+      const relationships: Relationship[] = await Promise.all(
+        relationshipsData.map(async (relationship) => {
+          // Determine which character ID is the related one (not the current character)
+          const relatedCharacterId =
+            relationship.subject_character_id === id
+              ? relationship.object_character_id
+              : relationship.subject_character_id;
+
+          // Get the related character
+          const relatedCharacter = await database
+            .select({
+              id: charactersTable.id,
+              age: charactersTable.age,
+              sex: charactersTable.sex,
+              name: charactersTable.name,
+            })
+            .from(charactersTable)
+            .where(eq(charactersTable.id, relatedCharacterId))
+            .get();
+
+          // Get the fractal
+          const fractal = await database
+            .select()
+            .from(fractalsTable)
+            .where(eq(fractalsTable.id, relationship.fractal_id))
+            .get();
+
+          return {
+            relationship,
+            relatedCharacter,
+            fractal,
+          };
+        }),
+      );
 
       return {
         ...characterResult,

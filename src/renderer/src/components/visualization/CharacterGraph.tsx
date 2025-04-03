@@ -65,15 +65,15 @@ export const CharacterGraph = memo(function CharacterGraph({
     // Create nodes and links from the data
     const nodeMap = new Map<number, NodeData>();
 
-    // First pass: create nodes for all characters
+    // First pass: create nodes for all character
     data.forEach((item) => {
       // Add subject character node
-      if (!nodeMap.has(item.characters.id)) {
-        nodeMap.set(item.characters.id, {
-          id: item.characters.id,
-          name: item.characters.name,
+      if (!nodeMap.has(item.character.id)) {
+        nodeMap.set(item.character.id, {
+          id: item.character.id,
+          name: item.character.name,
           type: item.fractal_character_relationships?.relationship_type,
-          age: item.characters.age ?? undefined,
+          age: item.character.age ?? undefined,
         });
       }
 
@@ -83,18 +83,18 @@ export const CharacterGraph = memo(function CharacterGraph({
       ) {
         const objectCharacter = data.find(
           (d) =>
-            d.characters.id ===
+            d.character.id ===
             item.fractal_character_relationships?.object_character_id,
         );
         if (objectCharacter) {
           nodeMap.set(
             item.fractal_character_relationships?.object_character_id,
             {
-              id: objectCharacter.characters.id,
-              name: objectCharacter.characters.name,
+              id: objectCharacter.character.id,
+              name: objectCharacter.character.name,
               type: objectCharacter.fractal_character_relationships
                 ?.relationship_type,
-              age: objectCharacter.characters.age ?? undefined,
+              age: objectCharacter.character.age ?? undefined,
             },
           );
         }
@@ -108,7 +108,7 @@ export const CharacterGraph = memo(function CharacterGraph({
       const links: LinkData[] = [];
 
       // Case 1: Current character is the subject
-      const sourceNode = nodeMap.get(item.characters.id);
+      const sourceNode = nodeMap.get(item.character.id);
       const targetNode = nodeMap.get(
         item.fractal_character_relationships?.object_character_id,
       );
@@ -124,7 +124,7 @@ export const CharacterGraph = memo(function CharacterGraph({
       const objectSourceNode = nodeMap.get(
         item.fractal_character_relationships?.subject_character_id,
       );
-      const objectTargetNode = nodeMap.get(item.characters.id);
+      const objectTargetNode = nodeMap.get(item.character.id);
       if (objectSourceNode && objectTargetNode) {
         links.push({
           source: objectSourceNode,
@@ -323,12 +323,12 @@ export const CharacterGraph = memo(function CharacterGraph({
           <h2 className="text-lg font-medium mb-2">Character Graph</h2>
           <p className="text-sm text-muted-foreground">
             Select a fractal above to view the character graph. Fractals are
-            collections of characters and their relationships.
+            collections of character and their relationships.
           </p>
           <br />
           <p className="text-sm text-muted-foreground">
             You can assign fractals to chapters and/or folders to help you
-            organize your characters and their changing relationships.
+            organize your character and their changing relationships.
           </p>
         </div>
       </div>
@@ -349,7 +349,7 @@ export const CharacterGraph = memo(function CharacterGraph({
       {data && data.length === 0 ? (
         <div className="w-full h-full flex items-center justify-center border rounded-xl">
           <p className="text-sm text-muted-foreground">
-            No characters or relationships found for the selected fractal.
+            No character or relationships found for the selected fractal.
           </p>
         </div>
       ) : null}

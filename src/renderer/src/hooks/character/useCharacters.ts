@@ -7,7 +7,7 @@ import {
 import { deserialize } from "@renderer/db";
 import { Value } from "@udecode/plate";
 import { useAtomValue } from "jotai";
-import { and, eq } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { currentProjectIdAtom } from "@renderer/routes/__root";
 
 export const useCharacters = (): UseQueryResult<
@@ -38,7 +38,7 @@ export const useCharactersWithFractalRelationships = (
   fractal_id: number | null,
 ): UseQueryResult<
   {
-    characters: typeof charactersTable.$inferSelect & {
+    character: typeof charactersTable.$inferSelect & {
       description: Value;
     };
     fractal_character_relationships: typeof fractalCharacterRelationshipsTable.$inferSelect;
@@ -58,32 +58,32 @@ export const useCharactersWithFractalRelationships = (
         return [];
       }
 
-      const result = await database
-        .select({
-          characters: charactersTable,
-          fractal_character_relationships: fractalCharacterRelationshipsTable,
-          character_id: charactersTable.id,
-        })
+      // First request: Get all characters for the current project
+      const characters = await database
+        .select()
         .from(charactersTable)
-        .leftJoin(
-          fractalCharacterRelationshipsTable,
-          and(
-            eq(
-              charactersTable.id,
-              fractalCharacterRelationshipsTable.subject_character_id,
-            ),
-            eq(fractalCharacterRelationshipsTable.fractal_id, fractal_id),
-          ),
-        )
         .where(eq(charactersTable.project_id, currentProjectId!));
 
-      return result.map((item) => ({
-        characters: {
-          ...item.characters,
-          description: deserialize(item.characters.description),
-        },
-        fractal_character_relationships: item.fractal_character_relationships,
-      }));
+      // Second request: Get all relationships for the given fractal
+      const relationships = await database
+        .select()
+        .from(fractalCharacterRelationshipsTable)
+        .where(eq(fractalCharacterRelationshipsTable.fractal_id, fractal_id));
+
+      // Map characters and match them with their relationships
+      return characters.map((character) => {
+        const relationship = relationships.find(
+          (rel) => rel.subject_character_id === character.id,
+        );
+
+        return {
+          character: {
+            ...character,
+            description: deserialize(character.description),
+          },
+          fractal_character_relationships: relationship || null,
+        };
+      });
     },
   });
 };

@@ -23,6 +23,7 @@ export const useProject = (
         .where(eq(projectsTable.id, id))
         .get();
 
+      console.log({ result });
       if (!result) {
         throw new Error(`Project with id ${id} not found`);
       }

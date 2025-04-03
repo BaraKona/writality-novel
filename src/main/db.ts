@@ -36,8 +36,20 @@ export const execute = async (
   params: unknown[],
   method: SqliteMethod,
 ): Promise<DrizzleResult> => {
-  const result = sqlite.prepare(sqlstr);
+  const result = db.$client.prepare(sqlstr);
   const ret = result[method](...params);
+  console.log({
+    _event,
+    sqlstr,
+    params,
+    method,
+    ret,
+  });
+
+  console.log(
+    "to-drizzle-result",
+    toDrizzleResult(ret as DrizzleRow | Array<DrizzleRow>),
+  );
   return toDrizzleResult(ret as DrizzleRow | Array<DrizzleRow>);
 };
 
