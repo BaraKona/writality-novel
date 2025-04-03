@@ -203,3 +203,20 @@ export const getWordCountFromRichContent = (content?: Value): number => {
   const words = text.trim().split(/\s+/);
   return words.length;
 };
+
+const factionColors = {
+  "The Empire": "hsl(var(--primary))",
+  "The Rebellion": "hsl(var(--destructive))",
+  "The Neutral": "hsl(var(--muted))",
+  "The Mystics": "hsl(var(--accent))",
+  "The Merchants": "hsl(var(--accent-foreground))",
+  default: "hsl(var(--muted-foreground))",
+} as const;
+
+export function getFactionColor(faction: string | null): string {
+  if (!faction) return factionColors.default;
+  return (
+    factionColors[faction as keyof typeof factionColors] ||
+    factionColors.default
+  );
+}

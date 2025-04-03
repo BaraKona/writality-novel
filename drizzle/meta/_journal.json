@@ -8,6 +8,13 @@
       "when": 1743471528306,
       "tag": "0000_clever_warbound",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1743692228886,
+      "tag": "0001_gray_blue_blade",
+      "breakpoints": true
     }
   ]
 }

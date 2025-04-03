@@ -79,6 +79,9 @@ export const charactersTable = sqliteTable("characters", {
   sex: text(),
   age: int(),
   traits: text(), // JSON string of traits array
+  faction: text(), // Character's faction or group affiliation
+  occupation: text(), // Character's occupation or role
+  appearance: text(), // Physical description
   created_at: int("created_at", { mode: "timestamp" })
     .notNull()
     .default(sql`(unixepoch())`),

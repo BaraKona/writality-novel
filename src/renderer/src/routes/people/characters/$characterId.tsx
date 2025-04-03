@@ -21,6 +21,7 @@ import {
 import { Value } from "@udecode/plate";
 import { charactersTable } from "@db/schema";
 import { useFractals } from "@renderer/hooks/fractal/useFractals";
+import { useState } from "react";
 
 type CharacterUpdate = Omit<
   typeof charactersTable.$inferSelect,
@@ -37,12 +38,15 @@ function RouteComponent(): JSX.Element {
   const { dropdownItems } = useBreadcrumbNav();
   const { characterId } = Route.useParams();
   const navigate = useNavigate();
+  const { data: fractals } = useFractals();
+  const [selectedFractalId, setSelectedFractalId] = useState<number | null>(
+    fractals && fractals.length > 0 ? fractals[0].id : null,
+  );
 
   const { data: character, isLoading } = useCharacterWithRelationships(
     Number(characterId),
+    selectedFractalId,
   );
-
-  const { data: fractals } = useFractals();
 
   const editor = useCreateEditor({
     value: character?.description,
@@ -156,7 +160,7 @@ function RouteComponent(): JSX.Element {
                     id="traits"
                     defaultValue={
                       character.traits
-                        ? JSON.parse(character.traits).join(", ")
+                        ? JSON.parse(character?.traits).join(", ")
                         : ""
                     }
                     onChange={(e) =>
@@ -220,6 +224,8 @@ function RouteComponent(): JSX.Element {
                     characterName={character.name}
                     relationships={character.relationships}
                     fractals={fractals}
+                    selectedFractalId={selectedFractalId}
+                    onFractalChange={setSelectedFractalId}
                   />
                 )}
               </div>

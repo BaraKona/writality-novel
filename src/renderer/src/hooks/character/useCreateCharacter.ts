@@ -4,9 +4,20 @@ import { charactersTable } from "../../../../db/schema";
 import { serialize } from "@renderer/db";
 import { Value } from "@udecode/plate";
 
-type Character = typeof charactersTable.$inferSelect & {
+type Character = {
+  id: number;
+  name: string;
   description: Value;
+  status: string;
+  project_id: number;
+  sex: string | null;
+  age: number | null;
   traits: string[];
+  faction: string | null;
+  occupation: string | null;
+  appearance: string | null;
+  created_at: Date;
+  updated_at: Date;
 };
 
 type CreateCharacterInput = {
@@ -17,6 +28,8 @@ type CreateCharacterInput = {
   age?: number;
   occupation?: string;
   traits?: string[];
+  faction?: string;
+  appearance?: string;
   project_id: number;
 };
 
@@ -37,6 +50,9 @@ export const useCreateCharacter = (): ReturnType<
           sex: character.sex,
           age: character.age,
           traits: character.traits ? JSON.stringify(character.traits) : null,
+          faction: character.faction,
+          occupation: character.occupation,
+          appearance: character.appearance,
           project_id: character.project_id,
         })
         .returning()

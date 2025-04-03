@@ -8,7 +8,11 @@ import { type Selection, type BaseType } from "d3-selection";
 import { useCharactersWithFractalRelationships } from "@renderer/hooks/character/useCharacters";
 import { Loader2, X } from "lucide-react";
 import { Badge } from "../ui/badge";
-import { cn, getRelationshipTypeColor } from "@renderer/lib/utils";
+import {
+  cn,
+  getRelationshipTypeColor,
+  getFactionColor,
+} from "@renderer/lib/utils";
 interface CharacterGraphProps {
   onCharacterSelect: (characterId: number) => void;
   selectedFractalId: number | null;
@@ -19,6 +23,7 @@ interface NodeData extends SimulationNodeDatum {
   name: string;
   type: string;
   age?: number;
+  faction?: string;
   x?: number;
   y?: number;
   fx?: number | null;
@@ -88,6 +93,7 @@ export const CharacterGraph = memo(function CharacterGraph({
           name: item.character.name,
           type: item.fractal_character_relationships[0]?.relationship_type,
           age: item.character.age ?? undefined,
+          faction: item.character.faction ?? undefined,
         });
       }
 
@@ -108,6 +114,7 @@ export const CharacterGraph = memo(function CharacterGraph({
               type: objectCharacter.fractal_character_relationships[0]
                 ?.relationship_type,
               age: objectCharacter.character.age ?? undefined,
+              faction: objectCharacter.character.faction ?? undefined,
             });
           }
         }
@@ -127,6 +134,7 @@ export const CharacterGraph = memo(function CharacterGraph({
               type: subjectCharacter.fractal_character_relationships[0]
                 ?.relationship_type,
               age: subjectCharacter.character.age ?? undefined,
+              faction: subjectCharacter.character.faction ?? undefined,
             });
           }
         }
@@ -302,7 +310,7 @@ export const CharacterGraph = memo(function CharacterGraph({
         const calculatedSize = baseSize * (1 + age / 100);
         return Math.min(calculatedSize, 80);
       })
-      .attr("fill", "hsl(var(--sidebar-primary))");
+      .attr("fill", (d) => getFactionColor(d.faction));
 
     // Add labels to nodes
     node

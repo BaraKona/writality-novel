@@ -12,6 +12,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@renderer/components/ui/select";
+import { getFactionColor } from "@renderer/lib/utils";
+
 interface CharacterRelationshipsGraphProps {
   characterId: number;
   characterName: string;
@@ -25,6 +27,7 @@ interface CharacterRelationshipsGraphProps {
       id: number;
       name: string;
       age: number | null;
+      faction?: string;
     };
     fractal: {
       id: number;
@@ -35,6 +38,8 @@ interface CharacterRelationshipsGraphProps {
     id: number;
     name: string;
   }>;
+  selectedFractalId: number | null;
+  onFractalChange: (fractalId: number | null) => void;
 }
 
 interface NodeData extends SimulationNodeDatum {
@@ -42,6 +47,7 @@ interface NodeData extends SimulationNodeDatum {
   name: string;
   type: string;
   age?: number;
+  faction?: string;
   x?: number;
   y?: number;
   fx?: number | null;
@@ -62,6 +68,8 @@ export const CharacterRelationshipsGraph = memo(
     characterName,
     relationships,
     fractals,
+    selectedFractalId,
+    onFractalChange,
   }: CharacterRelationshipsGraphProps): JSX.Element {
     const svgRef = useRef<SVGSVGElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
@@ -93,6 +101,7 @@ export const CharacterRelationshipsGraph = memo(
         name: characterName,
         type: "main",
         isMainCharacter: true,
+        faction: relationships[0]?.relatedCharacter.faction ?? undefined,
       });
 
       // Add related character nodes
@@ -103,6 +112,7 @@ export const CharacterRelationshipsGraph = memo(
             name: item.relatedCharacter.name,
             type: item.relationship.relationship_type,
             age: item.relatedCharacter.age ?? undefined,
+            faction: item.relatedCharacter.faction ?? undefined,
           });
         }
       });
@@ -255,17 +265,7 @@ export const CharacterRelationshipsGraph = memo(
         })
         .attr("fill", (d) => {
           if (d.isMainCharacter) return "hsl(var(--primary))";
-
-          switch (d.type) {
-            case "friend":
-              return "hsl(var(--accent))";
-            case "family":
-              return "hsl(var(--accent-foreground))";
-            case "enemy":
-              return "hsl(var(--destructive))";
-            default:
-              return "hsl(var(--muted-foreground))";
-          }
+          return getFactionColor(d.faction);
         });
 
       // Add labels to nodes
@@ -326,7 +326,7 @@ export const CharacterRelationshipsGraph = memo(
 
         simulation.alpha(0.06).restart();
       }
-    }, [relationships, characterId, characterName]);
+    }, [relationships, characterId, characterName, selectedFractalId]);
 
     useEffect(() => {
       setupVisualization();
@@ -354,7 +354,12 @@ export const CharacterRelationshipsGraph = memo(
           <div className="w-full h-full border rounded-lg bg-background flex flex-col">
             <svg ref={svgRef} className="w-full h-full" />
             <div className="border-t p-2 flex items-center gap-2">
-              <Select defaultValue="all">
+              <Select
+                value={selectedFractalId?.toString() || "all"}
+                onValueChange={(value) =>
+                  onFractalChange(value === "all" ? null : Number(value))
+                }
+              >
                 <SelectTrigger id="fractal-filter" className="h-7 text-xs">
                   <SelectValue placeholder="All Fractals" />
                 </SelectTrigger>

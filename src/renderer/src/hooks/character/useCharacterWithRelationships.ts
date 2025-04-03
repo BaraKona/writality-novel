@@ -1,7 +1,7 @@
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import { charactersTable } from "../../../../db/schema";
 import { database, deserialize } from "@renderer/db";
-import { eq, or } from "drizzle-orm";
+import { eq, or, and } from "drizzle-orm";
 import { Value } from "@udecode/plate";
 import {
   fractalCharacterRelationshipsTable,
@@ -28,9 +28,10 @@ type CharacterWithRelationships = typeof charactersTable.$inferSelect & {
 
 export const useCharacterWithRelationships = (
   id: number,
+  fractalId?: number | null,
 ): UseQueryResult<CharacterWithRelationships, Error> => {
   return useQuery({
-    queryKey: ["character", id, "with-relationships"],
+    queryKey: ["character", id, "with-relationships", fractalId],
     queryFn: async () => {
       // Get character data
       const characterResult = await database
@@ -48,10 +49,24 @@ export const useCharacterWithRelationships = (
         .select()
         .from(fractalCharacterRelationshipsTable)
         .where(
-          or(
-            eq(fractalCharacterRelationshipsTable.subject_character_id, id),
-            eq(fractalCharacterRelationshipsTable.object_character_id, id),
-          ),
+          fractalId
+            ? and(
+                or(
+                  eq(
+                    fractalCharacterRelationshipsTable.subject_character_id,
+                    id,
+                  ),
+                  eq(
+                    fractalCharacterRelationshipsTable.object_character_id,
+                    id,
+                  ),
+                ),
+                eq(fractalCharacterRelationshipsTable.fractal_id, fractalId),
+              )
+            : or(
+                eq(fractalCharacterRelationshipsTable.subject_character_id, id),
+                eq(fractalCharacterRelationshipsTable.object_character_id, id),
+              ),
         );
 
       // Process each relationship to get related character and fractal data
