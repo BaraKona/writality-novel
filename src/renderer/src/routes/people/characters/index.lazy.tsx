@@ -15,12 +15,13 @@ import {
 } from "@renderer/components/ui/dialogue";
 import { Input } from "@renderer/components/ui/input";
 import { Label } from "@renderer/components/ui/label";
-import { CharacterCard } from "@renderer/components/character/CharacterCard";
 import { PlusIcon } from "lucide-react";
 import { BreadcrumbNav } from "@renderer/components/navigation/BreadcrumbNav";
 import { useBreadcrumbNav } from "@renderer/hooks/useBreadcrumbNav";
 import { currentProjectIdAtom } from "@renderer/routes/__root";
 import { useAtomValue } from "jotai";
+import { Badge } from "@renderer/components/ui/badge";
+import { useRouter } from "@tanstack/react-router";
 
 export const Route = createLazyFileRoute("/people/characters/")({
   component: RouteComponent,
@@ -41,6 +42,7 @@ function RouteComponent(): JSX.Element {
   const { dropdownItems } = useBreadcrumbNav();
   const editor = useCreateEditor({ value: [] });
   const currentProjectId = useAtomValue(currentProjectIdAtom);
+  const router = useRouter();
 
   const handleCreateCharacter = async (): Promise<void> => {
     if (!newCharacterName.trim()) return;
@@ -69,7 +71,7 @@ function RouteComponent(): JSX.Element {
   }
 
   return (
-    <div className="">
+    <div className="h-full overflow-y-auto flex flex-col">
       <BreadcrumbNav
         items={[
           {
@@ -158,10 +160,46 @@ function RouteComponent(): JSX.Element {
         }
       />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 container p-2">
-        {characters?.map((character) => (
-          <CharacterCard key={character.id} character={character} />
-        ))}
+      <div className="container p-2 h-full flex-1 flex-col flex overflow-y-auto">
+        <div className="rounded-xl border rounded-t-lg h-full">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b">
+                <th className="text-left p-2 font-medium">Name</th>
+                <th className="text-left p-2 font-medium">Age</th>
+                <th className="text-left p-2 font-medium">Sex</th>
+              </tr>
+            </thead>
+            <tbody>
+              {characters?.map((character) => (
+                <tr
+                  key={character.id}
+                  className="border-b hover:bg-muted/50"
+                  onClick={() => {
+                    router.navigate({
+                      to: "/people/characters/$characterId",
+                      params: {
+                        characterId: character.id,
+                      },
+                    });
+                  }}
+                >
+                  <td className="p-2">{character.name}</td>
+                  <td className="p-2">
+                    <Badge variant="outline">
+                      {character.age || "Unknown"}
+                    </Badge>
+                  </td>
+                  <td className="p-2">
+                    <Badge variant="outline">
+                      {character.sex || "Unknown"}
+                    </Badge>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

@@ -44,11 +44,11 @@ function RouteComponent(): JSX.Element {
           </div>
           <div className="flex gap-2 grow overflow-y-auto">
             <div className="w-full h-full flex"></div>
-            <div className="w-[600px] border-l h-full bg-tertiary flex flex-col">
-              <div className="flex flex-col gap-2 border-b py-2 px-4">
+            <div className="max-w-md w-full border-l h-full bg-tertiary flex flex-col">
+              <div className="flex flex-col gap-2 border-b py-2 px-4 border-b bg-background">
                 <h2 className="text-lg font-bold">Relationships</h2>
               </div>
-              <div className="h-[400px]">
+              <div className="h-[400px] p-3">
                 {isLoading ? (
                   <div className="flex justify-center items-center h-full">
                     <Loader2 className="w-4 h-4 animate-spin" />

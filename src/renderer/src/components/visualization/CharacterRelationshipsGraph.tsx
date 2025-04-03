@@ -334,13 +334,16 @@ export const CharacterRelationshipsGraph = memo(
         className="w-full h-full flex items-center justify-center"
       >
         {!relationships || relationships.length === 0 ? (
-          <div className="w-full h-full flex items-center justify-center border">
+          <div className="w-full h-full flex items-center justify-center bg-background border rounded-lg">
             <p className="text-sm text-muted-foreground">
               No relationships found for this character.
             </p>
           </div>
         ) : (
-          <svg ref={svgRef} className="w-full h-full border-b bg-background" />
+          <svg
+            ref={svgRef}
+            className="w-full h-full border rounded-lg bg-background"
+          />
         )}
       </div>
     );
