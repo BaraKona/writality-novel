@@ -17,7 +17,6 @@ import { Input } from "@renderer/components/ui/input";
 import { Label } from "@renderer/components/ui/label";
 import { PlusIcon } from "lucide-react";
 import { BreadcrumbNav } from "@renderer/components/navigation/BreadcrumbNav";
-import { useBreadcrumbNav } from "@renderer/hooks/useBreadcrumbNav";
 import { currentProjectIdAtom } from "@renderer/routes/__root";
 import { useAtomValue } from "jotai";
 import { Badge } from "@renderer/components/ui/badge";
@@ -39,7 +38,6 @@ function RouteComponent(): JSX.Element {
   const [newCharacterAge, setNewCharacterAge] = useState<number | null>(null);
   const [newCharacterOccupation, setNewCharacterOccupation] = useState("");
   const [newCharacterTraits, setNewCharacterTraits] = useState<string[]>([]);
-  const { dropdownItems } = useBreadcrumbNav();
   const editor = useCreateEditor({ value: [] });
   const currentProjectId = useAtomValue(currentProjectIdAtom);
   const router = useRouter();
@@ -84,7 +82,10 @@ function RouteComponent(): JSX.Element {
             isCurrentPage: true,
           },
         ]}
-        dropdownItems={dropdownItems}
+        dropdownItems={characters?.map((character) => ({
+          title: character.name,
+          href: `/people/characters/${character.id}`,
+        }))}
         actions={
           <Dialog
             open={isCreateDialogOpen}

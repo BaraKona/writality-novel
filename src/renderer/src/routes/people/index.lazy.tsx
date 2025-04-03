@@ -66,7 +66,7 @@ function RouteComponent(): JSX.Element {
     <div className="flex grow overflow-y-auto relative">
       <div
         className={clsx(
-          "fixed top-0 bottom-0 z-[100] flex h-full pt-10.25 pb-4 pointer-events-none bg-transparent max-h-screen flex-shrink-0 flex-col space-y-2 transition-transform duration-300 ease-sidebar",
+          "fixed top-0 bottom-0 flex h-full pt-10.25 pb-4  bg-transparent max-h-screen flex-shrink-0 flex-col space-y-2 transition-transform duration-300 ease-sidebar",
           {
             ["cursor-col-resize"]: isDragging,
           },

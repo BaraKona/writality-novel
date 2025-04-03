@@ -11,7 +11,7 @@ export const CharacterSidebar = ({
 
   const [animate] = useAutoAnimate();
   return (
-    <div className="border h-full rounded-l-xl bg-tertiary">
+    <div className="border h-full rounded-l-xl bg-tertiary z-20">
       <h2 className="border-b border-border px-3 py-1 pb-1.25">Character</h2>
       {character ? (
         <div className="p-2" ref={animate}>

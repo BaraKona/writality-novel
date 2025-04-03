@@ -5,7 +5,13 @@ import * as d3Drag from "d3-drag";
 import { type SimulationNodeDatum, type SimulationLinkDatum } from "d3-force";
 import { type D3DragEvent } from "d3-drag";
 import { type Selection, type BaseType } from "d3-selection";
-
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@renderer/components/ui/select";
 interface CharacterRelationshipsGraphProps {
   characterId: number;
   characterName: string;
@@ -24,6 +30,10 @@ interface CharacterRelationshipsGraphProps {
       id: number;
       name: string;
     };
+  }>;
+  fractals: Array<{
+    id: number;
+    name: string;
   }>;
 }
 
@@ -51,6 +61,7 @@ export const CharacterRelationshipsGraph = memo(
     characterId,
     characterName,
     relationships,
+    fractals,
   }: CharacterRelationshipsGraphProps): JSX.Element {
     const svgRef = useRef<SVGSVGElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
@@ -340,10 +351,24 @@ export const CharacterRelationshipsGraph = memo(
             </p>
           </div>
         ) : (
-          <svg
-            ref={svgRef}
-            className="w-full h-full border rounded-lg bg-background"
-          />
+          <div className="w-full h-full border rounded-lg bg-background flex flex-col">
+            <svg ref={svgRef} className="w-full h-full" />
+            <div className="border-t p-2 flex items-center gap-2">
+              <Select defaultValue="all">
+                <SelectTrigger id="fractal-filter" className="h-7 text-xs">
+                  <SelectValue placeholder="All Fractals" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Fractals</SelectItem>
+                  {fractals?.map((fractal) => (
+                    <SelectItem key={fractal.id} value={fractal.id.toString()}>
+                      {fractal.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
         )}
       </div>
     );

@@ -291,7 +291,7 @@ export const CharacterGraph = memo(function CharacterGraph({
     // Add circles to nodes
     node
       .append("circle")
-      .attr("stroke", "hsl(var(--muted-foreground))")
+      .attr("stroke", "hsl(var(--sidebar-primary))")
       .attr("stroke-width", 1)
       .attr("r", (d) => {
         // Default size is 10, scale up based on age
@@ -302,7 +302,7 @@ export const CharacterGraph = memo(function CharacterGraph({
         const calculatedSize = baseSize * (1 + age / 100);
         return Math.min(calculatedSize, 80);
       })
-      .attr("fill", "hsl(var(--accent))");
+      .attr("fill", "hsl(var(--sidebar-primary))");
 
     // Add labels to nodes
     node
@@ -311,7 +311,7 @@ export const CharacterGraph = memo(function CharacterGraph({
       .attr("x", 0)
       .attr("y", 30)
       .attr("text-anchor", "middle")
-      .attr("fill", "hsl(var(--foreground))")
+      .attr("fill", "hsl(var(--sidebar-primary))")
       .attr("font-size", "12px");
 
     // Add click handler to nodes
