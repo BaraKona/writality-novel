@@ -51,7 +51,7 @@ export function CharacterCard({ character }: CharacterCardProps): JSX.Element {
         </Avatar>
         <div className="flex flex-col">
           <Link
-            to="/people/characters/$characterId"
+            to="/people/$characterId"
             params={{ characterId: character.id }}
             className="text-sm font-medium hover:underline"
           >

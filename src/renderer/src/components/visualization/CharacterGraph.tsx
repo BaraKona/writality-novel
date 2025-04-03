@@ -17,6 +17,14 @@ import {
   charactersTable,
   fractalCharacterRelationshipsTable,
 } from "@db/schema";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+import { useFractals } from "@renderer/hooks/fractal/useFractals";
 
 interface CharacterGraphProps {
   onCharacterSelect: (characterId: number) => void;
@@ -61,7 +69,6 @@ interface RelationshipInfo {
 
 export const CharacterGraph = memo(function CharacterGraph({
   onCharacterSelect,
-  selectedFractalId,
   data,
   isLoading,
 }: CharacterGraphProps): JSX.Element {
@@ -70,7 +77,10 @@ export const CharacterGraph = memo(function CharacterGraph({
   const simulationRef = useRef<d3.Simulation<NodeData, LinkData> | null>(null);
   const [relationshipInfo, setRelationshipInfo] =
     useState<RelationshipInfo | null>(null);
-
+  const [selectedFractalId, setSelectedFractalId] = useState<number | null>(
+    null,
+  );
+  const { data: fractals } = useFractals();
   const handleCharacterSelect = useCallback(
     (characterId: number) => {
       onCharacterSelect(characterId);
@@ -400,18 +410,47 @@ export const CharacterGraph = memo(function CharacterGraph({
 
   if (!selectedFractalId) {
     return (
-      <div className="w-full h-full flex flex-col items-center justify-center border rounded-xl">
-        <div className="flex flex-col items-center justify-center border rounded-xl -mt-24 p-4 bg-accent max-w-md">
-          <h2 className="text-lg font-medium mb-2">Character Graph</h2>
-          <p className="text-sm text-muted-foreground">
-            Select a fractal above to view the character graph. Fractals are
-            collections of character and their relationships.
-          </p>
-          <br />
-          <p className="text-sm text-muted-foreground">
-            You can assign fractals to chapters and/or folders to help you
-            organize your character and their changing relationships.
-          </p>
+      <div className="w-full h-full border rounded-xl overflow-y-auto flex flex-col">
+        <div className="w-full border-b py-1 px-2">
+          <Select
+            value={selectedFractalId?.toString()}
+            onValueChange={(value) => setSelectedFractalId(Number(value))}
+          >
+            <SelectTrigger className="hover:bg-accent gap-2 border-none shadow-none h-5.5 text-sm">
+              <SelectValue placeholder="Select a fractal" />
+            </SelectTrigger>
+            <SelectContent>
+              {fractals?.length === 0 ? (
+                <div className="py-2 text-sm text-muted-foreground text-center">
+                  No fractals available
+                </div>
+              ) : (
+                fractals?.map((fractal) => (
+                  <SelectItem
+                    key={fractal.id}
+                    value={fractal.id.toString()}
+                    onSelect={() => setSelectedFractalId(fractal.id)}
+                  >
+                    {fractal.name}
+                  </SelectItem>
+                ))
+              )}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className=" w-full h-full flex flex-col items-center justify-center">
+          <div className="flex flex-col items-center justify-center border rounded-xl -mt-24 p-4 bg-accent max-w-md">
+            <h2 className="text-lg font-medium mb-2">Character Graph</h2>
+            <p className="text-sm text-muted-foreground">
+              Select a fractal above to view the character graph. Fractals are
+              collections of character and their relationships.
+            </p>
+            <br />
+            <p className="text-sm text-muted-foreground">
+              You can assign fractals to chapters and/or folders to help you
+              organize your character and their changing relationships.
+            </p>
+          </div>
         </div>
       </div>
     );
@@ -420,7 +459,7 @@ export const CharacterGraph = memo(function CharacterGraph({
   return (
     <div
       ref={containerRef}
-      className="w-full h-full flex items-center justify-center relative"
+      className="w-full h-full flex flex-col items-center justify-center relative"
     >
       {isLoading ? (
         <div className="w-full h-full flex items-center justify-center">
@@ -438,7 +477,34 @@ export const CharacterGraph = memo(function CharacterGraph({
 
       {data && data.length > 0 && selectedFractalId && (
         <div className="w-full h-full flex flex-col border rounded-xl bg-background grainy overflow-hidden">
-          <svg ref={svgRef} className="w-full" />
+          <div className="w-full border-b py-1 px-2 flex">
+            <Select
+              value={selectedFractalId?.toString()}
+              onValueChange={(value) => setSelectedFractalId(Number(value))}
+            >
+              <SelectTrigger className="hover:bg-accent gap-2 border-none shadow-none h-5.5 text-sm self-end">
+                <SelectValue placeholder="Select a fractal" />
+              </SelectTrigger>
+              <SelectContent>
+                {fractals?.length === 0 ? (
+                  <div className="py-2 text-sm text-muted-foreground text-center">
+                    No fractals available
+                  </div>
+                ) : (
+                  fractals?.map((fractal) => (
+                    <SelectItem
+                      key={fractal.id}
+                      value={fractal.id.toString()}
+                      onSelect={() => setSelectedFractalId(fractal.id)}
+                    >
+                      {fractal.name}
+                    </SelectItem>
+                  ))
+                )}
+              </SelectContent>
+            </Select>
+          </div>
+          <svg ref={svgRef} className="w-full h-full" />
           {relationshipInfo && (
             <div className="border-t p-3 bg-accent z-10">
               <div className="flex justify-between items-center">

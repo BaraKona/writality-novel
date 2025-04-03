@@ -30,7 +30,7 @@ type CharacterUpdate = Omit<
   description: Value;
 };
 
-export const Route = createFileRoute("/people/characters/$characterId")({
+export const Route = createFileRoute("/people/$characterId")({
   component: RouteComponent,
 });
 
@@ -91,7 +91,7 @@ function RouteComponent(): JSX.Element {
           },
           {
             title: character?.name ?? "New Character",
-            href: `/people/characters/${characterId}`,
+            href: `/people/${characterId}`,
             isCurrentPage: true,
           },
         ]}
