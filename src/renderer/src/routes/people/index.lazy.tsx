@@ -66,9 +66,9 @@ function RouteComponent(): JSX.Element {
       />
       <div className="h-full flex-1 flex overflow-y-auto gap-2 p-2">
         <div className="h-full flex-1 flex-col flex overflow-y-auto">
-          <div className="rounded-xl border rounded-t-lg h-full">
-            <table className="w-full">
-              <thead>
+          <div className="rounded-xl border rounded-t-lg h-full overflow-hidden">
+            <table className="w-full overflow-y-auto">
+              <thead className="overflow-y-auto">
                 <tr className="border-b bg-tertiary text-sm">
                   <th className="text-left p-2 font-medium">Name</th>
                   <th className="text-left p-2 font-medium">Age</th>
@@ -77,16 +77,16 @@ function RouteComponent(): JSX.Element {
                   <th className="text-left p-2 font-medium">Status</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="my-12">
                 {data?.map((character) => (
                   <tr
                     key={character.character.id}
-                    className="border-b hover:bg-muted/50 text-sm"
+                    className="hover:bg-muted/50 text-sm"
                     onClick={() => {
                       navigate({
                         to: "/people/$characterId",
                         params: {
-                          characterId: character.character.id,
+                          characterId: character.character.id.toString(),
                         },
                       });
                     }}

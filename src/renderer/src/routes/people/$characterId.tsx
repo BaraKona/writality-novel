@@ -3,7 +3,15 @@ import { useBreadcrumbNav } from "@renderer/hooks/useBreadcrumbNav";
 import { BreadcrumbNav } from "@renderer/components/navigation/BreadcrumbNav";
 import { useCharacterWithRelationships } from "@renderer/hooks/character/useCharacterWithRelationships";
 import { CharacterRelationshipsGraph } from "@renderer/components/visualization/CharacterRelationshipsGraph";
-import { Ellipsis, Loader2, X } from "lucide-react";
+import {
+  Ellipsis,
+  Loader2,
+  Sigma,
+  X,
+  VenetianMask,
+  Brain,
+  Heart,
+} from "lucide-react";
 import { Button } from "@renderer/components/ui/button";
 import { useCreateEditor } from "@renderer/components/editor/use-create-editor";
 import { BasicEditor } from "@renderer/components/editor/BasicEditor";
@@ -72,7 +80,7 @@ function RouteComponent(): JSX.Element {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-full">
-        <Loader2 className="w-4 h-4 animate-spin" />
+        <Loader2 className="w-5 h-5 animate-spin" />
       </div>
     );
   }
@@ -117,13 +125,16 @@ function RouteComponent(): JSX.Element {
           </div>
           <div className="flex gap-2 grow overflow-y-auto">
             <div className="w-full h-full flex flex-col p-4 gap-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="age">Age</Label>
+              <div className="grid grid-cols-2 gap-2 max-w-2xl mx-auto">
+                <div className="ring-0 flex gap-6 items-center">
+                  <Label htmlFor="age" className="flex items-center gap-2 w-24">
+                    <Sigma className="w-5 h-5 stroke-muted-foreground" /> Age
+                  </Label>
                   <Input
                     id="age"
+                    className="border-none outline-none focus:ring-0 focus:outline-none"
                     type="number"
-                    defaultValue={character.age || ""}
+                    defaultValue={character.age || "0"}
                     onChange={(e) =>
                       debounceUpdateCharacter({
                         age: parseInt(e.target.value) || null,
@@ -132,15 +143,18 @@ function RouteComponent(): JSX.Element {
                     placeholder="Age"
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="sex">Sex</Label>
+                <div className="flex gap-6 items-center">
+                  <Label htmlFor="sex" className="flex items-center gap-2 w-24">
+                    <VenetianMask className="w-5 h-5 stroke-muted-foreground" />{" "}
+                    Sex
+                  </Label>
                   <Select
                     defaultValue={character.sex || ""}
                     onValueChange={(value) =>
                       debounceUpdateCharacter({ sex: value })
                     }
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className="border-none outline-none focus:ring-0 focus:outline-none shadow-none">
                       <SelectValue placeholder="Select sex" />
                     </SelectTrigger>
                     <SelectContent>
@@ -150,10 +164,16 @@ function RouteComponent(): JSX.Element {
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="traits">Traits</Label>
+                <div className="flex gap-6 items-center">
+                  <Label
+                    htmlFor="traits"
+                    className="flex items-center gap-2 w-24"
+                  >
+                    <Brain className="w-5 h-5 stroke-muted-foreground" /> Traits
+                  </Label>
                   <Input
                     id="traits"
+                    className="border-none outline-none focus:ring-0 focus:outline-none"
                     defaultValue={
                       character.traits
                         ? JSON.parse(character?.traits).join(", ")
@@ -169,15 +189,20 @@ function RouteComponent(): JSX.Element {
                     placeholder="Traits (comma separated)"
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="status">Status</Label>
+                <div className="flex gap-6 items-center">
+                  <Label
+                    htmlFor="status"
+                    className="flex items-center gap-2 w-24"
+                  >
+                    <Heart className="w-5 h-5 stroke-muted-foreground" /> Status
+                  </Label>
                   <Select
                     defaultValue={character.status || "alive"}
                     onValueChange={(value) =>
                       debounceUpdateCharacter({ status: value })
                     }
                   >
-                    <SelectTrigger className="">
+                    <SelectTrigger className="border-none outline-none focus:ring-0 focus:outline-none shadow-none">
                       <SelectValue placeholder="Select status" />
                     </SelectTrigger>
                     <SelectContent>
@@ -206,13 +231,13 @@ function RouteComponent(): JSX.Element {
               <div className="flex gap-2 items-center border-b py-2 px-3 border-b bg-background justify-between">
                 <h2 className="text-md font-bold">Relationships</h2>
                 <Button variant="ghost" size="icon">
-                  <Ellipsis className="w-4 h-4" />
+                  <Ellipsis className="w-5 h-5" />
                 </Button>
               </div>
               <div className="h-[400px] p-3">
                 {isLoading ? (
                   <div className="flex justify-center items-center h-full">
-                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <Loader2 className="w-5 h-5 animate-spin" />
                   </div>
                 ) : (
                   <CharacterRelationshipsGraph

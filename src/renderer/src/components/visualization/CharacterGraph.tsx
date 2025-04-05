@@ -395,7 +395,7 @@ export const CharacterGraph = memo(function CharacterGraph({
 
       simulation.alpha(0.06).restart();
     }
-  }, [data, handleCharacterSelect]);
+  }, [data, handleCharacterSelect, selectedFractalId]);
 
   useEffect(() => {
     setupVisualization();
@@ -477,12 +477,12 @@ export const CharacterGraph = memo(function CharacterGraph({
 
       {data && data.length > 0 && selectedFractalId && (
         <div className="w-full h-full flex flex-col border rounded-xl bg-background grainy overflow-hidden">
-          <div className="w-full border-b py-1 px-2 flex">
+          <div className="w-full border-b py-1 px-2 flex h-fit py-1.75">
             <Select
               value={selectedFractalId?.toString()}
               onValueChange={(value) => setSelectedFractalId(Number(value))}
             >
-              <SelectTrigger className="hover:bg-accent gap-2 border-none shadow-none h-5.5 text-sm self-end">
+              <SelectTrigger className="hover:bg-accent gap-2 w-fit ml-auto border-none shadow-none h-5.5 text-sm self-end">
                 <SelectValue placeholder="Select a fractal" />
               </SelectTrigger>
               <SelectContent>
